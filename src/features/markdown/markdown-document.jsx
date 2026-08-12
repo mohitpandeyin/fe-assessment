@@ -19,19 +19,15 @@ const markdownComponents = {
   table: ScrollableTable,
 }
 
-export function MarkdownDocument({ resetKey, source }) {
+export function MarkdownDocument({ articleRef, resetKey, source }) {
   return (
     <MarkdownErrorBoundary resetKey={resetKey}>
-      {source.length === 0 ? (
-        <div className="markdown-empty" role="status">
-          <h2>This Markdown file is empty</h2>
-          <p>Replace it with another file or start over when you are ready.</p>
-        </div>
-      ) : (
-        <article
-          aria-label="Rendered Markdown document"
-          className="markdown-document"
-        >
+      <article
+        ref={articleRef}
+        aria-label="Rendered Markdown document"
+        className="markdown-document"
+      >
+        {source.length > 0 ? (
           <ReactMarkdown
             components={markdownComponents}
             remarkPlugins={remarkPlugins}
@@ -39,8 +35,14 @@ export function MarkdownDocument({ resetKey, source }) {
           >
             {source}
           </ReactMarkdown>
-        </article>
-      )}
+        ) : null}
+      </article>
+      {source.length === 0 ? (
+        <div className="markdown-empty" role="status">
+          <h2>This Markdown file is empty</h2>
+          <p>Replace it with another file or start over when you are ready.</p>
+        </div>
+      ) : null}
     </MarkdownErrorBoundary>
   )
 }

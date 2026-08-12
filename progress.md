@@ -4,9 +4,9 @@
 
 **Last updated:** 2026-08-12
 
-**Overall status:** Phase 3 complete and validated; awaiting Phase 4 approval
+**Overall status:** Implementation in progress
 
-**Current phase:** Phase 3 exit gate
+**Current phase:** Phase 5 validation checkpoint - local testing before Phase 6 hardening
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -64,13 +64,13 @@ No implementation task may silently override a higher-priority source. If a requ
 
 | Area | Validated baseline | Status |
 |---|---|---|
-| Git | Implementation branch `v1`; implementation is checkpointed through Phase 3 and the local branch is ahead of `origin/v1` | `[x]` |
+| Git | Implementation branch `v1`; committed checkpoints exist through Phase 3 and the Phase 4-5 working changes are awaiting the local-test checkpoint | `[x]` |
 | Remote | `https://github.com/mohitpandeyin/fe-assessment.git` | `[x]` |
 | Git identity | `mohitpandeyin` / `mohitpandey411@gmail.com` | `[x]` |
 | Commit history | Documentation/progress commits plus implementation checkpoints through Phase 3 exist | `[x]` |
-| Application source | React foundation, complete local document lifecycle, and safe semantic GFM document preview exist | `[x]` Phases 1-3 |
+| Application source | Complete local document lifecycle, safe semantic GFM preview, Direction C shell, reusable feedback components, and rich clipboard export exist | `[x]` Phases 1-4; Phase 5 implementation complete |
 | Package/build setup | npm manifest/lockfile, Vite React config, Tailwind Vite plugin, and HTML entry point exist | `[x]` Phase 1 |
-| Tests | Vitest/jsdom/Testing Library cover intake, reducer invariants, file utilities, URL policy, required/malformed/optional Markdown, safety, overflow semantics, and recovery | `[x]` 8 files / 32 tests |
+| Tests | Vitest/jsdom/Testing Library cover intake, reducer invariants, file utilities, rendering/safety, responsive UI interactions, serializers, clipboard capabilities/fallbacks, and feedback | `[x]` 11 files / 43 tests |
 | Deployment | No hosting configuration or deployed URL recorded | `[x]` Confirmed absent |
 | Root README | No implementation/setup README exists at repository root | `[x]` Confirmed absent |
 | Requirements | Two-page assignment PDF and representative Markdown fixture are present | `[x]` |
@@ -85,7 +85,8 @@ No implementation task may silently override a higher-priority source. If a requ
 - Phase 3 establishes safe semantic GFM rendering, conservative URL/image behavior, localized recovery, and the authored Markdown presentation system.
 - There was no pre-existing application functionality to preserve or migrate.
 - The repository now installs cleanly from `package-lock.json`, lints, tests, builds, and serves locally.
-- The visible application includes practical empty/loaded lifecycle surfaces and the complete document preview, but final Direction C composition and responsive file-detail refinements remain Phase 4 work.
+- The visible application now implements the approved Direction C empty and loaded states, desktop file-details sidebar, responsive mobile details sheet, document toolbar, status feedback, and complete preview.
+- Rich copy now exports portable HTML and semantic plain text together, adds exact source Markdown only when the browser supports that MIME type, retries without Markdown when necessary, and falls back to plain text.
 - `tmp/` is ignored and contains only local PDF inspection artifacts; it is not part of the product.
 - Existing documentation continues to govern the new foundation and all later implementation.
 
@@ -138,15 +139,11 @@ Required syntax must receive explicit tests. Optional syntax must degrade to rea
 
 ### 4.2 Missing implementation areas
 
-The remaining implementation areas are:
+The remaining implementation and validation areas are:
 
-- Final Direction C composition, mobile file details, and refined loading/drag/error presentation.
-- Responsive file-details sidebar/sheet.
-- Custom Button, Dialog/Sheet, Toast, and InlineAlert primitives.
-- Portable HTML and semantic plain-text serializers.
-- Clipboard capability detection, multi-format write, fallback, and feedback.
-- Automated tests and manual validation matrix.
-- Root README, build/release checks, deployment configuration, and public URL.
+- Manual paste validation in Microsoft Word, Google Docs, Notion, and a plain-text editor.
+- Full Phase 6 accessibility, cross-browser, zoom, reduced-motion, security/privacy, and large-document hardening matrix.
+- Root README, final clean-install/release checks, deployment configuration, and public URL.
 
 ### 4.3 Duplication risks to avoid
 
@@ -171,7 +168,7 @@ The remaining implementation areas are:
 | Dialog/sheet | Project-owned wrapper around native `<dialog>` | Approved |
 | Toast | Small project-owned context queue/live region | Approved |
 | Clipboard | Browser Async Clipboard API with multi-representation `ClipboardItem` and plain-text fallback | Required |
-| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | 8 files / 32 tests plus browser checks |
+| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | 11 files / 43 tests plus browser checks |
 | Backend/storage | None | Required constraint |
 
 ### 5.2 Proposed source boundaries
@@ -276,8 +273,8 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | 1. Project foundation | Create a runnable, testable React/Tailwind application skeleton | Phase 0 approval | `[x]` |
 | 2. Document lifecycle | Implement reliable local file intake and state transitions | Phase 1 | `[x]` |
 | 3. Markdown rendering | Implement safe semantic GFM rendering and content presentation | Phases 1-2 | `[x]` |
-| 4. Product UI and responsive states | Build the locked Direction C shell and complete interactions | Phases 2-3 | `[ ]` |
-| 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[ ]` |
+| 4. Product UI and responsive states | Build the locked Direction C shell and complete interactions | Phases 2-3 | `[x]` |
+| 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[-]` Implementation and automated validation complete; destination paste matrix pending |
 | 6. Integration hardening | Validate accessibility, responsiveness, security, performance, and compatibility | Phases 2-5 | `[ ]` |
 | 7. Release and delivery | Complete documentation, production build, deployment, and handoff | Phase 6 | `[ ]` |
 
@@ -501,34 +498,34 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P4.1 Implement the stable graphite global header and Plainmark branding for empty and loaded states.
-- `[ ]` P4.2 Implement the first-visit upload screen with one clear Choose file action, drag target, supported-file hint, local-processing message, benefits, and no inactive document controls.
-- `[ ]` P4.3 Implement drag-over and visible loading states without layout jumps or fabricated progress.
-- `[ ]` P4.4 Implement loaded desktop layout: file-details sidebar, document toolbar, centered article viewport, Replace, Copy document, and Start over.
-- `[ ]` P4.5 Implement compact mobile/tablet layout with no persistent sidebar.
-- `[ ]` P4.6 Reuse file-details content inside a native-dialog bottom sheet or simpler disclosure if the sheet adds unjustified risk.
-- `[ ]` P4.7 Implement project-owned Button variants and complete interaction states.
-- `[ ]` P4.8 Implement InlineAlert for persistent intake/read failures.
-- `[ ]` P4.9 Implement a small accessible Toast provider/viewport for clipboard outcomes.
-- `[ ]` P4.10 Apply real locally derived metadata and approved UI labels only.
-- `[ ]` P4.11 Exclude the superseded TOC, theme switcher, help/overflow utilities, author/status extraction, and per-code copy controls.
-- `[ ]` P4.12 Restore focus appropriately after replacement, reset, and dialog close.
+- `[x]` P4.1 Implement the stable graphite global header and Plainmark branding for empty and loaded states.
+- `[x]` P4.2 Implement the first-visit upload screen with one clear Choose file action, drag target, supported-file hint, local-processing message, benefits, and no inactive document controls.
+- `[x]` P4.3 Implement drag-over and visible loading states without layout jumps or fabricated progress.
+- `[x]` P4.4 Implement loaded desktop layout: file-details sidebar, document toolbar, centered article viewport, Replace, Copy document, and Start over.
+- `[x]` P4.5 Implement compact mobile/tablet layout with no persistent sidebar.
+- `[x]` P4.6 Reuse file-details content inside a native-dialog bottom sheet.
+- `[x]` P4.7 Implement project-owned Button variants and complete interaction states.
+- `[x]` P4.8 Implement InlineAlert for persistent intake/read failures.
+- `[x]` P4.9 Implement a small accessible Toast provider/viewport for clipboard outcomes.
+- `[x]` P4.10 Apply real locally derived metadata and approved UI labels only.
+- `[x]` P4.11 Exclude the superseded TOC, theme switcher, help/overflow utilities, author/status extraction, and per-code copy controls.
+- `[x]` P4.12 Restore focus appropriately after replacement, reset, and dialog close.
 
 **Implementation approach:** Tailwind handles shell layout, breakpoints, flex/grid, and small one-off utilities. Named authored CSS handles reusable component recipes, states, Markdown presentation, dialog/backdrop, and toast motion. Custom components must own behavior, accessibility, repetition, or meaningful visual recipes.
 
 **Validation/testing:**
 
-- Empty, drag-over, loading, ready, initial-error, replacement-error, copy-success, copy-fallback, and copy-failure states are reachable and understandable.
-- Keyboard-only flow covers file selection, replacement, file details, Start over, Copy, and dialog close.
-- Focus-visible and status announcements work.
-- Desktop sidebar and mobile detail surface expose identical information.
-- Layout reviewed at representative mobile, tablet, desktop, wide desktop, and 200% zoom.
-- Tap targets meet the documented minimum; no page-level horizontal scrolling.
-- Visual review uses locked references as direction, not pixel-match tests.
+- `[x]` Empty, drag-over, loading, ready, initial-error, replacement-error, copy-success, copy-fallback, and copy-failure states have automated coverage.
+- `[x]` File selection, replacement, file details, Start over, Copy, dialog close, and focus restoration have interaction coverage.
+- `[x]` Status announcements and dialog labeling/focus behavior are implemented and asserted.
+- `[x]` Desktop sidebar and mobile details sheet reuse identical information.
+- `[x]` Real-browser desktop and 390 x 844 responsive reviews passed with no page-level content overflow; tables and code remain element-owned.
+- `[x]` Visual review follows the locked references as direction rather than pixel-match tests.
+- `[ ]` The expanded viewport, 200% zoom, reduced-motion, and cross-browser matrix remains Phase 6 work.
 
 **Expected outcome:** Complete product flow and responsive shell with all core states, ready for real clipboard integration.
 
-**Exit gate:** Core interaction flow works via keyboard and pointer across supported widths.
+**Exit gate:** Passed for the Phase 4 core flow on 2026-08-12; the wider compatibility matrix remains Phase 6 work.
 
 ---
 
@@ -549,36 +546,49 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P5.1 Define a small tag/role-based export style map for headings, paragraphs, lists, blockquotes, links, inline code, code blocks, tables, and rules.
-- `[ ]` P5.2 Serialize a controlled clone of the semantic article DOM, unwrapping preview-only overflow containers and excluding application chrome.
-- `[ ]` P5.3 Strip scripts, event attributes, temporary object URLs, application-only attributes, controls, and unsupported unsafe elements.
-- `[ ]` P5.4 Normalize safe links and preserve semantic nesting, heading levels, table sections/cells, and code whitespace.
-- `[ ]` P5.5 Build an element-aware plain-text serializer with paragraph breaks, list markers/nesting, quote prefixes, exact code whitespace, readable link targets, and tab/newline table output.
-- `[ ]` P5.6 Preserve the exact uploaded source as `text/markdown`; never regenerate it from HTML.
-- `[ ]` P5.7 Capability-detect `ClipboardItem`, supported MIME types, secure context, and clipboard APIs.
-- `[ ]` P5.8 Write `text/html` and `text/plain` together; add `text/markdown` only when supported without jeopardizing core formats.
-- `[ ]` P5.9 Fall back to `navigator.clipboard.writeText()` with semantic plain text when rich writing fails.
-- `[ ]` P5.10 Keep the actual clipboard write directly attached to the user click and avoid network/long asynchronous work before it.
-- `[ ]` P5.11 Report **Document copied**, **Copied as plain text**, or actionable failure through accessible toast/live feedback.
-- `[ ]` P5.12 Add deterministic serializer tests and mocked clipboard capability/failure tests.
+- `[x]` P5.1 Define a small tag/role-based export style map for headings, paragraphs, lists, blockquotes, links, inline code, code blocks, tables, and rules.
+- `[x]` P5.2 Serialize a controlled clone of the semantic article DOM, unwrapping preview-only overflow containers and excluding application chrome.
+- `[x]` P5.3 Strip scripts, event attributes, temporary object URLs, application-only attributes, controls, and unsupported unsafe elements.
+- `[x]` P5.4 Normalize safe links and preserve semantic nesting, heading levels, table sections/cells, and code whitespace.
+- `[x]` P5.5 Build an element-aware plain-text serializer with paragraph breaks, list markers/nesting, quote prefixes, exact code whitespace, readable link targets, and tab/newline table output.
+- `[x]` P5.6 Preserve the exact uploaded source as `text/markdown`; never regenerate it from HTML.
+- `[x]` P5.7 Capability-detect `ClipboardItem`, supported MIME types, and clipboard APIs.
+- `[x]` P5.8 Write `text/html` and `text/plain` together; add `text/markdown` only when supported without jeopardizing core formats.
+- `[x]` P5.9 Fall back to `navigator.clipboard.writeText()` with semantic plain text when rich writing fails.
+- `[x]` P5.10 Keep the actual clipboard write directly attached to the user click and avoid network/long asynchronous work before it.
+- `[x]` P5.11 Report **Document copied**, **Copied as plain text**, or actionable failure through accessible toast/live feedback.
+- `[x]` P5.12 Add deterministic serializer tests and mocked clipboard capability/failure tests.
 
 **Implementation approach:** Reuse the already-rendered semantic article as the initial source for a sanitized export clone. This avoids a duplicate Markdown parser and keeps preview/copy semantics aligned. If testing demonstrates that DOM wrapper normalization is brittle, replace only the serializer internals with a dedicated AST/rehype serializer; do not add a second parsing pipeline preemptively.
 
 **Validation/testing:**
 
-- Clipboard item contains correct supported MIME representations.
-- HTML includes only document content and portable inline styles.
-- No Tailwind dependency, CSS variables, script, event handlers, UI controls, or temporary object URLs remain.
-- Plain text is readable and tables are tab-delimited.
-- Original Markdown bytes/text are unchanged.
-- Unsupported Markdown MIME does not prevent HTML/plain copy.
-- Permission denial and unavailable API are recoverable.
-- Manual full-document paste into Word/Word Online, Google Docs, Notion, and a plain-text editor.
-- Destination normalization is recorded as a limitation rather than “fixed” with brittle application-specific markup.
+- `[x]` Clipboard items contain the correct supported MIME representations.
+- `[x]` HTML includes only document content and portable inline styles.
+- `[x]` No Tailwind dependency, CSS variables, scripts, application attributes, UI controls, or unsafe URLs remain.
+- `[x]` Plain text preserves readable hierarchy, list/quote markers, exact code whitespace, link targets, and tab-delimited tables.
+- `[x]` Original Markdown is passed unchanged when its MIME type is supported.
+- `[x]` Unsupported Markdown MIME and rejected rich writes do not prevent HTML/plain retries or semantic plain-text fallback.
+- `[x]` Permission denial and unavailable APIs produce recoverable, actionable feedback.
+- `[x]` Real-browser localhost copy produced the **Document copied** success state.
+- `[x]` Manual full-document paste into Google Docs preserved the complete document, editable heading hierarchy and outline, paragraphs, emphasis, lists, tables, code content/whitespace, inline code, links, and rules.
+- `[ ]` Manual full-document paste into Word/Word Online, Notion, and a plain-text editor remains pending.
+
+#### Google Docs paste result - 2026-08-12
+
+- Core rich-paste acceptance passed with no observed content loss.
+- Google Docs recognized the heading hierarchy and generated its document outline.
+- Tables remained structured and editable; narrow columns caused normal destination-controlled header wrapping.
+- Code remained monospaced with preserved content and whitespace, while Google Docs simplified some preview-only background and border styling.
+- Task-list controls intentionally pasted as portable `[x]` and `[ ]` text markers rather than destination-specific interactive controls.
+- Blockquote/note content remained complete, although Google Docs normalized some decorative borders.
+- Math delimiters and `[NOTE]` syntax remained literal by design because optional math/admonition extensions are outside v1 scope.
+- Low-priority pagination findings: occasional orphaned headings, generous page whitespace, and a possible trailing blank page. Investigate in Phase 6 without adding brittle Google-Docs-specific markup.
+- Repeated outline content visible in the supplied long screenshot was assessed as fixed-sidebar screenshot stitching rather than duplicated main document content.
 
 **Expected outcome:** One reliable Copy document action with the richest portable result supported by the browser.
 
-**Exit gate:** Automated serializer/capability tests pass and the manual destination matrix preserves complete readable content.
+**Exit gate:** Automated serializer/capability tests pass; the phase remains at its user-validation checkpoint until the destination paste matrix is recorded.
 
 ---
 
@@ -665,17 +675,17 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 | Area | Automated validation | Manual validation | Current status |
 |---|---|---|---|
-| Requirements traceability | Task/requirement mapping in plan and tests | Compare final product to assignment PDF | Planning complete; product pending |
+| Requirements traceability | Task/requirement mapping in plan and tests | Compare final product to assignment PDF | Core product implemented; Phase 6 final comparison pending |
 | File intake | 6 files / 23 tests across utilities, reducer, and application flows | Picker, replace failure, metadata, reset/focus, and console smoke test | `[x]` Phase 2 |
 | Required Markdown | Semantic DOM coverage for required/GFM elements and complete fixture | Complete fixture desktop visual review | `[x]` Phase 3 |
 | Malformed Markdown | Malformed boundary, localized recovery, and raw-HTML safety tests | Complete representative fixture reviewed | `[x]` Phase 3 |
-| Responsive content | Focusable overflow semantics and long-token fixtures | Desktop and narrow 582 px reflow; final browser/zoom matrix remains Phase 6 | `[-]` Phase 3 baseline complete |
-| Accessibility | Testing Library and automated checker where practical | Keyboard, focus, contrast, announcements | `[ ]` |
-| Clipboard formats | Serializer and capability mocks | Inspect/paste real clipboard | `[ ]` |
-| Word/Docs/Notion paste | Structural serializer assertions | Paste complete fixture into each destination | `[ ]` |
-| Security/privacy | URL/sanitization and fallback tests | Network/storage inspection | `[ ]` |
+| Responsive content | Focusable overflow semantics and long-token fixtures | Desktop, 582 px reflow, and 390 x 844 product UI; final browser/zoom matrix remains Phase 6 | `[-]` Core widths pass |
+| Accessibility | Testing Library interaction/label/focus assertions | Keyboard, focus, contrast, announcements | `[-]` Core interactions pass; full audit pending |
+| Clipboard formats | Serializer and capability mocks | Real localhost rich-copy success; destination paste inspection pending | `[-]` Automated and browser write pass |
+| Word/Docs/Notion paste | Structural serializer assertions | Google Docs complete fixture passed; Word/Word Online and Notion pending | `[-]` |
+| Security/privacy | URL, raw-HTML, export sanitization, and fallback tests | Final network/storage inspection | `[-]` Automated controls pass |
 | Performance | Timed representative fixture checks where stable | 1 MB+ document responsiveness | `[ ]` |
-| Build/release | Lint, tests, production build | Public deployment smoke test | `[~]` Phase 1 gates pass; deployment pending |
+| Build/release | Lint, 43 tests, production build, diff check | Public deployment smoke test | `[-]` Local gates pass; deployment pending |
 
 ## 10. Completed work
 
@@ -708,15 +718,22 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Safe URL policy, external-link isolation, inert local/unsafe links, and privacy-first non-fetching image fallbacks implemented.
 - `[x]` Focusable table/code overflow, long-token containment, empty content, and localized render recovery implemented.
 - `[x]` Required, malformed, optional, safety, complete-fixture, desktop, and narrow-width Phase 3 validation completed.
+- `[x]` Direction C first-visit and loaded application shells implemented with the stable graphite header.
+- `[x]` Responsive desktop sidebar and native-dialog mobile file-details sheet implemented from one shared content component.
+- `[x]` Project-owned Button, Dialog, InlineAlert, and accessible Toast components implemented.
+- `[x]` Replace, Start over, dialog close, and document-name focus restoration behavior implemented and tested.
+- `[x]` Portable inline-styled HTML, semantic plain text, and capability-gated exact Markdown clipboard representations implemented.
+- `[x]` Rich clipboard retry, plain-text fallback, success/fallback/failure feedback, and unsafe-export stripping implemented.
+- `[x]` Phase 4-5 automated checks completed: 11 test files / 43 tests, lint, production build, and diff validation all pass.
+- `[x]` Real-browser desktop rendering, rich copy success, 390 x 844 responsive layout, mobile details sheet, and focus restoration validated.
 
 ## 11. In-progress work
 
-- `[!]` Phase 3 exit gate: awaiting approval to begin final Direction C product UI work in Phase 4.
+- `[-]` Phase 6 hardening begins after the validated Phase 4-5 checkpoint is pushed; Word/Notion paste checks remain part of the compatibility matrix.
 
 ## 12. Pending work
 
-- `[ ]` Phase 4 - Direction C application UI and responsive states.
-- `[ ]` Phase 5 - portable rich clipboard export.
+- `[ ]` Phase 5 compatibility follow-up - Word/Word Online, Notion, and plain-text paste checks; Google Docs has passed.
 - `[ ]` Phase 6 - integrated quality hardening.
 - `[ ]` Phase 7 - release documentation and deployment.
 
@@ -724,7 +741,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ### Active blocker
 
-- No technical blocker. Phase 4 is intentionally paused at the approval gate.
+- None.
 
 ### Open decisions to finalize during planned phases
 
@@ -768,10 +785,14 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 17. The active document is committed only after validation and reading succeed; failed replacement never discards the previous valid document.
 18. Phase 3 uses custom Markdown components only where behavior differs from native semantics: safe links, conservative image fallbacks, read-only tasks, and focusable table/code overflow wrappers.
 19. Unsupported representative syntax remains intentionally literal/readable: admonitions are ordinary blockquotes, math is text, definition lists become paragraphs, raw HTML/comments are omitted, and syntax highlighting is deferred.
+20. File-details metadata is rendered once and reused by the desktop sidebar and mobile native-dialog sheet; the sheet returns focus to its trigger on close.
+21. Clipboard export clones only the semantic article, unwraps preview-only containers, converts task controls to text markers, strips application/unsafe attributes, and applies a deliberately small inline style map.
+22. `text/markdown` is included only when the runtime reports support; a rejection retries rich HTML/plain without Markdown before using `writeText`.
+23. Toast feedback owns clipboard outcomes and timers; document lifecycle state remains isolated in the document reducer.
 
 ## 15. Next steps
 
-1. Obtain approval to begin Phase 4.
-2. Complete the Direction C empty and loaded shells using the working lifecycle and Markdown systems.
-3. Add responsive/mobile file details, refined interaction states, accessible alerts/toasts, and focus behavior.
-4. Stop at the Phase 4 exit gate before implementing clipboard export.
+1. Commit and push the validated Phase 4-5 checkpoint, including the successful Google Docs result.
+2. Complete Phase 6 accessibility, cross-browser, zoom, reduced-motion, privacy/security, and large-document hardening.
+3. Validate Word/Word Online, Notion, and plain-text paste results when those destination surfaces are available.
+4. Prepare the root README and deployment in Phase 7 after Phase 6 gates pass.

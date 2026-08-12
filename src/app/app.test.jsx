@@ -1,8 +1,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import * as clipboardService from '../lib/clipboard/write-document-clipboard.js'
 import { App } from './app.jsx'
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 describe('App', () => {
   it('opens a valid Markdown file and shows real metadata', async () => {
@@ -99,6 +104,7 @@ describe('App', () => {
     expect(
       await screen.findByRole('heading', { name: 'replacement.md' }),
     ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'replacement.md' })).toHaveFocus()
     expect(
       screen.queryByRole('heading', { name: 'This Markdown file is empty' }),
     ).not.toBeInTheDocument()
@@ -136,7 +142,7 @@ describe('App', () => {
     fireEvent.drop(dropZone, { dataTransfer: { files: [slowFile] } })
     fireEvent.drop(dropZone, { dataTransfer: { files: [ignoredFile] } })
 
-    expect(screen.getByLabelText('Reading file…')).toBeDisabled()
+    expect(screen.getByLabelText('Preparing…')).toBeDisabled()
 
     await act(async () => finishReading('# Slow'))
 
@@ -144,5 +150,79 @@ describe('App', () => {
       await screen.findByRole('heading', { name: 'slow.md' }),
     ).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'ignored.md' })).not.toBeInTheDocument()
+  })
+
+  it('opens mobile file details and restores focus when the sheet closes', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.upload(
+      screen.getByLabelText('Choose file'),
+      new File(['# Details'], 'details.md'),
+    )
+
+    const trigger = await screen.findByRole('button', {
+      name: 'Open file details',
+    })
+    await user.click(trigger)
+
+    const dialog = screen.getByRole('dialog', { name: 'File details' })
+    expect(dialog).toHaveAttribute('open')
+    expect(dialog).toHaveTextContent('details.md')
+
+    await user.click(
+      screen.getByRole('button', { name: 'Close file details' }),
+    )
+    expect(trigger).toHaveFocus()
+  })
+
+  it('copies the complete document and announces rich-copy success', async () => {
+    const user = userEvent.setup()
+    vi.spyOn(clipboardService, 'writeDocumentClipboard').mockResolvedValue({
+      formats: ['text/html', 'text/plain'],
+      kind: 'rich',
+    })
+    render(<App />)
+
+    await user.upload(
+      screen.getByLabelText('Choose file'),
+      new File(['# Copy me'], 'copy.md'),
+    )
+    await user.click(
+      await screen.findByRole('button', { name: 'Copy document' }),
+    )
+
+    expect(await screen.findByText('Document copied')).toBeVisible()
+    expect(clipboardService.writeDocumentClipboard).toHaveBeenCalledWith({
+      markdown: '# Copy me',
+      root: screen.getByRole('article', {
+        name: 'Rendered Markdown document',
+      }),
+    })
+  })
+
+  it('announces plain-text fallback and clipboard failure outcomes', async () => {
+    const user = userEvent.setup()
+    const copyDocument = vi
+      .spyOn(clipboardService, 'writeDocumentClipboard')
+      .mockResolvedValueOnce({ formats: ['text/plain'], kind: 'plain' })
+      .mockRejectedValueOnce(new Error('Clipboard permission was denied.'))
+    render(<App />)
+
+    await user.upload(
+      screen.getByLabelText('Choose file'),
+      new File(['# Copy states'], 'states.md'),
+    )
+    const copyButton = await screen.findByRole('button', {
+      name: 'Copy document',
+    })
+
+    await user.click(copyButton)
+    expect(await screen.findByText('Copied as plain text')).toBeVisible()
+
+    await user.click(copyButton)
+    expect(await screen.findByText('Copy failed')).toBeVisible()
+    expect(screen.getByText('Clipboard permission was denied.')).toBeVisible()
+    expect(copyDocument).toHaveBeenCalledTimes(2)
   })
 })

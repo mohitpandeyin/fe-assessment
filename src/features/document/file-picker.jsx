@@ -1,13 +1,15 @@
 export function FilePicker({
   children,
   disabled = false,
+  icon: Icon,
   inputRef,
   onChange,
+  size = 'default',
   variant = 'secondary',
 }) {
   return (
     <label
-      className={`button button--${variant} file-picker`}
+      className={`button button--${variant} button--${size} file-picker`}
       data-disabled={disabled || undefined}
     >
       <input
@@ -19,6 +21,7 @@ export function FilePicker({
         onChange={onChange}
         type="file"
       />
+      {Icon ? <Icon aria-hidden="true" size={16} strokeWidth={1.8} /> : null}
       <span aria-hidden="true">{children}</span>
     </label>
   )

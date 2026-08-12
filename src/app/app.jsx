@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef } from 'react'
 
+import { ToastProvider } from '../components/toast/toast-provider.jsx'
 import {
   documentReducer,
   initialDocumentState,
@@ -7,12 +8,15 @@ import {
 import { DocumentWorkspace } from '../features/document/document-workspace.jsx'
 import { UploadPanel } from '../features/document/upload-panel.jsx'
 import { loadMarkdownDocument } from '../lib/files/load-markdown-document.js'
+import { GlobalHeader } from './global-header.jsx'
 import './app.css'
 
-export function App() {
+function PlainmarkApp() {
   const [state, dispatch] = useReducer(documentReducer, initialDocumentState)
   const chooseInputRef = useRef(null)
+  const documentNameRef = useRef(null)
   const intakePendingRef = useRef(false)
+  const restoreDocumentFocusRef = useRef(false)
   const restoreChooseFocusRef = useRef(false)
 
   useEffect(() => {
@@ -22,18 +26,28 @@ export function App() {
     }
   }, [state.status])
 
+  useEffect(() => {
+    if (state.status === 'ready' && restoreDocumentFocusRef.current) {
+      restoreDocumentFocusRef.current = false
+      documentNameRef.current?.focus()
+    }
+  }, [state.status, state.activeDocument])
+
   async function handleFiles(files) {
     if (intakePendingRef.current || !files || files.length === 0) {
       return
     }
 
     intakePendingRef.current = true
+    const isReplacement = Boolean(state.activeDocument)
     dispatch({ type: 'read-started' })
 
     try {
       const document = await loadMarkdownDocument(files)
+      restoreDocumentFocusRef.current = isReplacement
       dispatch({ type: 'read-succeeded', document })
     } catch (error) {
+      restoreDocumentFocusRef.current = false
       dispatch({
         type: 'read-failed',
         message:
@@ -58,21 +72,12 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <header className="global-header">
-        <div className="flex items-center gap-3">
-          <span className="brand-mark" aria-hidden="true">
-            P
-          </span>
-          <span className="font-semibold">Plainmark</span>
-        </div>
-        <span className="text-xs text-ink-on-dark">
-          {state.activeDocument ? 'Local file' : 'Processed locally'}
-        </span>
-      </header>
+      <GlobalHeader hasDocument={Boolean(state.activeDocument)} />
 
       {state.activeDocument ? (
         <DocumentWorkspace
           document={state.activeDocument}
+          documentNameRef={documentNameRef}
           error={state.error}
           isReplacing={state.status === 'replacing'}
           onDismissError={() => dispatch({ type: 'error-dismissed' })}
@@ -90,5 +95,13 @@ export function App() {
         />
       )}
     </div>
+  )
+}
+
+export function App() {
+  return (
+    <ToastProvider>
+      <PlainmarkApp />
+    </ToastProvider>
   )
 }

@@ -1,0 +1,21 @@
+.inline-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, white);
+  border-radius: 0.625rem;
+  padding: 0.875rem 0.875rem 0.875rem 1rem;
+  background: var(--danger-soft);
+  color: var(--ink);
+}
+
+.inline-alert__icon {
+  flex: 0 0 auto;
+  margin-top: 0.125rem;
+  color: var(--danger);
+}
+
+.inline-alert__content {
+  min-width: 0;
+  flex: 1;
+}

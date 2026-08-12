@@ -1,0 +1,46 @@
+.dialog-sheet {
+  width: min(100%, 36rem);
+  max-width: none;
+  margin: auto 0 0 auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.dialog-sheet::backdrop {
+  background: rgb(15 23 42 / 45%);
+  backdrop-filter: blur(2px);
+}
+
+.dialog-sheet__panel {
+  max-height: min(85dvh, 44rem);
+  overflow-y: auto;
+  border-radius: 1rem 1rem 0 0;
+  background: var(--surface);
+  box-shadow: 0 -16px 48px rgb(15 23 42 / 18%);
+}
+
+.dialog-sheet__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  min-height: 3.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.625rem 1rem;
+  background: var(--surface);
+}
+
+.dialog-sheet__content {
+  padding: 1.25rem;
+}
+
+@media (min-width: 64rem) {
+  .dialog-sheet {
+    display: none;
+  }
+}

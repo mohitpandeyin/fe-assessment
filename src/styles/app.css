@@ -1,4 +1,8 @@
 @import "tailwindcss";
 @import "./theme.css";
 @import "./base.css";
+@import "../components/button/button.css";
+@import "../components/dialog/dialog.css";
+@import "../components/inline-alert/inline-alert.css";
+@import "../components/toast/toast.css";
 @import "../features/markdown/markdown.css";
