@@ -1,5 +1,6 @@
 import { FileDetails } from './file-details.jsx'
 import { FilePicker } from './file-picker.jsx'
+import { MarkdownDocument } from '../markdown/markdown-document.jsx'
 
 export function DocumentWorkspace({
   document,
@@ -30,7 +31,7 @@ export function DocumentWorkspace({
           </FilePicker>
         </header>
 
-        <div className="mx-auto max-w-3xl px-5 py-10 sm:px-10">
+        <div className="document-surface mx-auto max-w-4xl px-5 py-10 sm:px-10">
           {error ? (
             <div className="inline-alert mb-6" role="alert">
               <div>
@@ -47,21 +48,10 @@ export function DocumentWorkspace({
             </div>
           ) : null}
 
-          <section className="foundation-placeholder">
-            <p className="text-sm font-semibold text-accent">File ready</p>
-            <h2 className="mt-3 text-2xl font-semibold">
-              Document loaded successfully
-            </h2>
-            <p className="mt-3 leading-7 text-ink-secondary">
-              Markdown rendering begins in Phase 3. The source is already held
-              locally and ready for the renderer.
-            </p>
-            {document.source.length === 0 ? (
-              <p className="mt-5 text-sm text-ink-muted">
-                This Markdown file is empty.
-              </p>
-            ) : null}
-          </section>
+          <MarkdownDocument
+            resetKey={document.file}
+            source={document.source}
+          />
         </div>
       </section>
     </main>

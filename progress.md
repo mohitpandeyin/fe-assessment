@@ -4,9 +4,9 @@
 
 **Last updated:** 2026-08-12
 
-**Overall status:** Phase 2 complete and validated; awaiting Phase 3 approval
+**Overall status:** Phase 3 complete and validated; awaiting Phase 4 approval
 
-**Current phase:** Phase 2 exit gate
+**Current phase:** Phase 3 exit gate
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -64,13 +64,13 @@ No implementation task may silently override a higher-priority source. If a requ
 
 | Area | Validated baseline | Status |
 |---|---|---|
-| Git | Implementation branch `v1` tracks `origin/v1`; Phase 1 and Phase 2 changes are not yet committed | `[-]` |
+| Git | Implementation branch `v1`; implementation is checkpointed through Phase 3 and the local branch is ahead of `origin/v1` | `[x]` |
 | Remote | `https://github.com/mohitpandeyin/fe-assessment.git` | `[x]` |
 | Git identity | `mohitpandeyin` / `mohitpandey411@gmail.com` | `[x]` |
-| Commit history | Documentation/progress commits exist; Phase 1 and Phase 2 implementation is currently uncommitted | `[-]` |
-| Application source | React foundation plus local document lifecycle, picker/drop intake, metadata, replacement, reset, and recovery UI exist | `[x]` Phases 1-2 |
+| Commit history | Documentation/progress commits plus implementation checkpoints through Phase 3 exist | `[x]` |
+| Application source | React foundation, complete local document lifecycle, and safe semantic GFM document preview exist | `[x]` Phases 1-3 |
 | Package/build setup | npm manifest/lockfile, Vite React config, Tailwind Vite plugin, and HTML entry point exist | `[x]` Phase 1 |
-| Tests | Vitest/jsdom/Testing Library cover application intake flows, reducer invariants, validation, reading, metadata, and the composed loader | `[x]` 6 files / 23 tests |
+| Tests | Vitest/jsdom/Testing Library cover intake, reducer invariants, file utilities, URL policy, required/malformed/optional Markdown, safety, overflow semantics, and recovery | `[x]` 8 files / 32 tests |
 | Deployment | No hosting configuration or deployed URL recorded | `[x]` Confirmed absent |
 | Root README | No implementation/setup README exists at repository root | `[x]` Confirmed absent |
 | Requirements | Two-page assignment PDF and representative Markdown fixture are present | `[x]` |
@@ -81,10 +81,11 @@ No implementation task may silently override a higher-priority source. If a requ
 ### 3.2 Implementation baseline
 
 - Phase 1 establishes a reproducible React/Vite/Tailwind foundation.
-- Phase 2 establishes the complete one-document local intake lifecycle. Markdown presentation intentionally remains a Phase 3 placeholder.
+- Phase 2 establishes the complete one-document local intake lifecycle.
+- Phase 3 establishes safe semantic GFM rendering, conservative URL/image behavior, localized recovery, and the authored Markdown presentation system.
 - There was no pre-existing application functionality to preserve or migrate.
 - The repository now installs cleanly from `package-lock.json`, lints, tests, builds, and serves locally.
-- The visible application includes practical empty and loaded lifecycle surfaces, but final Direction C composition and responsive refinements remain Phase 4 work.
+- The visible application includes practical empty/loaded lifecycle surfaces and the complete document preview, but final Direction C composition and responsive file-detail refinements remain Phase 4 work.
 - `tmp/` is ignored and contains only local PDF inspection artifacts; it is not part of the product.
 - Existing documentation continues to govern the new foundation and all later implementation.
 
@@ -139,8 +140,6 @@ Required syntax must receive explicit tests. Optional syntax must degrade to rea
 
 The remaining implementation areas are:
 
-- Markdown parser integration and semantic renderers.
-- Content typography, overflow, responsive rules, and safe link/image behavior.
 - Final Direction C composition, mobile file details, and refined loading/drag/error presentation.
 - Responsive file-details sidebar/sheet.
 - Custom Button, Dialog/Sheet, Toast, and InlineAlert primitives.
@@ -166,13 +165,13 @@ The remaining implementation areas are:
 |---|---|---|
 | Framework/build | Vite + React + JavaScript/JSX | Installed and validated |
 | Styling | Tailwind CSS through the Vite integration plus authored CSS | Installed and validated |
-| Markdown | `react-markdown` + `remark-gfm` | Installed; integration begins in Phase 3 |
+| Markdown | `react-markdown` + `remark-gfm` | Integrated and validated in Phase 3 |
 | Icons | `lucide-react` | Installed; usage begins with product UI |
 | State | React state/reducer; no external state library | Approved |
 | Dialog/sheet | Project-owned wrapper around native `<dialog>` | Approved |
 | Toast | Small project-owned context queue/live region | Approved |
 | Clipboard | Browser Async Clipboard API with multi-representation `ClipboardItem` and plain-text fallback | Required |
-| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | Foundation configured |
+| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | 8 files / 32 tests plus browser checks |
 | Backend/storage | None | Required constraint |
 
 ### 5.2 Proposed source boundaries
@@ -276,7 +275,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | 0. Validation and plan approval | Establish verified baseline, reconcile requirements, and approve execution order | None | `[x]` |
 | 1. Project foundation | Create a runnable, testable React/Tailwind application skeleton | Phase 0 approval | `[x]` |
 | 2. Document lifecycle | Implement reliable local file intake and state transitions | Phase 1 | `[x]` |
-| 3. Markdown rendering | Implement safe semantic GFM rendering and content presentation | Phases 1-2 | `[ ]` |
+| 3. Markdown rendering | Implement safe semantic GFM rendering and content presentation | Phases 1-2 | `[x]` |
 | 4. Product UI and responsive states | Build the locked Direction C shell and complete interactions | Phases 2-3 | `[ ]` |
 | 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[ ]` |
 | 6. Integration hardening | Validate accessibility, responsiveness, security, performance, and compatibility | Phases 2-5 | `[ ]` |
@@ -446,34 +445,38 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P3.1 Integrate `react-markdown` with `remark-gfm`; keep raw HTML execution disabled.
-- `[ ]` P3.2 Preserve semantic `h1`-`h6`, paragraphs, emphasis, deletion, ordered/unordered/nested/task lists, blockquotes, tables, links, inline code, code blocks, and horizontal rules.
-- `[ ]` P3.3 Add custom renderers only for behavior: safe links, table overflow wrapper, inline-versus-block code distinction, read-only task inputs, and conservative image fallback.
-- `[ ]` P3.4 Implement safe URL handling and reject dangerous schemes.
-- `[ ]` P3.5 Block automatic remote-image fetching in v1; expose useful alt text and a safe link when applicable.
-- `[ ]` P3.6 Build `markdown.css` with explicit typography, hierarchy, spacing, table borders/alignment, list rhythm, blockquote treatment, and code presentation.
-- `[ ]` P3.7 Contain wide tables and code blocks; wrap long URLs/inline tokens without page-level horizontal overflow.
-- `[ ]` P3.8 Ensure optional sample syntax degrades readably: admonitions as normal blockquotes/text, math as literal text, definition-list syntax as readable paragraphs, and comments according to parser behavior.
-- `[ ]` P3.9 Add a localized rendering failure boundary/recovery path if the integration can throw outside parser recovery.
-- `[ ]` P3.10 Create focused fixtures and assertions for every required element, combinations, malformed boundaries, Unicode, long tokens, and table alignment.
-- `[ ]` P3.11 Render the complete open test case and record any intentional optional-syntax limitations.
+- `[x]` P3.1 Integrate `react-markdown` with `remark-gfm`; keep raw HTML execution disabled.
+- `[x]` P3.2 Preserve semantic `h1`-`h6`, paragraphs, emphasis, deletion, ordered/unordered/nested/task lists, blockquotes, tables, links, inline code, code blocks, and horizontal rules.
+- `[x]` P3.3 Add custom renderers only for behavior: safe links, table overflow wrapper, inline-versus-block code distinction, read-only task inputs, and conservative image fallback.
+- `[x]` P3.4 Implement safe URL handling and reject dangerous schemes.
+- `[x]` P3.5 Block automatic remote-image fetching in v1; expose useful alt text and a safe link when applicable.
+- `[x]` P3.6 Build `markdown.css` with explicit typography, hierarchy, spacing, table borders/alignment, list rhythm, blockquote treatment, and code presentation.
+- `[x]` P3.7 Contain wide tables and code blocks; wrap long URLs/inline tokens without page-level horizontal overflow.
+- `[x]` P3.8 Ensure optional sample syntax degrades readably: admonitions as normal blockquotes/text, math as literal text, definition-list syntax as readable paragraphs, and comments according to parser behavior.
+- `[x]` P3.9 Add a localized rendering failure boundary/recovery path if the integration can throw outside parser recovery.
+- `[x]` P3.10 Create focused fixtures and assertions for every required element, combinations, malformed boundaries, Unicode, long tokens, and table alignment.
+- `[x]` P3.11 Render the complete open test case and record any intentional optional-syntax limitations.
 
 **Implementation approach:** One semantic React rendering pipeline drives the preview. Avoid class strings on every Markdown element; render inside `.markdown-document` and style descendants in authored CSS. Do not enable raw HTML or optional plugins for visual novelty.
 
 **Validation/testing:**
 
-- Semantic DOM assertions for every required element.
-- Combined inline formatting and nested list assertions.
-- Table alignment, headers, dense/wide tables, and contained overflow.
-- Known/unknown/absent code language labels without rendering failure.
-- Malformed/unclosed emphasis, links, tables, lists, and code fences remain usable.
-- Remote/relative/unsafe image and link sources produce safe readable behavior.
-- Complete open test case renders without an uncaught exception.
-- Mobile width and 200% zoom show no document-level horizontal overflow.
+- `[x]` Semantic DOM assertions cover every required block and inline element, combined formatting, nested/mixed/task lists, and horizontal rules.
+- `[x]` GFM table headers, alignment, dense/wide structure, and focusable overflow wrappers are asserted.
+- `[x]` Known, unknown, and absent code-language classes render without failure; exact code whitespace remains preserved in the DOM.
+- `[x]` Malformed/unclosed emphasis, links, tables, lists, and code fences remain readable without an uncaught exception.
+- `[x]` External links are isolated; relative and dangerous links become inert readable text.
+- `[x]` Remote and local images create alt-text fallbacks without an `<img>` request; safe remote sources remain available as isolated links.
+- `[x]` Math, definition-list-like syntax, and admonitions remain readable; raw HTML/comments are omitted and never execute.
+- `[x]` The complete `requirements/open_test_case.md` fixture renders two semantic tables, four code blocks, tasks, nested lists, links, Unicode, and optional literal syntax without a localized error.
+- `[x]` Real-browser desktop review found no document-level horizontal overflow and no console warnings/errors.
+- `[x]` Narrow reflow review at 582 CSS px found no page overflow; wide tables/code scrolled internally, the long unbroken token wrapped, and the sidebar breakpoint applied. This is narrower than the 955 CSS px equivalent of 200% zoom from the reviewed 1910 px desktop viewport; full cross-browser zoom remains a Phase 6 gate.
+- `[x]` `npm run test:run`: 8 files and 32 tests passed.
+- `[x]` `npm run lint`, `npm run build`, and `git diff --check` passed.
 
 **Expected outcome:** A safe, complete, and polished document surface independent of the final application chrome.
 
-**Exit gate:** Required-element and resilience suites pass; open test case is manually reviewed.
+**Exit gate:** Passed on 2026-08-12. Phase 4 requires explicit approval.
 
 ---
 
@@ -664,9 +667,9 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 |---|---|---|---|
 | Requirements traceability | Task/requirement mapping in plan and tests | Compare final product to assignment PDF | Planning complete; product pending |
 | File intake | 6 files / 23 tests across utilities, reducer, and application flows | Picker, replace failure, metadata, reset/focus, and console smoke test | `[x]` Phase 2 |
-| Required Markdown | Semantic DOM assertions | Full fixture visual review | `[ ]` |
-| Malformed Markdown | Parser/component resilience cases | Open malformed fixtures | `[ ]` |
-| Responsive content | Component assertions where useful | Mobile/tablet/desktop/200% zoom | `[ ]` |
+| Required Markdown | Semantic DOM coverage for required/GFM elements and complete fixture | Complete fixture desktop visual review | `[x]` Phase 3 |
+| Malformed Markdown | Malformed boundary, localized recovery, and raw-HTML safety tests | Complete representative fixture reviewed | `[x]` Phase 3 |
+| Responsive content | Focusable overflow semantics and long-token fixtures | Desktop and narrow 582 px reflow; final browser/zoom matrix remains Phase 6 | `[-]` Phase 3 baseline complete |
 | Accessibility | Testing Library and automated checker where practical | Keyboard, focus, contrast, announcements | `[ ]` |
 | Clipboard formats | Serializer and capability mocks | Inspect/paste real clipboard | `[ ]` |
 | Word/Docs/Notion paste | Structural serializer assertions | Paste complete fixture into each destination | `[ ]` |
@@ -700,14 +703,18 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Real filename, type, size, and Unicode-aware approximate word-count metadata implemented.
 - `[x]` Safe replacement, cancellation, duplicate-action guard, empty-file handling, Start over, and focus restoration implemented.
 - `[x]` Phase 2 automated, production-build, performance, and real-browser validation completed.
+- `[x]` Safe `react-markdown` + GFM semantic preview integrated with raw HTML disabled.
+- `[x]` Explicit Markdown typography, hierarchy, lists, quotes, code, tables, task states, rules, links, and media fallbacks implemented in authored CSS/components.
+- `[x]` Safe URL policy, external-link isolation, inert local/unsafe links, and privacy-first non-fetching image fallbacks implemented.
+- `[x]` Focusable table/code overflow, long-token containment, empty content, and localized render recovery implemented.
+- `[x]` Required, malformed, optional, safety, complete-fixture, desktop, and narrow-width Phase 3 validation completed.
 
 ## 11. In-progress work
 
-- `[!]` Phase 2 exit gate: awaiting approval to begin Markdown rendering in Phase 3.
+- `[!]` Phase 3 exit gate: awaiting approval to begin final Direction C product UI work in Phase 4.
 
 ## 12. Pending work
 
-- `[ ]` Phase 3 - Markdown semantics and presentation.
 - `[ ]` Phase 4 - Direction C application UI and responsive states.
 - `[ ]` Phase 5 - portable rich clipboard export.
 - `[ ]` Phase 6 - integrated quality hardening.
@@ -717,7 +724,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ### Active blocker
 
-- No technical blocker. Phase 3 is intentionally paused at the approval gate.
+- No technical blocker. Phase 4 is intentionally paused at the approval gate.
 
 ### Open decisions to finalize during planned phases
 
@@ -759,10 +766,12 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 15. Phase 1 uses React 19.2.8, Vite 8.2.1, Tailwind CSS 4.3.3, Vitest 4.1.10, and ESLint 10.8.1 on the documented Node engine range.
 16. Phase 2 accepts one `.md` or `.markdown` file up to and including 5 MB. Intake-only benchmarks were fast at that boundary, while full Markdown parse/render responsiveness remains subject to Phase 6 validation.
 17. The active document is committed only after validation and reading succeed; failed replacement never discards the previous valid document.
+18. Phase 3 uses custom Markdown components only where behavior differs from native semantics: safe links, conservative image fallbacks, read-only tasks, and focusable table/code overflow wrappers.
+19. Unsupported representative syntax remains intentionally literal/readable: admonitions are ordinary blockquotes, math is text, definition lists become paragraphs, raw HTML/comments are omitted, and syntax highlighting is deferred.
 
 ## 15. Next steps
 
-1. Obtain approval to begin Phase 3.
-2. Integrate safe semantic GFM rendering with raw HTML disabled.
-3. Build and validate the content typography, overflow rules, safe link/image behavior, required-element fixtures, and malformed-input coverage.
-4. Stop at the Phase 3 exit gate before final Direction C composition work.
+1. Obtain approval to begin Phase 4.
+2. Complete the Direction C empty and loaded shells using the working lifecycle and Markdown systems.
+3. Add responsive/mobile file details, refined interaction states, accessible alerts/toasts, and focus behavior.
+4. Stop at the Phase 4 exit gate before implementing clipboard export.

@@ -15,7 +15,7 @@ describe('App', () => {
     await user.upload(screen.getByLabelText('Choose file'), file)
 
     expect(
-      await screen.findByRole('heading', { name: 'Document loaded successfully' }),
+      await screen.findByRole('heading', { name: 'Hello world', level: 1 }),
     ).toBeInTheDocument()
     expect(
       screen.getByRole('heading', { name: 'notes.md' }),
@@ -86,7 +86,11 @@ describe('App', () => {
     const input = screen.getByLabelText('Choose file')
 
     await user.upload(input, new File([], 'empty.md'))
-    expect(await screen.findByText('This Markdown file is empty.')).toBeVisible()
+    expect(
+      await screen.findByRole('heading', {
+        name: 'This Markdown file is empty',
+      }),
+    ).toBeVisible()
 
     await user.upload(
       screen.getByLabelText('Replace'),
@@ -95,7 +99,9 @@ describe('App', () => {
     expect(
       await screen.findByRole('heading', { name: 'replacement.md' }),
     ).toBeInTheDocument()
-    expect(screen.queryByText('This Markdown file is empty.')).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'This Markdown file is empty' }),
+    ).not.toBeInTheDocument()
   })
 
   it('leaves the empty state unchanged when file selection is cancelled', () => {
