@@ -1,6 +1,6 @@
 import { FileIntakeError } from './file-intake-error.js'
 
-export const MAX_MARKDOWN_FILE_SIZE = 5 * 1024 * 1024
+export const MAX_MARKDOWN_FILE_SIZE = 1024 * 1024
 
 const MARKDOWN_EXTENSION_PATTERN = /\.(md|markdown)$/i
 
@@ -37,7 +37,7 @@ export function validateMarkdownFiles(files) {
   if (file.size > MAX_MARKDOWN_FILE_SIZE) {
     throw new FileIntakeError(
       'file-too-large',
-      'Choose a Markdown file that is 5 MB or smaller.',
+      'Choose a Markdown file that is 1 MB or smaller.',
     )
   }
 

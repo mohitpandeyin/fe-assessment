@@ -51,6 +51,7 @@ export function UploadPanel({
         </p>
 
         <div
+          aria-busy={isReading || undefined}
           className="upload-panel mt-8"
           data-dragging={isDragging || undefined}
           onDragEnter={handleDragEnter}
@@ -61,7 +62,7 @@ export function UploadPanel({
           <span className="upload-panel__icon" aria-hidden="true">
             <FileText size={30} strokeWidth={1.6} />
           </span>
-          <p className="text-xl font-semibold">
+          <p aria-live="polite" className="text-xl font-semibold">
             {isReading
               ? 'Preparing preview…'
               : isDragging
@@ -81,7 +82,7 @@ export function UploadPanel({
             {isReading ? 'Preparing…' : 'Choose file'}
           </FilePicker>
           <p className="mt-4 text-xs text-ink-muted">
-            Supports .md and .markdown files up to 5 MB.
+            Supports .md and .markdown files up to 1 MB.
           </p>
         </div>
 

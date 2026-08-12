@@ -13,6 +13,12 @@ describe('validateMarkdownFiles', () => {
     expect(validateMarkdownFiles([new File([], 'empty.md')]).size).toBe(0)
   })
 
+  it('accepts a file exactly at the one-megabyte boundary', () => {
+    const file = { name: 'boundary.md', size: 1024 * 1024 }
+
+    expect(validateMarkdownFiles([file])).toBe(file)
+  })
+
   it('rejects missing, multiple, unsupported, and oversized inputs', () => {
     expect(() => validateMarkdownFiles([])).toThrow(
       'Choose one Markdown file to continue.',
@@ -28,8 +34,8 @@ describe('validateMarkdownFiles', () => {
     ).toThrow('Choose a file ending in .md or .markdown.')
     expect(() =>
       validateMarkdownFiles([
-        { name: 'large.md', size: 5 * 1024 * 1024 + 1 },
+        { name: 'large.md', size: 1024 * 1024 + 1 },
       ]),
-    ).toThrow('Choose a Markdown file that is 5 MB or smaller.')
+    ).toThrow('Choose a Markdown file that is 1 MB or smaller.')
   })
 })

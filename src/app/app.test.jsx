@@ -142,6 +142,11 @@ describe('App', () => {
     fireEvent.drop(dropZone, { dataTransfer: { files: [slowFile] } })
     fireEvent.drop(dropZone, { dataTransfer: { files: [ignoredFile] } })
 
+    expect(dropZone).toHaveAttribute('aria-busy', 'true')
+    expect(screen.getByText('Preparing preview…')).toHaveAttribute(
+      'aria-live',
+      'polite',
+    )
     expect(screen.getByLabelText('Preparing…')).toBeDisabled()
 
     await act(async () => finishReading('# Slow'))
@@ -172,6 +177,13 @@ describe('App', () => {
 
     await user.click(
       screen.getByRole('button', { name: 'Close file details' }),
+    )
+    expect(trigger).toHaveFocus()
+
+    await user.click(trigger)
+    fireEvent(
+      screen.getByRole('dialog', { name: 'File details' }),
+      new Event('cancel', { cancelable: true }),
     )
     expect(trigger).toHaveFocus()
   })

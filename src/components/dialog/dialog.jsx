@@ -37,12 +37,17 @@ export function Dialog({ children, onClose, open, title }) {
     }
   }
 
+  function handleCancel(event) {
+    event.preventDefault()
+    onClose()
+  }
+
   return (
     <dialog
       ref={dialogRef}
       aria-labelledby={titleId}
       className="dialog-sheet"
-      onCancel={onClose}
+      onCancel={handleCancel}
       onClick={handleBackdropClick}
       onClose={handleDialogClose}
     >

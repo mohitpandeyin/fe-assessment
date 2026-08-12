@@ -38,9 +38,3 @@
 .dialog-sheet__content {
   padding: 1.25rem;
 }
-
-@media (min-width: 64rem) {
-  .dialog-sheet {
-    display: none;
-  }
-}

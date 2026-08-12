@@ -6,7 +6,7 @@
 
 **Overall status:** Implementation in progress
 
-**Current phase:** Phase 5 validation checkpoint - local testing before Phase 6 hardening
+**Current phase:** Phase 7 - release documentation and deployment
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -64,13 +64,13 @@ No implementation task may silently override a higher-priority source. If a requ
 
 | Area | Validated baseline | Status |
 |---|---|---|
-| Git | Implementation branch `v1`; committed checkpoints exist through Phase 3 and the Phase 4-5 working changes are awaiting the local-test checkpoint | `[x]` |
+| Git | Implementation branch `v1`; Phase 4-5 is committed and pushed at `cd27130`; Phase 6 hardening changes are local and uncommitted | `[x]` |
 | Remote | `https://github.com/mohitpandeyin/fe-assessment.git` | `[x]` |
 | Git identity | `mohitpandeyin` / `mohitpandey411@gmail.com` | `[x]` |
-| Commit history | Documentation/progress commits plus implementation checkpoints through Phase 3 exist | `[x]` |
-| Application source | Complete local document lifecycle, safe semantic GFM preview, Direction C shell, reusable feedback components, and rich clipboard export exist | `[x]` Phases 1-4; Phase 5 implementation complete |
+| Commit history | Documentation/progress commits plus implementation checkpoints through Phase 5 exist | `[x]` |
+| Application source | Complete local document lifecycle, safe semantic GFM preview, Direction C shell, reusable feedback components, and rich clipboard export exist | `[x]` Phases 1-5 |
 | Package/build setup | npm manifest/lockfile, Vite React config, Tailwind Vite plugin, and HTML entry point exist | `[x]` Phase 1 |
-| Tests | Vitest/jsdom/Testing Library cover intake, reducer invariants, file utilities, rendering/safety, responsive UI interactions, serializers, clipboard capabilities/fallbacks, and feedback | `[x]` 11 files / 43 tests |
+| Tests | Vitest/jsdom/Testing Library cover intake, reducer invariants, file utilities, rendering/safety, responsive UI interactions, serializers, clipboard capabilities/fallbacks, feedback, and a realistic 1 MB rendering boundary | `[x]` 12 files / 45 tests |
 | Deployment | No hosting configuration or deployed URL recorded | `[x]` Confirmed absent |
 | Root README | No implementation/setup README exists at repository root | `[x]` Confirmed absent |
 | Requirements | Two-page assignment PDF and representative Markdown fixture are present | `[x]` |
@@ -87,6 +87,8 @@ No implementation task may silently override a higher-priority source. If a requ
 - The repository now installs cleanly from `package-lock.json`, lints, tests, builds, and serves locally.
 - The visible application now implements the approved Direction C empty and loaded states, desktop file-details sidebar, responsive mobile details sheet, document toolbar, status feedback, and complete preview.
 - Rich copy now exports portable HTML and semantic plain text together, adds exact source Markdown only when the browser supports that MIME type, retries without Markdown when necessary, and falls back to plain text.
+- Phase 6 has corrected muted-text/focus contrast, mobile target sizing, loading announcements, and a dialog resize trap found during real-browser review.
+- The v1 file limit is now 1 MB inclusive, aligned with the PRD performance boundary and measured complete-render behavior rather than intake speed alone.
 - `tmp/` is ignored and contains only local PDF inspection artifacts; it is not part of the product.
 - Existing documentation continues to govern the new foundation and all later implementation.
 
@@ -168,7 +170,7 @@ The remaining implementation and validation areas are:
 | Dialog/sheet | Project-owned wrapper around native `<dialog>` | Approved |
 | Toast | Small project-owned context queue/live region | Approved |
 | Clipboard | Browser Async Clipboard API with multi-representation `ClipboardItem` and plain-text fallback | Required |
-| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | 11 files / 43 tests plus browser checks |
+| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | 12 files / 45 tests plus browser checks |
 | Backend/storage | None | Required constraint |
 
 ### 5.2 Proposed source boundaries
@@ -258,7 +260,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 |---|---|---|
 | Package manager | `npm`, because no lockfile or repository preference exists | Phase 1 scaffold |
 | File extensions | Accept `.md` and `.markdown`; reject others with clear feedback | Phase 2 |
-| File size policy | Accept files up to and including 5 MB. Phase 2 intake measured about 5.46 ms at 1 MB and 29.52 ms at 5 MB; complete rendering is rechecked in Phase 6 | Finalized in Phase 2 |
+| File size policy | Accept files up to and including 1 MB. Phase 6 measured a realistic exact-boundary document at about 1.13 seconds end-to-end; structurally pathological input was substantially slower | Revised and finalized in Phase 6 |
 | Browser support | Current stable Chromium, Firefox, and Safari; rich clipboard is capability-based | Phase 6 |
 | Remote images | Block automatic fetch; show alt text and safe link | Already documented |
 | Fonts | Start with robust system stacks; add bundled/Fontsource Inter and JetBrains Mono only if visual review justifies the cost | Phase 4 |
@@ -274,8 +276,8 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | 2. Document lifecycle | Implement reliable local file intake and state transitions | Phase 1 | `[x]` |
 | 3. Markdown rendering | Implement safe semantic GFM rendering and content presentation | Phases 1-2 | `[x]` |
 | 4. Product UI and responsive states | Build the locked Direction C shell and complete interactions | Phases 2-3 | `[x]` |
-| 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[-]` Implementation and automated validation complete; destination paste matrix pending |
-| 6. Integration hardening | Validate accessibility, responsiveness, security, performance, and compatibility | Phases 2-5 | `[ ]` |
+| 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[x]` Google Docs core acceptance approved; remaining destinations tracked in Phase 6 |
+| 6. Integration hardening | Validate accessibility, responsiveness, security, performance, and compatibility | Phases 2-5 | `[x]` |
 | 7. Release and delivery | Complete documentation, production build, deployment, and handoff | Phase 6 | `[ ]` |
 
 ### 7.1 Requirements-to-phase traceability
@@ -417,7 +419,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` `npm run test:run`: 6 files and 23 tests passed.
 - `[x]` `npm run lint`, `npm run build`, and `git diff --check` passed.
 - `[x]` Real-browser smoke test loaded `requirements/open_test_case.md`, displayed 8.5 KB and 1,204 words, preserved it after an invalid replacement, reset with picker focus, and produced no console warnings/errors.
-- `[x]` Five-run intake benchmark: 1 MB averaged 5.46 ms; 5 MB averaged 29.52 ms on the development machine. The v1 hard limit is 5 MB inclusive; full parse/render performance remains a Phase 6 gate.
+- `[x]` Phase 2 intake benchmark: 1 MB averaged 5.46 ms and 5 MB averaged 29.52 ms on the development machine. Phase 6 later showed that intake speed did not represent complete rendering cost and superseded the initial 5 MB limit with a 1 MB boundary.
 
 **Expected outcome:** A fully testable local document lifecycle independent of Markdown presentation.
 
@@ -572,7 +574,9 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Permission denial and unavailable APIs produce recoverable, actionable feedback.
 - `[x]` Real-browser localhost copy produced the **Document copied** success state.
 - `[x]` Manual full-document paste into Google Docs preserved the complete document, editable heading hierarchy and outline, paragraphs, emphasis, lists, tables, code content/whitespace, inline code, links, and rules.
-- `[ ]` Manual full-document paste into Word/Word Online, Notion, and a plain-text editor remains pending.
+- `[x]` Manual full-document paste into Microsoft Word preserved complete content, native heading recognition/navigation, editable tables, list hierarchy, emphasis, links, code content/whitespace, task markers, and final references.
+- `[x]` Manual full-document paste into Notion preserved complete content, semantic hierarchy, editable tables, code, lists, links, blockquotes, and task completion states.
+- `[x]` VS Code Plain Text preserved the complete semantic fallback through the final line, including quote/rule markers, ordered/unordered/nested lists, task states, exact code whitespace, explicit link targets, and tab-separated table rows. TextEdit's separate HTML-derived normalization is documented below.
 
 #### Google Docs paste result - 2026-08-12
 
@@ -586,9 +590,48 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - Low-priority pagination findings: occasional orphaned headings, generous page whitespace, and a possible trailing blank page. Investigate in Phase 6 without adding brittle Google-Docs-specific markup.
 - Repeated outline content visible in the supplied long screenshot was assessed as fixed-sidebar screenshot stitching rather than duplicated main document content.
 
+#### Microsoft Word paste result - 2026-08-12
+
+- Core rich-paste acceptance passed with no observed content loss across the seven-page destination document.
+- Word recognized the heading levels as native heading styles and generated a complete, collapsible Navigation pane.
+- Ordered, unordered, and nested lists remained editable; bold, italic, strikethrough, inline code, and link styling remained distinguishable.
+- Tables remained structured and editable. Word split the first table across a page boundary, which is normal destination-controlled pagination rather than lost structure.
+- Code block content, indentation, and monospace presentation remained intact, while Word simplified the preview background, border, and some surrounding spacing.
+- Task items intentionally remained portable `[x]` and `[ ]` text markers.
+- Blockquote/note content remained complete even where Word normalized the decorative left rule.
+- Page breaks occasionally separated a heading/table row from adjacent content. Treat this as destination pagination and do not add brittle Word-specific page-break markup in v1.
+
+#### Notion paste result - 2026-08-12
+
+- Core rich-paste acceptance passed with no observed content loss from the title through the final reference content.
+- Heading hierarchy, paragraphs, ordered/unordered/nested lists, emphasis, strikethrough, links, blockquotes, rules, tables, code blocks, and inline code remained distinct and readable.
+- Tables remained structured, and code retained its monospaced presentation and whitespace.
+- Notion upgraded portable `[x]` and `[ ]` task markers into native interactive checkboxes while preserving their checked/unchecked states.
+- Notion applied destination-owned inline-code colors, spacing, and block styling. This is acceptable editor normalization and does not justify Notion-specific export markup.
+- Math delimiters and `[!NOTE]` text remained literal by the documented v1 scope.
+
+#### TextEdit plain-document result - 2026-08-12
+
+- The full document remained present and readable through the final paragraph; headings, paragraphs, code whitespace, list content, task states, URLs, and section order were retained.
+- The result did not match Plainmark's explicit plain-text serialization: the leading `>` quote markers, `---` rules, hyphen list markers, and tab-separated table rows were replaced by native HTML-to-text normalization, with table cells placed on separate lines.
+- The serializer's deterministic test still proves that its `text/plain` value contains quote prefixes, semantic list markers, and tab-delimited table rows. The supplied TextEdit result therefore indicates clipboard-flavor selection/conversion rather than loss inside the serializer.
+- Safari/WebKit treats earlier clipboard representations as higher fidelity and native macOS applications may use that order when selecting a representation. Plainmark intentionally puts HTML first so rich destinations retain document structure.
+- TextEdit is not accepted as the definitive plain-flavor check for this multi-representation clipboard. Validate the exact representation in a plain-only consumer such as a VS Code Plain Text file or with `pbpaste -Prefer txt`.
+- Do not reorder plain text ahead of HTML merely to influence TextEdit: that risks degrading the primary Google Docs, Word, and Notion rich-paste behavior. A separate **Copy as plain text** action is future scope if product requirements call for explicit flavor selection.
+
+#### VS Code plain-text result - 2026-08-12
+
+- Exact `text/plain` compatibility passed in a `.txt` file with VS Code explicitly reporting **Plain Text** mode.
+- The complete document was present from the title through the final paragraph with the expected section order and paragraph spacing.
+- Blockquotes retained `>` prefixes, horizontal rules retained `---`, ordered/unordered/nested lists retained semantic markers and indentation, and task states retained `[x]` / `[ ]` markers.
+- Both tables retained one row per line with tab-separated cells. Column alignment varies with tab stops and content width, which is normal and remains machine- and spreadsheet-friendly plain text.
+- JavaScript, Lua, shell, and YAML code retained line breaks and meaningful indentation.
+- Navigable links retained readable labels plus explicit URLs, while label-only references remained readable.
+- The result matches the serializer contract and resolves the TextEdit ambiguity without changing clipboard representation order or adding destination-specific code.
+
 **Expected outcome:** One reliable Copy document action with the richest portable result supported by the browser.
 
-**Exit gate:** Automated serializer/capability tests pass; the phase remains at its user-validation checkpoint until the destination paste matrix is recorded.
+**Exit gate:** Passed on 2026-08-12 after automated serializer/capability validation, real-browser rich copy, successful complete-document Google Docs paste, user review, commit, and push. Microsoft Word, Notion, and VS Code exact plain text subsequently passed as Phase 6 compatibility follow-ups.
 
 ---
 
@@ -602,33 +645,46 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P6.1 Run full unit/integration suite and remove flaky timing/state assumptions.
-- `[ ]` P6.2 Run ESLint and production build; resolve warnings and console errors.
-- `[ ]` P6.3 Perform keyboard-only workflow and focus restoration audit.
-- `[ ]` P6.4 Run automated accessibility checks where practical and manually verify landmarks, headings, labels, live regions, contrast, and overflow focus.
-- `[ ]` P6.5 Review mobile, tablet, desktop, wide desktop, 200% zoom, and reduced-motion behavior.
-- `[ ]` P6.6 Test current stable Chromium, Firefox, and Safari; record rich-copy capability differences.
-- `[ ]` P6.7 Test representative documents up to at least 1 MB and finalize file warning/limit policy from measured responsiveness.
-- `[ ]` P6.8 Verify malformed and adversarial Markdown cannot execute raw HTML, unsafe URL schemes, scripts, or event handlers.
-- `[ ]` P6.9 Verify no document content is uploaded, persisted, logged, or sent to analytics.
-- `[ ]` P6.10 Confirm failed replacement/copy never discards the current document.
-- `[ ]` P6.11 Review dependency necessity, bundle output, and optional feature gates.
-- `[ ]` P6.12 Record all known browser/editor limitations for the README.
+- `[x]` P6.1 Run full unit/integration suite and remove flaky timing/state assumptions.
+- `[x]` P6.2 Run ESLint and production build; resolve warnings and console errors.
+- `[x]` P6.3 Perform keyboard workflow and focus restoration audit for file selection, replacement, reset, copy, dialog close, and native cancel.
+- `[x]` P6.4 Verify landmarks, headings, labels, live regions, focus, overflow regions, and text/focus contrast; correct audited AA failures.
+- `[x]` P6.5 Review mobile, tablet, desktop, wide desktop, 200% reflow equivalent, and reduced-motion behavior. Core widths/reflow and reduced-motion CSS pass, with representative desktop rendering also approved in Safari and Firefox.
+- `[x]` P6.6 Test current stable Chromium, Firefox, and Safari; all three pass representative file loading/rendering, and Firefox/Safari rich clipboard delivery is confirmed through successful destination paste.
+- `[x]` P6.7 Test a realistic document at the exact 1 MB boundary and finalize the hard-size policy from measured responsiveness.
+- `[x]` P6.8 Verify malformed and adversarial Markdown cannot execute raw HTML, unsafe URL schemes, scripts, event handlers, or unsafe clipboard markup.
+- `[x]` P6.9 Verify source contains no upload, persistence, browser storage, analytics, logging, or document-network code.
+- `[x]` P6.10 Confirm failed replacement/copy never discards the current document.
+- `[x]` P6.11 Review dependency necessity, bundle output, vulnerability audit, and optional feature gates.
+- `[x]` P6.12 Record known browser/editor limitations here; transferring the verified matrix to the public README is tracked by Phase 7.
 
 **Implementation approach:** Fix defects at their owning layer rather than patching symptoms in page components. Treat browser clipboard differences and destination paste normalization as expected capability constraints with documented fallbacks.
 
 **Validation/testing:**
 
-- All automated tests, lint, and build pass from a clean install.
-- No serious core-flow accessibility findings.
-- No uncaught error for representative malformed input.
-- No page-level horizontal overflow at supported widths.
-- Required operations remain responsive for the documented file size.
-- Real browser and paste matrix results are recorded.
+- `[x]` All 12 test files / 45 tests, lint, production build, dependency audit, and diff checks pass; npm reports zero vulnerabilities.
+- `[x]` Muted text now exceeds 4.5:1 on light application surfaces; the focus indicator uses a 5.19:1 light-surface color.
+- `[x]` Compact controls become at least 44 px on touch layouts and the mobile details sheet stays visible and closable if the viewport widens while open.
+- `[x]` Loading uses `aria-busy` plus a polite live announcement; native dialog cancel is controlled and restores focus.
+- `[x]` No uncaught malformed-input errors and no browser warnings/errors for the complete fixture or exact-boundary performance fixture.
+- `[x]` 320 px, 390 px, 582 px, 640 px reflow-equivalent, desktop, and wide layouts retain element-owned table/code overflow.
+- `[x]` A realistic exact 1 MB document became usable in about 1.13 seconds end-to-end. The deterministic jsdom render stays below a 2-second CI ceiling.
+- `[x]` A pathological 1 MB input containing thousands of structured blocks took about 8.8 seconds and destabilized a subsequent tab operation; the v1 limit was reduced from 5 MB to 1 MB and the pathological case is documented.
+- `[x]` Production output is approximately 396 KB on disk: 372.13 KB JavaScript / 114.84 KB gzip and 26.70 KB CSS / 6.55 KB gzip.
+- `[x]` External compatibility matrix passes: Chromium, Firefox, and Safari rendering; Firefox/Safari rich clipboard delivery; VS Code exact plain text; and Google Docs, Microsoft Word, and Notion rich paste. TextEdit's HTML-derived plain result is documented as destination normalization.
+- `[x]` Tested desktop versions recorded on 2026-08-12: Google Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6. Brave 151.1.93.134 is installed but is not required for the supported-browser gate.
+
+#### Firefox rich-copy result - 2026-08-12
+
+- Firefox loaded and rendered the complete representative fixture without visible content, layout, table, code, link, sidebar, or overflow regressions.
+- A Firefox **Copy document** operation pasted into Google Docs as structured rich content, proving delivery of the HTML clipboard representation rather than only the plain-text fallback.
+- Google Docs retained the complete document, native heading hierarchy and outline, editable tables, lists, code content/whitespace, links, rules, and final paragraph.
+- Destination-controlled pagination and narrow table header wrapping match the already-approved Google Docs behavior and do not require Firefox-specific handling.
+- No Firefox-specific implementation or fallback change is required.
 
 **Expected outcome:** Release candidate satisfying assignment requirements and documented non-functional targets.
 
-**Exit gate:** All P0 acceptance criteria pass; remaining issues are explicitly non-blocking and documented.
+**Exit gate:** Passed on 2026-08-12. All P0 acceptance criteria, 12 test files / 45 tests, lint, production build, zero-vulnerability audit, representative responsiveness/accessibility/security/performance checks, supported-browser rendering, and destination clipboard checks pass. Remaining limitations are non-blocking and documented.
 
 ---
 
@@ -679,13 +735,14 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | File intake | 6 files / 23 tests across utilities, reducer, and application flows | Picker, replace failure, metadata, reset/focus, and console smoke test | `[x]` Phase 2 |
 | Required Markdown | Semantic DOM coverage for required/GFM elements and complete fixture | Complete fixture desktop visual review | `[x]` Phase 3 |
 | Malformed Markdown | Malformed boundary, localized recovery, and raw-HTML safety tests | Complete representative fixture reviewed | `[x]` Phase 3 |
-| Responsive content | Focusable overflow semantics and long-token fixtures | Desktop, 582 px reflow, and 390 x 844 product UI; final browser/zoom matrix remains Phase 6 | `[-]` Core widths pass |
-| Accessibility | Testing Library interaction/label/focus assertions | Keyboard, focus, contrast, announcements | `[-]` Core interactions pass; full audit pending |
-| Clipboard formats | Serializer and capability mocks | Real localhost rich-copy success; destination paste inspection pending | `[-]` Automated and browser write pass |
-| Word/Docs/Notion paste | Structural serializer assertions | Google Docs complete fixture passed; Word/Word Online and Notion pending | `[-]` |
-| Security/privacy | URL, raw-HTML, export sanitization, and fallback tests | Final network/storage inspection | `[-]` Automated controls pass |
-| Performance | Timed representative fixture checks where stable | 1 MB+ document responsiveness | `[ ]` |
-| Build/release | Lint, 43 tests, production build, diff check | Public deployment smoke test | `[-]` Local gates pass; deployment pending |
+| Responsive content | Focusable overflow semantics and long-token fixtures | 320/390/582/640 px reflow plus desktop/wide desktop; external browser matrix pending | `[-]` Core widths pass |
+| Accessibility | Testing Library interaction/label/focus assertions | Keyboard, focus, contrast, announcements, responsive dialog behavior | `[x]` Core WCAG audit passed |
+| Clipboard formats | Serializer and capability mocks | Real localhost rich-copy plus VS Code exact plain-text inspection passed | `[x]` |
+| Word/Docs/Notion paste | Structural serializer assertions | Google Docs, Microsoft Word, and Notion complete fixtures passed | `[x]` |
+| Browser compatibility | Capability-aware clipboard and interaction tests | Chromium, Safari, and Firefox rendering plus Safari/Firefox rich paste | `[x]` |
+| Security/privacy | URL, raw-HTML, export sanitization, and fallback tests | Network/storage/source inspection | `[x]` |
+| Performance | Exact-boundary validation and 1 MB render regression test | Realistic 1 MB about 1.13 s; pathological structure documented | `[x]` 1 MB v1 policy finalized |
+| Build/release | Lint, 45 tests, production build, audit, diff check | Public deployment smoke test | `[-]` Local gates pass; deployment pending |
 
 ## 10. Completed work
 
@@ -709,7 +766,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Vitest/jsdom/Testing Library configured with a passing smoke test.
 - `[x]` Clean npm install, development server, lint, tests, and production build validated.
 - `[x]` One-file lifecycle reducer and shared picker/drop intake pipeline implemented.
-- `[x]` Extension, count, 5 MB inclusive size, binary-content, and read-failure validation implemented.
+- `[x]` Extension, count, size-boundary, binary-content, and read-failure validation implemented; the size boundary was revised to 1 MB during Phase 6.
 - `[x]` Real filename, type, size, and Unicode-aware approximate word-count metadata implemented.
 - `[x]` Safe replacement, cancellation, duplicate-action guard, empty-file handling, Start over, and focus restoration implemented.
 - `[x]` Phase 2 automated, production-build, performance, and real-browser validation completed.
@@ -726,15 +783,24 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Rich clipboard retry, plain-text fallback, success/fallback/failure feedback, and unsafe-export stripping implemented.
 - `[x]` Phase 4-5 automated checks completed: 11 test files / 43 tests, lint, production build, and diff validation all pass.
 - `[x]` Real-browser desktop rendering, rich copy success, 390 x 844 responsive layout, mobile details sheet, and focus restoration validated.
+- `[x]` Phase 4-5 checkpoint committed as `cd27130` and pushed to `origin/v1`.
+- `[x]` Google Docs complete-document rich paste approved with semantic hierarchy, editable tables, code, lists, links, and full content retained.
+- `[x]` Microsoft Word complete-document rich paste approved with native heading navigation, editable tables/lists, code whitespace, links, and full content retained.
+- `[x]` Notion complete-document rich paste approved with semantic hierarchy, structured tables/code, native task checkboxes, links, and full content retained.
+- `[x]` VS Code exact plain-text paste approved with semantic markers, tab-separated tables, code whitespace, explicit link targets, and full content retained.
+- `[x]` Safari complete-fixture preview approved with no visible content, layout, or overflow regressions; the paired Notion result also validates Safari rich clipboard output.
+- `[x]` Firefox complete-fixture preview and Google Docs rich paste approved with semantic hierarchy, tables, code, lists, links, and full content retained.
+- `[x]` Phase 6 contrast, mobile target size, loading announcement, native dialog-cancel, and viewport-change dialog issues corrected.
+- `[x]` Exact 1 MB realistic render boundary validated; the v1 maximum was revised from 5 MB to 1 MB based on complete-render evidence.
+- `[x]` Phase 6 local automated gates currently pass: 12 files / 45 tests, lint, build, zero-vulnerability audit, and diff check.
+- `[x]` Phase 6 completed with Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6 compatibility evidence.
 
 ## 11. In-progress work
 
-- `[-]` Phase 6 hardening begins after the validated Phase 4-5 checkpoint is pushed; Word/Notion paste checks remain part of the compatibility matrix.
+- `[-]` Phase 7 release documentation and static deployment are ready to begin from the validated Phase 6 release candidate.
 
 ## 12. Pending work
 
-- `[ ]` Phase 5 compatibility follow-up - Word/Word Online, Notion, and plain-text paste checks; Google Docs has passed.
-- `[ ]` Phase 6 - integrated quality hardening.
 - `[ ]` Phase 7 - release documentation and deployment.
 
 ## 13. Issues, blockers, and risks
@@ -745,7 +811,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ### Open decisions to finalize during planned phases
 
-- `[ ]` Exact stable browser version support statement after real testing.
+- `[x]` Exact tested browser versions recorded: Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6.
 - `[ ]` Static hosting provider and public URL.
 - `[ ]` Whether any optional syntax highlighting fits after every P0 gate passes.
 
@@ -781,7 +847,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 13. Written specifications override generated design artifacts whenever they conflict.
 14. npm is the selected package manager and direct dependency versions are pinned exactly in `package.json`; `package-lock.json` is the reproducible source for transitive dependencies.
 15. Phase 1 uses React 19.2.8, Vite 8.2.1, Tailwind CSS 4.3.3, Vitest 4.1.10, and ESLint 10.8.1 on the documented Node engine range.
-16. Phase 2 accepts one `.md` or `.markdown` file up to and including 5 MB. Intake-only benchmarks were fast at that boundary, while full Markdown parse/render responsiveness remains subject to Phase 6 validation.
+16. Phase 2 initially accepted one `.md` or `.markdown` file up to and including 5 MB based on intake-only benchmarks; Phase 6 complete-render evidence supersedes this limit.
 17. The active document is committed only after validation and reading succeed; failed replacement never discards the previous valid document.
 18. Phase 3 uses custom Markdown components only where behavior differs from native semantics: safe links, conservative image fallbacks, read-only tasks, and focusable table/code overflow wrappers.
 19. Unsupported representative syntax remains intentionally literal/readable: admonitions are ordinary blockquotes, math is text, definition lists become paragraphs, raw HTML/comments are omitted, and syntax highlighting is deferred.
@@ -789,10 +855,13 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 21. Clipboard export clones only the semantic article, unwraps preview-only containers, converts task controls to text markers, strips application/unsafe attributes, and applies a deliberately small inline style map.
 22. `text/markdown` is included only when the runtime reports support; a rejection retries rich HTML/plain without Markdown before using `writeText`.
 23. Toast feedback owns clipboard outcomes and timers; document lifecycle state remains isolated in the document reducer.
+24. Phase 6 limits v1 documents to 1 MB inclusive. A realistic exact-boundary document rendered in about 1.13 seconds, while pathologically dense structured Markdown was materially slower; advertising 5 MB was therefore not defensible.
+25. Muted UI text uses `#66707c` and the focus ring uses `#0c765f` so small text and keyboard focus exceed AA contrast on the application's light surfaces.
+26. The native details dialog remains rendered at desktop widths if it was opened before a resize; hiding an open modal with CSS is prohibited because it leaves the document inert and traps the user.
+27. Clipboard representation order remains HTML before plain text so WebKit/macOS rich destinations prefer the structurally rich representation. TextEdit may convert that HTML to unstyled text even in a plain document; exact fallback validation must request `text/plain` explicitly rather than inferring it from visual styling.
 
 ## 15. Next steps
 
-1. Commit and push the validated Phase 4-5 checkpoint, including the successful Google Docs result.
-2. Complete Phase 6 accessibility, cross-browser, zoom, reduced-motion, privacy/security, and large-document hardening.
-3. Validate Word/Word Online, Notion, and plain-text paste results when those destination surfaces are available.
-4. Prepare the root README and deployment in Phase 7 after Phase 6 gates pass.
+1. Create the Phase 7 root README, including the verified browser/editor matrix and documented limitations.
+2. Configure static HTTPS deployment, run final clean-state gates, and smoke-test the public URL.
+3. Record the deployment URL and prepare the final submission handoff.

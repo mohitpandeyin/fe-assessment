@@ -224,6 +224,10 @@
 }
 
 @media (max-width: 63.999rem) {
+  .button--compact {
+    min-height: 2.75rem;
+  }
+
   .document-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -269,7 +273,7 @@
   }
 
   .document-toolbar__details {
-    width: 2.5rem;
+    width: 2.75rem;
     padding-inline: 0;
   }
 
