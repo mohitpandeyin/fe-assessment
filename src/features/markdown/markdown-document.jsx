@@ -9,8 +9,10 @@ import {
   ScrollableTable,
 } from './markdown-components.jsx'
 import { MarkdownErrorBoundary } from './markdown-error-boundary.jsx'
+import { highlightCode } from './highlight-code.js'
 
 const remarkPlugins = [remarkGfm]
+const rehypePlugins = [highlightCode]
 const markdownComponents = {
   a: SafeLink,
   img: ImageFallback,
@@ -30,6 +32,7 @@ export function MarkdownDocument({ articleRef, resetKey, source }) {
         {source.length > 0 ? (
           <ReactMarkdown
             components={markdownComponents}
+            rehypePlugins={rehypePlugins}
             remarkPlugins={remarkPlugins}
             skipHtml
           >

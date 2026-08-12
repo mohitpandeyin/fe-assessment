@@ -123,6 +123,10 @@ function serializeBlock(node) {
     return node.textContent?.replace(/\n$/, '') ?? ''
   }
 
+  if (node.classList.contains('code-block__toolbar')) {
+    return ''
+  }
+
   if (tagName === 'table') {
     return serializeTable(node)
   }

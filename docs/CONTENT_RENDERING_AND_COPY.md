@@ -42,7 +42,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 | Lists | Preserve ordered/unordered semantics, nesting, markers, and task state; avoid excessive mobile indentation | Preserve `<ol>`, `<ul>`, and `<li>` nesting with portable indentation and margins | Use bullets, numbers, indentation, and `[ ]`/`[x]` for tasks |
 | Blockquotes | Use a restrained left border, inset spacing, and readable contrast | Preserve `<blockquote>` with a simple border, padding, and margins | Prefix lines with `>` |
 | Inline code | Distinct monospaced treatment; wrap long tokens without breaking the page | Preserve `<code>` with a portable monospace stack and restrained background/border | Preserve the exact code text inline |
-| Code blocks | Preserve all whitespace and line breaks; scroll horizontally at the block level | Preserve `<pre><code>` and whitespace; use simple background, border, padding, and monospace styling | Preserve code exactly, including indentation and line breaks |
+| Code blocks | Preserve all whitespace and line breaks; show declared-language label, restrained local syntax highlighting where supported, per-block copy, and contained keyboard/pointer overflow | Preserve `<pre><code>` and whitespace; remove preview toolbar/highlight classes and use simple background, border, padding, and monospace styling | Preserve code exactly, including indentation and line breaks; omit preview toolbar labels/actions |
 | Tables | Preserve header cells, alignment, row/column relationships, and captions when present; table wrapper scrolls horizontally | Use real `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, and `<td>` elements with collapsed borders and cell padding | Separate cells with tabs and rows with newlines so spreadsheet paste remains usable |
 | Links | Clearly identifiable, keyboard reachable, safe, and able to wrap | Preserve safe absolute `http`/`https` links and visible labels; do not depend on hover styling | Output `label (URL)` when the label differs from the URL |
 | Images | Responsive, never wider than their container, with useful alt text and a stable fallback | Include only a safe, durable source that the destination can resolve; preserve alt text | Output the alt text and source URL when useful |
@@ -65,7 +65,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 - The page itself must not scroll horizontally at supported widths.
 - Tables and fenced code blocks own their horizontal scrolling.
 - Long URLs, filenames, inline code, and unbroken strings use safe wrapping such as `overflow-wrap: anywhere` where appropriate.
-- Code blocks preserve whitespace and scroll rather than visually compressing the code.
+- Code blocks preserve whitespace and scroll rather than visually compressing the code; focused code/table regions support Arrow Left/Right and Home/End.
 - Images use `max-width: 100%` and `height: auto`.
 - On narrow screens, reduce page padding and list indentation before reducing text to an unreadable size.
 
@@ -76,6 +76,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 - Table headers remain distinguishable from body cells.
 - Inline code must not be confused with a link or status badge.
 - Syntax highlighting is optional. Legible code, preserved whitespace, and adequate contrast are required.
+- When enabled, syntax highlighting uses declared languages only, a restrained accessible palette, and a curated local language set; no remote service or automatic language guessing is permitted.
 
 ## 5. Clipboard output contract
 
@@ -171,6 +172,8 @@ Serializer functions should be deterministic and independently testable. Clipboa
 ## 8. Acceptance and validation matrix
 
 Use a fixture containing every required element and the representative open test case.
+
+The deliberately complex regression fixture is `requirements/complex_rendering_test.md`. It covers every heading level, mixed/nested/task lists, ten code blocks, four table profiles, multilingual and Unicode content, remote/local/unsafe media cases, long URLs/tokens/code, optional syntax degradation, and parser-boundary inputs.
 
 For preview validation, verify:
 

@@ -26,5 +26,6 @@ describe('serializePlainText', () => {
       'external link (https://example.com/docs)',
     )
     expect(plainText).not.toContain('<h1>')
+    expect(plainText).not.toContain('JavaScriptCopy')
   })
 })

@@ -1,7 +1,9 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import openTestCase from '../../../requirements/open_test_case.md?raw'
+import complexRenderingTest from '../../../requirements/complex_rendering_test.md?raw'
 import malformedElements from '../../test/fixtures/malformed-elements.md?raw'
 import requiredElements from '../../test/fixtures/required-elements.md?raw'
 import { MarkdownDocument } from './markdown-document.jsx'
@@ -41,13 +43,20 @@ describe('MarkdownDocument', () => {
     expect(tableHeaders[2]).toHaveStyle({ textAlign: 'right' })
 
     const codeRegions = screen.getAllByRole('region', {
-      name: 'Scrollable code block',
+      name: /Scrollable .*code block/,
     })
     expect(codeRegions).toHaveLength(3)
     expect(codeRegions[0]).toHaveAttribute('tabindex', '0')
     expect(codeRegions[0].querySelector('pre > code').textContent).toContain(
       'preserve    spacing',
     )
+    expect(codeRegions[0]).toHaveAccessibleName(
+      'Scrollable JavaScript code block',
+    )
+    expect(codeRegions[0].querySelector('.hljs-keyword')).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Copy JavaScript code' }),
+    ).toBeInTheDocument()
     expect(codeRegions[1].querySelector('code')).toHaveClass(
       'language-unknown-language',
     )
@@ -131,10 +140,113 @@ describe('MarkdownDocument', () => {
       }),
     ).toBeInTheDocument()
     expect(screen.getAllByRole('table')).toHaveLength(2)
-    expect(screen.getAllByRole('region', { name: 'Scrollable code block' })).toHaveLength(
-      4,
-    )
+    expect(
+      screen.getAllByRole('region', { name: /Scrollable .*code block/ }),
+    ).toHaveLength(4)
     expect(screen.queryByText('Preview unavailable')).not.toBeInTheDocument()
+  })
+
+  it('renders the deliberately complex fixture with robust semantics', () => {
+    const { container } = render(
+      <MarkdownDocument resetKey="complex" source={complexRenderingTest} />,
+    )
+    const document = screen.getByRole('article', {
+      name: 'Rendered Markdown document',
+    })
+
+    for (let level = 1; level <= 6; level += 1) {
+      expect(within(document).getAllByRole('heading', { level }).length).toBeGreaterThan(0)
+    }
+
+    expect(screen.getAllByRole('table')).toHaveLength(4)
+    expect(
+      screen.getAllByRole('region', { name: /Scrollable .*code block/ }),
+    ).toHaveLength(10)
+    expect(screen.getAllByRole('checkbox').length).toBeGreaterThanOrEqual(15)
+    expect(container.querySelectorAll('.task-list-item .task-list-item').length).toBeGreaterThan(0)
+    expect(container.querySelectorAll('.hljs').length).toBeGreaterThanOrEqual(6)
+    expect(screen.getByText(/सेवा बहाली/)).toBeVisible()
+    expect(screen.getByText(/PLAINMARK_SUPERLONGTOKEN/)).toBeVisible()
+    expect(container.querySelector('iframe')).not.toBeInTheDocument()
+    expect(screen.queryByText(/private implementation note/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Preview unavailable')).not.toBeInTheDocument()
+  })
+
+  it('copies one code block with accessible local feedback', async () => {
+    const user = userEvent.setup()
+    const writeText = vi
+      .spyOn(navigator.clipboard, 'writeText')
+      .mockResolvedValue()
+
+    render(
+      <MarkdownDocument
+        resetKey="copy-code"
+        source={'```javascript\nconst copied = true\n```'}
+      />,
+    )
+
+    await user.click(
+      screen.getByRole('button', { name: 'Copy JavaScript code' }),
+    )
+
+    expect(writeText).toHaveBeenCalledWith('const copied = true')
+    expect(
+      screen.getByRole('button', { name: 'JavaScript code copied' }),
+    ).toHaveTextContent('Copied')
+  })
+
+  it('falls back to selection copy when async text copy is unavailable', async () => {
+    const user = userEvent.setup()
+    const originalClipboard = navigator.clipboard
+    const execCommand = vi.fn().mockReturnValue(true)
+    document.execCommand = execCommand
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: undefined,
+    })
+
+    render(
+      <MarkdownDocument
+        resetKey="copy-code-fallback"
+        source={'```text\nfallback content\n```'}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Copy Plain text code' }))
+
+    expect(execCommand).toHaveBeenCalledWith('copy')
+    expect(
+      screen.getByRole('button', { name: 'Plain text code copied' }),
+    ).toHaveTextContent('Copied')
+
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: originalClipboard,
+    })
+  })
+
+  it('provides deterministic keyboard controls for horizontal overflow', () => {
+    render(
+      <MarkdownDocument
+        resetKey="keyboard-overflow"
+        source={'| Wide value |\n| --- |\n| content |'}
+      />,
+    )
+    const tableRegion = screen.getByRole('region', { name: 'Scrollable table' })
+    const scrollTo = vi.fn()
+    Object.defineProperties(tableRegion, {
+      clientWidth: { configurable: true, value: 300 },
+      scrollLeft: { configurable: true, value: 0, writable: true },
+      scrollTo: { configurable: true, value: scrollTo },
+      scrollWidth: { configurable: true, value: 900 },
+    })
+
+    tableRegion.focus()
+    fireEvent.keyDown(tableRegion, { key: 'ArrowRight' })
+    expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', left: 48 })
+
+    fireEvent.keyDown(tableRegion, { key: 'End' })
+    expect(scrollTo).toHaveBeenLastCalledWith({ behavior: 'smooth', left: 600 })
   })
 
   it('shows a recoverable localized error and resets for a new document', () => {

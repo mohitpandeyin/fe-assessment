@@ -242,12 +242,16 @@ The rendered document must feel native to the UI while remaining portable when c
 ### 4.5 Code blocks
 
 - Very light neutral background with border.
-- `12px` to `16px` inner padding.
+- A compact neutral toolbar identifies the declared language and exposes a per-block copy action with Copy/Copied feedback.
+- Unknown declared languages use a humanized label and unhighlighted code; unlabelled fences use **Code**. Do not guess languages.
+- `12px` to `18px` inner padding.
 - Horizontal scrolling at the block level.
 - Preserve whitespace and tabs.
 - Syntax colors are restrained: muted blue, green, purple, amber, and red.
 - `pre` and `code` remain semantically nested; the code block never forces the page itself wider.
-- Syntax highlighting is optional and must not be allowed to delay legible whitespace-preserving code.
+- Highlight only the curated common-language set loaded locally; unsupported languages stay legible without failing the document.
+- Copy actions must preserve exact code text, expose an accessible name, and fall back to selection copy when async clipboard text writing is unavailable.
+- The toolbar is preview-only and must not appear in full-document HTML/plain-text clipboard output.
 
 ### 4.6 Blockquotes and callouts
 
@@ -264,10 +268,12 @@ The rendered document must feel native to the UI while remaining portable when c
 - Header has a subtle gray fill and medium weight.
 - Minimum cell padding: `10px 12px`.
 - Preserve GFM alignment.
-- Avoid zebra striping unless dense-table testing demonstrates a need.
+- Use restrained alternating row shading and a hover row cue; these must remain secondary to borders and semantic headers.
+- Keep table headers visually stable while scrolling within a tall table where supported.
 - Header and body cells retain semantic `th`/`td` roles; styling must not flatten the table into decorative rows.
 - Long cell content wraps where reasonable; values that must remain intact may widen the contained scroll region.
 - A table may be wider than the article, but never wider than its own horizontal scroll container.
+- Focused table and code overflow regions support Arrow Left/Right plus Home/End for deterministic keyboard scrolling.
 
 ### 4.8 Images and embedded content
 

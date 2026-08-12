@@ -38,6 +38,7 @@ describe('serializePortableHtml', () => {
     expect(html).not.toContain('var(--')
     expect(exportedDocument.querySelector('input')).toBeNull()
     expect(exportedDocument.querySelector('button')).toBeNull()
+    expect(exportedDocument.textContent).not.toContain('JavaScriptCopy')
     expect(exportedDocument.querySelector('script')).toBeNull()
   })
 

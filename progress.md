@@ -6,7 +6,7 @@
 
 **Overall status:** Implementation in progress
 
-**Current phase:** Phase 7 - release documentation and deployment
+**Current phase:** Phase 7 - release documentation and deployment; content-experience enhancement checkpoint in progress
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -794,10 +794,16 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Exact 1 MB realistic render boundary validated; the v1 maximum was revised from 5 MB to 1 MB based on complete-render evidence.
 - `[x]` Phase 6 local automated gates currently pass: 12 files / 45 tests, lint, build, zero-vulnerability audit, and diff check.
 - `[x]` Phase 6 completed with Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6 compatibility evidence.
+- `[x]` Post-Phase-6 content audit confirmed existing semantic GFM, safe links/images, task states, focusable overflow, responsive tables, and portable serializers before enhancement.
+- `[x]` Added declared-language code labels, curated local syntax highlighting, accessible per-block copy with async/selection fallback, and preview-toolbar export isolation.
+- `[x]` Refined nested task layout, blockquote presentation, table density/sticky headers/row cues, long-token wrapping, and deterministic keyboard scrolling for table/code overflow.
+- `[x]` Added `requirements/complex_rendering_test.md`: a realistic 17 KB / ~1,981-word stress fixture with all heading levels, deep lists/tasks, 10 code blocks, 4 tables, multilingual/Unicode content, long URLs/tokens, media fallbacks, and parser boundaries.
+- `[x]` Content enhancement automated gates pass: 12 test files / 49 tests, lint, production build, zero-vulnerability audit, and diff check.
+- `[x]` Browser review of the complex fixture passes at desktop and 582 px reflow-equivalent widths with no page overflow, no console errors, contained wide tables/code, 44 px mobile copy targets, safe raw-embed omission, and working per-block copy.
 
 ## 11. In-progress work
 
-- `[-]` Phase 7 release documentation and static deployment are ready to begin from the validated Phase 6 release candidate.
+- `[-]` Phase 7 release documentation and static deployment remain; the requested content-experience enhancement is implemented and validated locally.
 
 ## 12. Pending work
 
@@ -813,7 +819,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 - `[x]` Exact tested browser versions recorded: Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6.
 - `[ ]` Static hosting provider and public URL.
-- `[ ]` Whether any optional syntax highlighting fits after every P0 gate passes.
+- `[x]` Bounded syntax highlighting approved after P0 completion: local curated language set, no guessing, readable unknown-language fallback, and no preview UI in document export.
 
 ### Known technical risks
 
@@ -859,9 +865,13 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 25. Muted UI text uses `#66707c` and the focus ring uses `#0c765f` so small text and keyboard focus exceed AA contrast on the application's light surfaces.
 26. The native details dialog remains rendered at desktop widths if it was opened before a resize; hiding an open modal with CSS is prohibited because it leaves the document inert and traps the user.
 27. Clipboard representation order remains HTML before plain text so WebKit/macOS rich destinations prefer the structurally rich representation. TextEdit may convert that HTML to unstyled text even in a plain document; exact fallback validation must request `text/plain` explicitly rather than inferring it from visual styling.
+28. Code highlighting uses `lowlight` 3.3.0 with a curated declared-language registry (JavaScript/TypeScript, Python, shell, Lua, JSON, YAML, SQL, CSS, XML/HTML, Markdown, and plain text). Automatic detection is intentionally disabled; unsupported languages remain readable.
+29. Per-block code copy is preview-only and uses `navigator.clipboard.writeText` with a selection-copy fallback. The full-document serializers remove code toolbars so established Word/Docs/Notion/plain-text output does not gain UI labels or buttons.
+30. Horizontal code/table regions implement Arrow Left/Right and Home/End scrolling rather than relying on browser-specific native overflow-key behavior.
 
 ## 15. Next steps
 
-1. Create the Phase 7 root README, including the verified browser/editor matrix and documented limitations.
-2. Configure static HTTPS deployment, run final clean-state gates, and smoke-test the public URL.
-3. Record the deployment URL and prepare the final submission handoff.
+1. Review and, when approved, commit/push the validated content-experience enhancement checkpoint.
+2. Create the Phase 7 root README, including the verified browser/editor matrix, code/highlighting behavior, complex fixture, and documented limitations.
+3. Configure static HTTPS deployment, run final clean-state gates, and smoke-test the public URL.
+4. Record the deployment URL and prepare the final submission handoff.

@@ -35,6 +35,10 @@ function replaceTaskCheckboxes(root) {
 }
 
 function normalizePreviewWrappers(root) {
+  for (const toolbar of root.querySelectorAll('.code-block__toolbar')) {
+    toolbar.remove()
+  }
+
   for (const wrapper of root.querySelectorAll('.table-scroll, .code-scroll')) {
     unwrap(wrapper)
   }

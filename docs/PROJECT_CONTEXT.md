@@ -46,7 +46,7 @@ These decisions clarify ambiguous areas without expanding the assignment:
 5. **Resilient degradation.** Unsupported or malformed syntax should appear as readable text whenever possible. A localized rendering failure should produce a recoverable error state, not a blank or broken application.
 6. **Portable rich copy.** Clipboard HTML must use semantic markup and portable styling. It must not depend only on Tailwind class names, because destination applications do not have the application's stylesheet.
 7. **Capability-based clipboard fallback.** The Copy button includes every supported MIME representation in one write. If multi-format clipboard writing is unavailable or rejected, it falls back to copying readable plain text and explains the result to the user.
-8. **No silent scope elevation from the sample.** Math, GitHub-style admonitions, definition lists, Mermaid, and syntax highlighting are useful enhancements, but they are not mandatory solely because the open test case contains them.
+8. **No silent scope elevation from the sample.** Math, GitHub-style admonitions, definition lists, and Mermaid remain optional/deferred and are not mandatory solely because a sample contains them. After every P0 gate passed, declared-language syntax highlighting was intentionally added as a bounded reading enhancement; unknown and unlabelled code remains readable without guessing.
 9. **Accessible responsive baseline.** All essential actions must be keyboard accessible, visibly focused, labeled, and usable at mobile through desktop widths.
 10. **No network dependency for rendering.** Core rendering should continue to work after the application has loaded, without sending document contents to an external service.
 11. **Direction C is locked for v1.** Use the dark graphite header, neutral document workspace, compact controls, and responsive structure defined in `docs/UI_SPECIFICATION.md`.
@@ -61,6 +61,8 @@ These decisions clarify ambiguous areas without expanding the assignment:
 20. **Cross-editor promise is intentionally bounded.** Word, Google Docs, and Notion should receive clean editable common elements, but each may normalize fonts, spacing, table details, code styling, and layout. No pixel-perfect or editor-specific guarantee is made.
 21. **Plain text is semantic.** It preserves list markers, quote prefixes, code whitespace, readable links, and tab/newline table structure rather than relying on raw DOM text extraction.
 22. **Images and embeds are conservative.** Images remain responsive and retain alt text, but privacy-first v1 does not automatically fetch remote images, copy temporary object URLs, fetch/embed remote bytes for fidelity, execute embeds, or resolve ungranted local assets. Unsupported media degrades to readable alternative content and a safe link where available.
+23. **Code tools remain preview-only.** Fenced code shows a language label, restrained highlighting for a curated common-language set, and a per-block copy action. These controls are removed from full-document clipboard serialization so paste output remains semantic and portable.
+24. **Overflow is keyboard-operable.** Focused code/table regions support horizontal Arrow Left/Right movement plus Home/End, in addition to pointer/trackpad scrolling.
 
 ## Recommended technical direction, not yet implementation
 
