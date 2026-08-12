@@ -4,9 +4,9 @@
 
 **Last updated:** 2026-08-12
 
-**Overall status:** Planning complete; awaiting approval; implementation not started
+**Overall status:** Phase 2 complete and validated; awaiting Phase 3 approval
 
-**Current phase:** Phase 0 - validation and planning
+**Current phase:** Phase 2 exit gate
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -64,13 +64,13 @@ No implementation task may silently override a higher-priority source. If a requ
 
 | Area | Validated baseline | Status |
 |---|---|---|
-| Git | Clean `main` branch synchronized with `origin/main` | `[x]` |
+| Git | Implementation branch `v1` tracks `origin/v1`; Phase 1 and Phase 2 changes are not yet committed | `[-]` |
 | Remote | `https://github.com/mohitpandeyin/fe-assessment.git` | `[x]` |
 | Git identity | `mohitpandeyin` / `mohitpandey411@gmail.com` | `[x]` |
-| Commit history | Two documentation commits; no implementation commits | `[x]` |
-| Application source | No `src/`, application entry point, components, services, or styles | `[x]` Confirmed absent |
-| Package/build setup | No `package.json`, lockfile, Vite config, Tailwind config/plugin, or HTML entry point | `[x]` Confirmed absent |
-| Tests | No test runner, test configuration, fixtures beyond the open sample, or automated tests | `[x]` Confirmed absent |
+| Commit history | Documentation/progress commits exist; Phase 1 and Phase 2 implementation is currently uncommitted | `[-]` |
+| Application source | React foundation plus local document lifecycle, picker/drop intake, metadata, replacement, reset, and recovery UI exist | `[x]` Phases 1-2 |
+| Package/build setup | npm manifest/lockfile, Vite React config, Tailwind Vite plugin, and HTML entry point exist | `[x]` Phase 1 |
+| Tests | Vitest/jsdom/Testing Library cover application intake flows, reducer invariants, validation, reading, metadata, and the composed loader | `[x]` 6 files / 23 tests |
 | Deployment | No hosting configuration or deployed URL recorded | `[x]` Confirmed absent |
 | Root README | No implementation/setup README exists at repository root | `[x]` Confirmed absent |
 | Requirements | Two-page assignment PDF and representative Markdown fixture are present | `[x]` |
@@ -80,11 +80,13 @@ No implementation task may silently override a higher-priority source. If a requ
 
 ### 3.2 Implementation baseline
 
-- There is no existing functionality to preserve or migrate.
-- Implementation progress is effectively **0%**.
-- The repository is ready for a clean Vite/React scaffold without deleting or restructuring the requirements and documentation.
+- Phase 1 establishes a reproducible React/Vite/Tailwind foundation.
+- Phase 2 establishes the complete one-document local intake lifecycle. Markdown presentation intentionally remains a Phase 3 placeholder.
+- There was no pre-existing application functionality to preserve or migrate.
+- The repository now installs cleanly from `package-lock.json`, lints, tests, builds, and serves locally.
+- The visible application includes practical empty and loaded lifecycle surfaces, but final Direction C composition and responsive refinements remain Phase 4 work.
 - `tmp/` is ignored and contains only local PDF inspection artifacts; it is not part of the product.
-- Existing documentation is the only current architecture baseline.
+- Existing documentation continues to govern the new foundation and all later implementation.
 
 ### 3.3 Assignment constraints validated from the source PDF
 
@@ -135,14 +137,11 @@ Required syntax must receive explicit tests. Optional syntax must degrade to rea
 
 ### 4.2 Missing implementation areas
 
-Everything below is currently absent and must be built:
+The remaining implementation areas are:
 
-- Project scaffold and dependency manifests.
-- Application state and file lifecycle.
-- File selection, drag/drop, validation, reading, replacement, reset, and metadata.
 - Markdown parser integration and semantic renderers.
 - Content typography, overflow, responsive rules, and safe link/image behavior.
-- Empty, loading, loaded, drag-over, and error UI states.
+- Final Direction C composition, mobile file details, and refined loading/drag/error presentation.
 - Responsive file-details sidebar/sheet.
 - Custom Button, Dialog/Sheet, Toast, and InlineAlert primitives.
 - Portable HTML and semantic plain-text serializers.
@@ -165,15 +164,15 @@ Everything below is currently absent and must be built:
 
 | Concern | Planned approach | Status |
 |---|---|---|
-| Framework/build | Vite + React + JavaScript/JSX | Pending scaffold approval |
-| Styling | Tailwind CSS through the Vite integration plus authored CSS | Approved in docs |
-| Markdown | `react-markdown` + `remark-gfm` | Approved candidate; pending install |
-| Icons | `lucide-react` | Approved candidate; pending install |
+| Framework/build | Vite + React + JavaScript/JSX | Installed and validated |
+| Styling | Tailwind CSS through the Vite integration plus authored CSS | Installed and validated |
+| Markdown | `react-markdown` + `remark-gfm` | Installed; integration begins in Phase 3 |
+| Icons | `lucide-react` | Installed; usage begins with product UI |
 | State | React state/reducer; no external state library | Approved |
 | Dialog/sheet | Project-owned wrapper around native `<dialog>` | Approved |
 | Toast | Small project-owned context queue/live region | Approved |
 | Clipboard | Browser Async Clipboard API with multi-representation `ClipboardItem` and plain-text fallback | Required |
-| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | Planned |
+| Tests | Vitest + Testing Library for unit/integration; real-browser manual validation | Foundation configured |
 | Backend/storage | None | Required constraint |
 
 ### 5.2 Proposed source boundaries
@@ -263,7 +262,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 |---|---|---|
 | Package manager | `npm`, because no lockfile or repository preference exists | Phase 1 scaffold |
 | File extensions | Accept `.md` and `.markdown`; reject others with clear feedback | Phase 2 |
-| File size policy | Benchmark first; guarantee the PRD's representative 1 MB target, then set a documented warning/hard limit from measured behavior | Phase 2/6 |
+| File size policy | Accept files up to and including 5 MB. Phase 2 intake measured about 5.46 ms at 1 MB and 29.52 ms at 5 MB; complete rendering is rechecked in Phase 6 | Finalized in Phase 2 |
 | Browser support | Current stable Chromium, Firefox, and Safari; rich clipboard is capability-based | Phase 6 |
 | Remote images | Block automatic fetch; show alt text and safe link | Already documented |
 | Fonts | Start with robust system stacks; add bundled/Fontsource Inter and JetBrains Mono only if visual review justifies the cost | Phase 4 |
@@ -274,9 +273,9 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 | Phase | Objective | Depends on | Status |
 |---|---|---|---|
-| 0. Validation and plan approval | Establish verified baseline, reconcile requirements, and approve execution order | None | `[-]` Awaiting approval |
-| 1. Project foundation | Create a runnable, testable React/Tailwind application skeleton | Phase 0 approval | `[ ]` |
-| 2. Document lifecycle | Implement reliable local file intake and state transitions | Phase 1 | `[ ]` |
+| 0. Validation and plan approval | Establish verified baseline, reconcile requirements, and approve execution order | None | `[x]` |
+| 1. Project foundation | Create a runnable, testable React/Tailwind application skeleton | Phase 0 approval | `[x]` |
+| 2. Document lifecycle | Implement reliable local file intake and state transitions | Phase 1 | `[x]` |
 | 3. Markdown rendering | Implement safe semantic GFM rendering and content presentation | Phases 1-2 | `[ ]` |
 | 4. Product UI and responsive states | Build the locked Direction C shell and complete interactions | Phases 2-3 | `[ ]` |
 | 5. Rich clipboard export | Implement portable multi-format copy and fallback behavior | Phases 3-4 | `[ ]` |
@@ -320,7 +319,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` P0.5 Review the PRD, UI specification, design system, architecture, context, content/copy contract, and visual references.
 - `[x]` P0.6 Identify missing implementation, resolved conflicts, duplication risks, open decisions, and release obligations.
 - `[x]` P0.7 Create this progress tracker and implementation plan.
-- `[!]` P0.8 Obtain approval before scaffolding or implementing product functionality.
+- `[x]` P0.8 Obtain approval before scaffolding or implementing product functionality.
 
 **Implementation approach:** Read-only inspection except for this progress document. Written specifications override exploratory images where they conflict.
 
@@ -351,29 +350,29 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P1.1 Scaffold Vite React using JavaScript only; remove template/demo assets and behavior.
-- `[ ]` P1.2 Install only approved runtime, build, style, icon, and test dependencies.
-- `[ ]` P1.3 Configure Tailwind through the Vite integration and establish CSS import order.
-- `[ ]` P1.4 Create semantic base styles, design tokens, focus defaults, reduced-motion defaults, and root layout primitives.
-- `[ ]` P1.5 Create the approved responsibility-based directory structure without empty abstraction layers.
-- `[ ]` P1.6 Configure scripts for `dev`, `build`, `preview`, `test`, `test:run`, and `lint`.
-- `[ ]` P1.7 Configure Vitest, jsdom, Testing Library matchers, and cleanup.
-- `[ ]` P1.8 Add a minimal application smoke test and confirm the blank shell mounts.
+- `[x]` P1.1 Scaffold Vite React using JavaScript only; remove template/demo assets and behavior.
+- `[x]` P1.2 Install only approved runtime, build, style, icon, and test dependencies.
+- `[x]` P1.3 Configure Tailwind through the Vite integration and establish CSS import order.
+- `[x]` P1.4 Create semantic base styles, design tokens, focus defaults, reduced-motion defaults, and root layout primitives.
+- `[x]` P1.5 Create the approved responsibility-based directory structure without empty abstraction layers.
+- `[x]` P1.6 Configure scripts for `dev`, `build`, `preview`, `test`, `test:run`, and `lint`.
+- `[x]` P1.7 Configure Vitest, jsdom, Testing Library matchers, and cleanup.
+- `[x]` P1.8 Add a minimal application smoke test and confirm the blank shell mounts.
 
 **Implementation approach:** Start from the standard Vite JavaScript template, then reduce it to a neutral app root. Do not introduce routing, server code, a UI kit, state management, or optional Markdown plugins.
 
 **Validation/testing:**
 
-- Clean install succeeds from the lockfile.
-- Development server starts without console errors.
-- Production build succeeds.
-- Lint succeeds.
-- Minimal smoke test succeeds.
-- No TypeScript files or configuration are introduced.
+- `[x]` `npm ci` succeeds from the lockfile with zero reported vulnerabilities.
+- `[x]` Vite 8.2.1 development server starts and responds with HTTP 200.
+- `[x]` `npm run build` succeeds; output is generated in ignored `dist/`.
+- `[x]` `npm run lint` succeeds with ESLint 10 flat config.
+- `[x]` `npm run test:run` succeeds: 1 file and 1 smoke test passed.
+- `[x]` Repository scan finds no `.ts` or `.tsx` source/configuration files outside dependencies.
 
 **Expected outcome:** A clean, reproducible, runnable foundation with test and style infrastructure but no product behavior yet.
 
-**Exit gate:** Install, lint, test, and production build all pass.
+**Exit gate:** Passed on 2026-08-12. Phase 2 requires explicit approval.
 
 ---
 
@@ -395,34 +394,38 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P2.1 Define reducer state, events, invariants, and initial/replacement failure behavior.
-- `[ ]` P2.2 Implement shared validation for picker and drag/drop paths.
-- `[ ]` P2.3 Accept one `.md` or `.markdown` file and reject missing, multiple, clearly binary, unreadable, or unsupported inputs with actionable messages.
-- `[ ]` P2.4 Read source text locally with browser APIs and avoid all network/storage persistence.
-- `[ ]` P2.5 Derive real metadata: filename, Markdown type label, human-readable size, and approximate word count.
-- `[ ]` P2.6 Preserve the active valid document until a replacement candidate reads successfully.
-- `[ ]` P2.7 Make picker cancellation a no-op and prevent duplicate actions while reading.
-- `[ ]` P2.8 Implement Start over so it clears source, derived state, transient document errors, and returns focus to file selection.
-- `[ ]` P2.9 Benchmark representative files and document a defensible warning/hard-size policy rather than choosing an arbitrary limit.
-- `[ ]` P2.10 Test reducer transitions and pure file utilities independently.
+- `[x]` P2.1 Define reducer state, events, invariants, and initial/replacement failure behavior.
+- `[x]` P2.2 Implement shared validation for picker and drag/drop paths.
+- `[x]` P2.3 Accept one `.md` or `.markdown` file and reject missing, multiple, clearly binary, unreadable, or unsupported inputs with actionable messages.
+- `[x]` P2.4 Read source text locally with browser APIs and avoid all network/storage persistence.
+- `[x]` P2.5 Derive real metadata: filename, Markdown type label, human-readable size, and approximate word count.
+- `[x]` P2.6 Preserve the active valid document until a replacement candidate reads successfully.
+- `[x]` P2.7 Make picker cancellation a no-op and prevent duplicate actions while reading.
+- `[x]` P2.8 Implement Start over so it clears source, derived state, transient document errors, and returns focus to file selection.
+- `[x]` P2.9 Benchmark representative files and document a defensible warning/hard-size policy rather than choosing an arbitrary limit.
+- `[x]` P2.10 Test reducer transitions and pure file utilities independently.
 
 **Implementation approach:** Picker and drag/drop normalize into one intake function. Keep browser file handles/references only in current in-memory state. Use a reducer because replacement and recovery transitions are related; avoid a global store.
 
 **Validation/testing:**
 
-- Valid picker/drop succeeds.
-- Picker cancellation changes nothing.
-- Empty Markdown is handled as a valid empty document state.
-- Multiple-file and invalid-extension drops produce clear feedback.
-- Failed initial read returns to usable intake.
-- Failed replacement preserves the previous document.
-- Successful replacement resets scroll/content state appropriately.
-- Start over clears app-held content and restores focus.
-- No network requests or persistence are introduced.
+- `[x]` Valid picker and drag/drop paths use the same loader and succeed.
+- `[x]` Picker cancellation changes nothing.
+- `[x]` Empty Markdown is accepted and represented as an empty document.
+- `[x]` Missing, multiple, invalid-extension, oversized, binary, and unreadable inputs produce actionable errors.
+- `[x]` Failed initial intake returns to a usable picker; failed replacement preserves the previous document.
+- `[x]` Successful replacement swaps the active source and metadata. Presentation-owned scroll state does not exist until Phases 3-4.
+- `[x]` Duplicate intake actions are ignored while reading.
+- `[x]` Start over clears app-held document/error state and restores focus to file selection.
+- `[x]` Source inspection confirms no fetch, upload, browser storage, analytics, or persistence code was introduced.
+- `[x]` `npm run test:run`: 6 files and 23 tests passed.
+- `[x]` `npm run lint`, `npm run build`, and `git diff --check` passed.
+- `[x]` Real-browser smoke test loaded `requirements/open_test_case.md`, displayed 8.5 KB and 1,204 words, preserved it after an invalid replacement, reset with picker focus, and produced no console warnings/errors.
+- `[x]` Five-run intake benchmark: 1 MB averaged 5.46 ms; 5 MB averaged 29.52 ms on the development machine. The v1 hard limit is 5 MB inclusive; full parse/render performance remains a Phase 6 gate.
 
 **Expected outcome:** A fully testable local document lifecycle independent of Markdown presentation.
 
-**Exit gate:** All lifecycle branches and recovery invariants pass automated tests.
+**Exit gate:** Passed on 2026-08-12. Phase 3 requires explicit approval.
 
 ---
 
@@ -660,7 +663,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | Area | Automated validation | Manual validation | Current status |
 |---|---|---|---|
 | Requirements traceability | Task/requirement mapping in plan and tests | Compare final product to assignment PDF | Planning complete; product pending |
-| File intake | Utility/reducer/component tests | Picker, drop, cancel, replace, reset | `[ ]` |
+| File intake | 6 files / 23 tests across utilities, reducer, and application flows | Picker, replace failure, metadata, reset/focus, and console smoke test | `[x]` Phase 2 |
 | Required Markdown | Semantic DOM assertions | Full fixture visual review | `[ ]` |
 | Malformed Markdown | Parser/component resilience cases | Open malformed fixtures | `[ ]` |
 | Responsive content | Component assertions where useful | Mobile/tablet/desktop/200% zoom | `[ ]` |
@@ -669,7 +672,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | Word/Docs/Notion paste | Structural serializer assertions | Paste complete fixture into each destination | `[ ]` |
 | Security/privacy | URL/sanitization and fallback tests | Network/storage inspection | `[ ]` |
 | Performance | Timed representative fixture checks where stable | 1 MB+ document responsiveness | `[ ]` |
-| Build/release | Lint, tests, production build | Public deployment smoke test | `[ ]` |
+| Build/release | Lint, tests, production build | Public deployment smoke test | `[~]` Phase 1 gates pass; deployment pending |
 
 ## 10. Completed work
 
@@ -687,16 +690,23 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Semantic content priority and non-pixel-perfect fidelity boundary documented.
 - `[x]` Repository/codebase audit completed.
 - `[x]` Comprehensive implementation plan created in this file.
+- `[x]` Phase 1 Vite/React/JavaScript foundation created.
+- `[x]` Tailwind 4 Vite integration and shared design tokens configured.
+- `[x]` ESLint 10 flat configuration added and passing.
+- `[x]` Vitest/jsdom/Testing Library configured with a passing smoke test.
+- `[x]` Clean npm install, development server, lint, tests, and production build validated.
+- `[x]` One-file lifecycle reducer and shared picker/drop intake pipeline implemented.
+- `[x]` Extension, count, 5 MB inclusive size, binary-content, and read-failure validation implemented.
+- `[x]` Real filename, type, size, and Unicode-aware approximate word-count metadata implemented.
+- `[x]` Safe replacement, cancellation, duplicate-action guard, empty-file handling, Start over, and focus restoration implemented.
+- `[x]` Phase 2 automated, production-build, performance, and real-browser validation completed.
 
 ## 11. In-progress work
 
-- `[-]` Plan review and approval.
-- No product implementation is in progress.
+- `[!]` Phase 2 exit gate: awaiting approval to begin Markdown rendering in Phase 3.
 
 ## 12. Pending work
 
-- `[ ]` Phase 1 - scaffold and test foundation.
-- `[ ]` Phase 2 - file/document lifecycle.
 - `[ ]` Phase 3 - Markdown semantics and presentation.
 - `[ ]` Phase 4 - Direction C application UI and responsive states.
 - `[ ]` Phase 5 - portable rich clipboard export.
@@ -707,11 +717,10 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ### Active blocker
 
-- `[!]` Implementation is intentionally blocked pending user approval of this plan.
+- No technical blocker. Phase 3 is intentionally paused at the approval gate.
 
 ### Open decisions to finalize during planned phases
 
-- `[ ]` Exact file warning/hard-limit threshold after measurement.
 - `[ ]` Exact stable browser version support statement after real testing.
 - `[ ]` Static hosting provider and public URL.
 - `[ ]` Whether any optional syntax highlighting fits after every P0 gate passes.
@@ -733,7 +742,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ## 14. Important technical decisions
 
-1. Vite is the planned React build because no framework-specific server feature is needed.
+1. Vite is the selected React build because no framework-specific server feature is needed.
 2. JavaScript/JSX only; no TypeScript files or configuration.
 3. Tailwind is used meaningfully for layout and responsive composition; authored CSS handles the semantic document system and reusable component states.
 4. `react-markdown` and `remark-gfm` provide the safe GFM baseline; raw HTML remains disabled.
@@ -746,12 +755,14 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 11. Remote images are not fetched automatically; temporary object URLs and interactive embeds are not copied.
 12. Required rendering, file lifecycle, copy, accessibility, and responsive behavior precede syntax highlighting, TOC, theme, editing, export formats, and other enhancements.
 13. Written specifications override generated design artifacts whenever they conflict.
+14. npm is the selected package manager and direct dependency versions are pinned exactly in `package.json`; `package-lock.json` is the reproducible source for transitive dependencies.
+15. Phase 1 uses React 19.2.8, Vite 8.2.1, Tailwind CSS 4.3.3, Vitest 4.1.10, and ESLint 10.8.1 on the documented Node engine range.
+16. Phase 2 accepts one `.md` or `.markdown` file up to and including 5 MB. Intake-only benchmarks were fast at that boundary, while full Markdown parse/render responsiveness remains subject to Phase 6 validation.
+17. The active document is committed only after validation and reading succeed; failed replacement never discards the previous valid document.
 
 ## 15. Next steps
 
-1. Review and approve this implementation plan and its recommended defaults.
-2. After approval, change Phase 0 to complete and Phase 1 to in progress.
-3. Scaffold the minimal Vite/React/JavaScript/Tailwind/test foundation.
-4. Stop at every phase exit gate to update this file with actual results, deviations, issues, and the next active task.
-
-No implementation should begin until step 1 is complete.
+1. Obtain approval to begin Phase 3.
+2. Integrate safe semantic GFM rendering with raw HTML disabled.
+3. Build and validate the content typography, overflow rules, safe link/image behavior, required-element fixtures, and malformed-input coverage.
+4. Stop at the Phase 3 exit gate before final Direction C composition work.
