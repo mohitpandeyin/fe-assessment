@@ -4,6 +4,8 @@
 **Visual direction:** Direction C  
 **Companion specification:** [UI Specification](./UI_SPECIFICATION.md)
 
+The values in this document provide a coherent implementation baseline, not a pixel-matching mandate. Complete content, semantic hierarchy, readable rhythm, responsive overflow, and clipboard portability take priority over exact visual reproduction.
+
 ## 1. Character
 
 Plainmark combines the compact precision of an admin tool with the calm readability of a technical document viewer.
@@ -208,26 +210,34 @@ The rendered document must feel native to the UI while remaining portable when c
 - H1 begins the document and has the strongest weight.
 - H2 uses a subtle top rhythm, not a decorative background.
 - H3-H6 remain visibly hierarchical without becoming tiny.
+- Preserve the source heading level; never choose an HTML heading solely to obtain a visual size.
+- Long headings wrap naturally and never overlap adjacent actions or content.
+- Major headings receive more preceding space than minor subheadings; the first document heading has no unnecessary top gap.
 - Heading anchors, if included, appear only on hover/focus and are not required for v1.
 
 ### 4.2 Paragraphs and links
 
 - Body measure targets 65-85 characters per line.
 - Paragraph separation: approximately `16px` to `20px`.
+- Body line height targets `1.6` to `1.75` for long-form readability.
 - Links use a dark teal/blue-teal, underline on hover, and visible focus.
-- Long URLs wrap safely.
+- Links remain recognizable without hover, and safe external targets retain their visible label.
+- Long URLs and unbroken tokens wrap safely without creating page-level horizontal overflow.
 
 ### 4.3 Lists
 
 - Preserve ordered/unordered semantics and marker differentiation.
 - Nested levels add indentation without squeezing mobile text excessively.
 - Task-list checkboxes are read-only and align with the first line of content.
+- Wrapped list content aligns with its text rather than underneath the marker.
+- Adjacent paragraphs and nested lists inside a list item keep a compact but visible internal rhythm.
 
 ### 4.4 Inline code
 
 - Mono font, `0.9em` scale.
 - Subtle neutral fill and border.
 - Avoid vivid syntax colors in inline code.
+- Preserve inline flow; use safe wrapping for exceptionally long tokens.
 
 ### 4.5 Code blocks
 
@@ -236,12 +246,16 @@ The rendered document must feel native to the UI while remaining portable when c
 - Horizontal scrolling at the block level.
 - Preserve whitespace and tabs.
 - Syntax colors are restrained: muted blue, green, purple, amber, and red.
+- `pre` and `code` remain semantically nested; the code block never forces the page itself wider.
+- Syntax highlighting is optional and must not be allowed to delay legible whitespace-preserving code.
 
 ### 4.6 Blockquotes and callouts
 
 - Standard blockquote: left border with muted text.
 - Do not automatically turn every blockquote into a colored alert.
 - Optional recognized callouts may use accent soft backgrounds later.
+- Preserve nested paragraphs and lists inside blockquotes with adequate contrast and spacing.
+- On narrow screens, reduce inset padding before reducing type size.
 
 ### 4.7 Tables
 
@@ -251,8 +265,20 @@ The rendered document must feel native to the UI while remaining portable when c
 - Minimum cell padding: `10px 12px`.
 - Preserve GFM alignment.
 - Avoid zebra striping unless dense-table testing demonstrates a need.
+- Header and body cells retain semantic `th`/`td` roles; styling must not flatten the table into decorative rows.
+- Long cell content wraps where reasonable; values that must remain intact may widen the contained scroll region.
+- A table may be wider than the article, but never wider than its own horizontal scroll container.
 
-### 4.8 Horizontal rules
+### 4.8 Images and embedded content
+
+- Images use `display: block`, `max-width: 100%`, and `height: auto`.
+- Preserve meaningful alt text and show a stable readable fallback when an image cannot load.
+- Avoid fixed heights that crop unknown content.
+- Captions, when present through supported Markdown/HTML semantics, use the muted document text style and remain associated with the image.
+- Unsupported or unsafe embeds become a readable label or safe link where possible; they do not create empty mystery boxes or execute scripts.
+- Remote or relative image limitations follow the [content rendering and rich-copy contract](./CONTENT_RENDERING_AND_COPY.md).
+
+### 4.9 Horizontal rules
 
 - `1px` neutral border.
 - Generous vertical rhythm.
@@ -322,7 +348,7 @@ Recommended foundation:
 - A dedicated `markdown.css` layer for the Markdown article; Tailwind Typography is optional and not required.
 - Inter Variable and JetBrains Mono Variable through Fontsource or bundled local assets.
 
-The onscreen design system does not replace the clipboard export stylesheet. Copied HTML needs self-contained semantic styles suitable for Word, Google Docs, and rich-text editors.
+The onscreen design system does not replace the clipboard export stylesheet. Copied HTML needs self-contained semantic styles suitable for Word, Google Docs, and rich-text editors. Preview and clipboard styles share semantic intent, but exact fonts, spacing, line wraps, and page geometry are not required to match. See the [content rendering and rich-copy contract](./CONTENT_RENDERING_AND_COPY.md).
 
 ## 10. Design review checklist
 
@@ -332,6 +358,8 @@ The onscreen design system does not replace the clipboard export stylesheet. Cop
 - No more than one primary button appears in a control group.
 - Document typography has been reviewed with the full open test case.
 - Code and tables scroll internally on narrow screens.
+- Long headings, URLs, inline code, nested lists, images, and blockquotes remain within the content viewport.
+- Pasted output preserves complete hierarchy and supported structure even when a destination normalizes styling.
 - File metadata uses real, locally derived values.
 - Focus and error states are visible in light and dark header regions.
 - UI remains intentionally Plainmark instead of resembling a generic component-library theme.

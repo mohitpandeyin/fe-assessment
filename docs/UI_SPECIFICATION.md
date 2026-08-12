@@ -20,6 +20,7 @@ This document and the locked reference replace exploratory details shown in the 
 - **Start over** replaces the current document-removal affordance.
 - The primary document action remains **Copy document**.
 - The generated concept is a visual reference, not a pixel-perfect or content-accurate implementation specification.
+- Rendering and copy quality are evaluated by content completeness, readable hierarchy, consistent spacing, safe overflow, and semantic portability before exact visual matching.
 
 ## 2. Experience principles
 
@@ -261,8 +262,10 @@ Implementation details and accessibility requirements are defined in the [fronte
 - Blockquote.
 - Table wrapper, header, row, and cell.
 - Horizontal rule.
+- Responsive images with alt/failure treatment.
+- Safe fallback treatment for unsupported embedded content.
 
-The Markdown surface may use Tailwind Typography as a starting point, but every required element must be visually reviewed and intentionally customized.
+The Markdown surface may use Tailwind Typography as a starting point, but every required element must be visually reviewed and intentionally customized. The [content rendering and rich-copy contract](./CONTENT_RENDERING_AND_COPY.md) governs element semantics, overflow, clipboard output, and cross-editor acceptance.
 
 ## 7. Content and labels
 
@@ -329,6 +332,8 @@ The following are not part of the locked v1 UI:
 - **Copy document** is visually primary and copies the complete document.
 - There is no page-level horizontal scroll at supported widths.
 - Tables and code have contained overflow.
+- Headings, paragraphs, lists, blockquotes, links, inline code, code blocks, tables, and applicable image fallbacks remain complete and readable.
+- Styling work does not delay semantic correctness or portable copy in pursuit of pixel matching.
 - The document remains readable at 200% zoom.
 - Every action has hover, focus, pressed, disabled, and relevant loading/success/error behavior.
 - The interface does not contain unrelated dashboard controls or fabricated metadata.

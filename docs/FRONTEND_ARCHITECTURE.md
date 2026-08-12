@@ -75,6 +75,16 @@ src/
 │   ├── base.css
 │   ├── markdown.css
 │   └── utilities.css
+├── features/
+│   └── markdown/
+│       ├── markdown-document.jsx
+│       └── markdown-components.jsx
+├── lib/
+│   └── clipboard/
+│       ├── export-styles.js
+│       ├── serialize-html.js
+│       ├── serialize-plain-text.js
+│       └── write-document-clipboard.js
 └── ...
 ```
 
@@ -265,6 +275,40 @@ Style descendants in `markdown.css`:
 
 Use custom React renderers only when behavior or wrapping is needed, for example safe links, scroll wrappers around tables, inline/fenced code distinctions, and read-only task checkboxes.
 
+The Markdown components preserve semantic element types. CSS controls appearance; it must not replace a heading with a generic element or flatten list/table structure for styling convenience.
+
+### 10.1 Content-first rendering rules
+
+- Create a deliberate CSS rule for every required Markdown element rather than relying on browser defaults.
+- Use normal document flow and shared spacing rules so arbitrary element combinations remain stable.
+- Tables and code blocks receive their own focusable/keyboard-usable overflow wrapper when necessary; the document viewport must not gain horizontal overflow.
+- Long links, inline code, filenames, and unbroken strings wrap through element-specific rules.
+- Images remain responsive and preserve alt text. Unsupported embeds degrade to a readable fallback rather than rendering arbitrary HTML.
+- Syntax highlighting and decorative refinements remain optional until semantic rendering fixtures pass.
+
+### 10.2 Clipboard export pipeline
+
+Do not copy the styled application DOM unchanged and do not copy computed CSS wholesale. Generate a controlled export from the semantic document content.
+
+```text
+source Markdown
+  ├─> semantic React preview + markdown.css
+  ├─> portable semantic HTML + explicit inline export styles
+  ├─> element-aware plain text
+  └─> unchanged source Markdown, when supported
+```
+
+Responsibilities:
+
+- `serialize-html.js` preserves safe headings, paragraphs, emphasis, lists, blockquotes, links, tables, code, and applicable image alternatives while removing application-only wrappers and unsafe content.
+- `export-styles.js` contains a small tag/role-based map of portable inline styles. It must not import Tailwind or depend on CSS variables.
+- `serialize-plain-text.js` preserves meaningful whitespace, list markers, quote prefixes, links, and tab-delimited table rows.
+- `write-document-clipboard.js` performs capability detection, builds `ClipboardItem`, attempts `text/html`, `text/plain`, and supported `text/markdown`, then falls back to `writeText`.
+
+Prepare deterministic export content when the document changes where practical. The actual clipboard write remains directly connected to the user's Copy gesture and does not wait for network resources.
+
+The full element and destination contract is defined in [Content Rendering and Rich Copy](./CONTENT_RENDERING_AND_COPY.md).
+
 ## 11. State styling
 
 Prefer semantic data attributes over conditional utility-class construction:
@@ -295,6 +339,7 @@ No external state-management library is needed.
 - Toast state belongs to `ToastProvider`.
 - Derived metadata is computed by pure utilities.
 - Clipboard serialization is a pure async service, not a UI component.
+- Clipboard serializers are deterministic transformations and do not own React state, browser notifications, or destination-specific branches.
 
 Avoid a global document context until multiple distant consumers genuinely require it.
 
@@ -329,6 +374,8 @@ No component-library, CSS-in-JS, class-variance, class-merging, dialog, toast, o
 - Keep component files focused; behavior, markup, and component-specific styles may remain colocated.
 - Use comments only for non-obvious behavior or browser quirks.
 - Test custom overlays and live regions rather than assuming native semantics cover every integration detail.
+- Test preview semantics and clipboard serialization with the same Markdown fixtures so the two presentations cannot silently diverge.
+- Do not introduce Word-, Google Docs-, or Notion-specific markup unless a verified standards-compatible fix benefits all supported destinations.
 
 ## 15. Testing priorities for custom UI
 
@@ -344,6 +391,9 @@ Because we own the interactive components, verify:
 - Upload panel works without drag/drop.
 - All button states meet contrast and focus requirements.
 - Mobile sheet and page do not create competing scroll containers.
+- Every required Markdown element remains readable at mobile width and 200% zoom.
+- Serialized HTML contains semantic structure and no application chrome, scripts, event handlers, temporary object URLs, or Tailwind-only dependencies.
+- Full-document paste is manually checked in Word/Word Online, Google Docs, Notion, and a plain-text editor where available.
 
 ## 16. Final recommendation
 
@@ -354,4 +404,3 @@ Use Tailwind as a low-level composition tool, not as the place where every visua
 - **React:** behavior, state, semantics, and composition.
 
 This satisfies the assignment's Tailwind requirement while keeping the implementation readable, distinctive, and easy to explain in an interview.
-

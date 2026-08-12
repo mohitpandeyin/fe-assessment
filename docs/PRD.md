@@ -1,8 +1,8 @@
 # Product Requirements Document: Markdown File Preview and Rich Copy
 
-**Version:** 1.0  
+**Version:** 1.1
 **Date:** 2026-08-12  
-**Status:** Draft for validation - implementation not started  
+**Status:** Approved requirements baseline - implementation not started
 **Owner:** Project author
 
 ## 1. Purpose of this document
@@ -38,6 +38,7 @@ The experience should feel like opening a clean document viewer: fast, calm, dep
 4. Provide readable plain text when the destination or browser cannot accept rich content.
 5. Remain usable when input is unexpected, incomplete, empty, or malformed.
 6. Demonstrate strong frontend engineering, visual design, responsiveness, accessibility, and project organization.
+7. Prioritize complete, readable, and portable content over pixel-perfect matching between the preview and third-party editors.
 
 ### 4.2 Prioritization aligned with evaluation
 
@@ -273,6 +274,19 @@ HTML comments may remain invisible according to normal Markdown/HTML behavior. R
 - Same-document heading anchors should work when generated.
 - Local relative links and images cannot be assumed to resolve because only one file is granted to the browser. They must fail gracefully rather than create unsafe file access.
 
+#### FR-016 - Handle images and embedded content conservatively [Derived]
+
+Images and embedded content are best-effort additions to the required Markdown baseline. They must never compromise privacy, safety, document completeness, or layout stability.
+
+**Acceptance criteria**
+
+- Images never exceed their content container and retain their intrinsic aspect ratio.
+- Useful alt text remains available when an image cannot load or cannot be copied reliably.
+- Temporary `blob:` URLs, scripts, iframes, and interactive embeds are excluded from clipboard output.
+- Relative local assets fail gracefully because v1 receives only one file.
+- Remote image URLs are not fetched automatically in the privacy-first v1; present useful alt text and a safe link instead.
+- Unsupported embeds remain readable as a label or safe link where possible; they never execute uploaded code.
+
 ### 10.3 Reading experience
 
 #### FR-020 - Present a polished document surface [Required]
@@ -286,6 +300,8 @@ The rendered output uses deliberate typography, hierarchy, spacing, contrast, an
 - Tables and code blocks have deliberate overflow behavior.
 - Content is not visually confused with application navigation or file controls.
 - Layout and typography remain consistent across every required element.
+- Heading hierarchy, paragraph rhythm, list indentation, blockquote treatment, table structure, inline code, fenced code, links, and supported images each have explicit presentation rules.
+- Pixel-perfect comparison with the approved concept or a third-party editor is not a v1 acceptance criterion.
 
 #### FR-021 - Communicate active file context [Derived]
 
@@ -328,7 +344,11 @@ Copied HTML must preserve useful formatting outside the application.
 - Essential presentation is expressed in portable inline styles or equivalent self-contained markup.
 - Export correctness does not depend solely on Tailwind classes, CSS variables, an external stylesheet, or JavaScript.
 - Unsafe elements, event handlers, scripts, and application-only attributes are absent.
-- Paste behavior is manually verified in at least one rich-text destination and one plain-text destination before release.
+- Headings retain their levels; lists retain type and nesting; tables use real table elements; blockquotes remain distinct; code preserves whitespace; links preserve safe targets; image alternatives remain readable.
+- Copied presentation uses a small explicit export style map rather than every computed browser style.
+- The detailed element behavior and destination expectations follow the [Content Rendering and Rich-Copy Contract](./CONTENT_RENDERING_AND_COPY.md).
+- Paste behavior is manually verified in Microsoft Word or Word Online, Google Docs, Notion, and one plain-text destination before release where those applications are available.
+- Content completeness and editable semantic structure are required; exact fonts, line wrapping, margins, pagination, and pixel-level appearance are not guaranteed.
 
 #### FR-033 - Degrade clipboard behavior gracefully [Derived]
 
@@ -548,6 +568,7 @@ The final supported-version matrix must be recorded during implementation planni
 - All required Markdown elements share a consistent system for typography, color, spacing, borders, and overflow.
 - Empty, loading, document, error, drag, copy-success, and copy-failure states are designed—not browser-default accidents.
 - No clipped controls, page-level horizontal overflow, illegible code, or broken tables at supported widths.
+- Visual quality is judged by readable hierarchy, consistent rhythm, safe overflow, and complete content—not pixel-perfect reproduction of the concept image or another editor's rendering.
 
 ## 16. Testing and validation requirements
 
@@ -562,6 +583,7 @@ Tests must include at least:
 - Fenced code with known, unknown, and absent language labels.
 - Long lines, URLs, Unicode, and empty elements.
 - Malformed/unclosed emphasis, links, tables, lists, and code fences.
+- Images with valid, missing, unsafe, remote, and relative sources, confirming readable fallback behavior.
 - The entire supplied `requirements/open_test_case.md` document.
 
 ### 16.2 File workflow coverage
@@ -581,7 +603,8 @@ Tests must include at least:
 - Plain-text fallback works when rich writing is unavailable.
 - Permission denial is recoverable.
 - Export excludes application chrome.
-- Manual paste into at least one rich-text editor and one plain-text editor.
+- The portable HTML is checked for semantic headings, nested lists, table sections/cells, blockquotes, code whitespace, safe links, and absence of scripts or app-only controls.
+- Manual full-document paste into Word/Word Online, Google Docs, Notion, and a plain-text editor where available; destination-specific normalization is recorded rather than treated as a pixel-match failure.
 
 ### 16.4 Accessibility and responsive coverage
 
@@ -601,7 +624,7 @@ The v1 product is successful when:
 2. Reasonable malformed Markdown does not crash the application.
 3. A user can upload, preview, copy, replace, and remove a document without instruction beyond the interface.
 4. A supporting browser writes rich HTML and plain text through one Copy action, with original Markdown added where supported.
-5. Pasting into a tested rich-text destination retains useful hierarchy and formatting; pasting into a text-only destination remains readable.
+5. Pasting into tested rich-text destinations retains complete, editable, and readable hierarchy for common elements; pasting into a text-only destination remains understandable.
 6. The complete core workflow is keyboard accessible and usable on mobile and desktop.
 7. No document content is transmitted or persisted outside the current browser session.
 8. Required functionality has automated coverage and the representative sample passes manual visual review.
@@ -653,10 +676,9 @@ Only consider these after v1 success criteria are met:
 
 1. What maximum file size should v1 support, and what exact warning/rejection behavior should apply above it?
 2. Should `.txt` files be accepted when users explicitly choose them, or should selection be limited to `.md` and `.markdown`?
-3. Should remote images render by default, be blocked for privacy, or require user consent? Images are not explicitly part of the required syntax list.
+3. Should a future release offer explicit consent to load remote images? The v1 conservative behavior must not silently fetch image bytes merely to improve clipboard fidelity.
 4. Which browser versions form the formal support matrix?
-5. Which rich-text destination will be the required manual acceptance target: Google Docs, Microsoft Word, or both where locally available?
-6. After the core passes, which single enhancement offers the best value within the time budget: syntax highlighting, long-document navigation, or another option?
+5. After the core passes, which single enhancement offers the best value within the time budget: syntax highlighting, long-document navigation, or another option?
 
 Conservative defaults are defined in the project context until these questions are resolved.
 
@@ -670,6 +692,7 @@ Conservative defaults are defined in the project context until these questions a
 | Clean, readable, polished output | FR-020 through FR-022 and NFR-007 |
 | Single Copy button with HTML/plain text/Markdown | FR-030 through FR-034 |
 | Preserve formatting in Word/Docs/rich editors | FR-032 and clipboard validation requirements |
+| Preserve readable common elements without pixel-perfect matching | FR-010 through FR-020, NFR-007, and the content rendering/copy contract |
 | React, JavaScript, and Tailwind; browser-only | Section 14.1 and FR-040 |
 | Responsiveness and accessibility | Sections 12.3, 13, and NFR-004 |
 | Public repository, deployment, and explanation | Section 18 |

@@ -1,7 +1,7 @@
 # Project Context and Decision Memory
 
 **Last updated:** 2026-08-12  
-**Status:** Requirements and UI direction approved; implementation not started
+**Status:** Requirements, UI direction, and content/copy contract approved; implementation not started
 
 This document preserves the key context and decisions needed to keep future work consistent. Read it together with the [PRD](./PRD.md) before planning or changing the product.
 
@@ -56,6 +56,11 @@ These decisions clarify ambiguous areas without expanding the assignment:
 15. **Styling uses a deliberate hybrid.** Tailwind handles layout, responsive composition, and small utilities; authored CSS handles tokens, repeated component recipes, complex states, Markdown typography, and overlays.
 16. **No UI component library by default.** Buttons, dialog/mobile sheet, toast, alerts, and any necessary tooltip are small project-owned components built on semantic/native platform elements. Native `<dialog>` is the approved overlay foundation.
 17. **Readable JSX is a requirement.** Avoid long utility strings, arbitrary-value repetition, and wrapper components that only hide styling. Follow `docs/FRONTEND_ARCHITECTURE.md`.
+18. **Content fidelity precedes pixel fidelity.** v1 is judged by complete content, semantic hierarchy, readability, consistent rhythm, responsive overflow, and safe portable copy. Exact matching of the concept image or a destination editor is deferred.
+19. **Preview and copy share semantics, not CSS.** The browser preview uses `markdown.css`; clipboard HTML uses a small explicit inline-style map. Both preserve the same heading levels, lists, tables, blockquotes, links, code, and content order.
+20. **Cross-editor promise is intentionally bounded.** Word, Google Docs, and Notion should receive clean editable common elements, but each may normalize fonts, spacing, table details, code styling, and layout. No pixel-perfect or editor-specific guarantee is made.
+21. **Plain text is semantic.** It preserves list markers, quote prefixes, code whitespace, readable links, and tab/newline table structure rather than relying on raw DOM text extraction.
+22. **Images and embeds are conservative.** Images remain responsive and retain alt text, but privacy-first v1 does not automatically fetch remote images, copy temporary object URLs, fetch/embed remote bytes for fidelity, execute embeds, or resolve ungranted local assets. Unsupported media degrades to readable alternative content and a safe link where available.
 
 ## Recommended technical direction, not yet implementation
 
@@ -63,6 +68,7 @@ These decisions clarify ambiguous areas without expanding the assignment:
 - Prefer `react-markdown` with `remark-gfm` because it maps parsed Markdown to React elements, supports component-level styling, and is safe by default when raw HTML execution is not enabled.
 - VS Code's preview is a useful reference but should not be copied literally. VS Code uses `markdown-it`, `highlight.js`, generated HTML, CSS, and an isolated webview. This project can achieve the required behavior with a simpler React-native renderer.
 - Treat the onscreen preview and clipboard export as two presentations of the same document semantics. They may require different styling: Tailwind/component styles on screen and portable inline styles in clipboard HTML.
+- Follow `docs/CONTENT_RENDERING_AND_COPY.md` for the element matrix, fidelity boundary, serializer responsibilities, and cross-editor validation.
 - Keep file reading, Markdown parsing, clipboard serialization, and UI state separated so each can be tested independently.
 - Implement the approved React + Tailwind + authored CSS strategy in `docs/FRONTEND_ARCHITECTURE.md`; do not add shadcn, Radix, or another UI kit without first documenting a concrete accessibility or delivery need.
 
@@ -99,7 +105,7 @@ Required constructs must be verified directly. Optional constructs should degrad
 
 - Exact maximum file size and whether to warn before processing unusually large files.
 - Whether v1 accepts only `.md`/`.markdown` names or also allows text files with Markdown contents.
-- Whether remote images are displayed, proxied, blocked, or omitted; images are not explicitly required.
+- Whether a later opt-in should load remote image bytes. The conservative v1 copy path does not fetch/embed them merely for fidelity.
 - Which optional enhancements fit after all must-have acceptance criteria pass.
 - Supported browser matrix and the exact behavior used for older clipboard implementations.
 
