@@ -800,6 +800,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Added `requirements/complex_rendering_test.md`: a realistic 17 KB / ~1,981-word stress fixture with all heading levels, deep lists/tasks, 10 code blocks, 4 tables, multilingual/Unicode content, long URLs/tokens, media fallbacks, and parser boundaries.
 - `[x]` Content enhancement automated gates pass: 12 test files / 49 tests, lint, production build, zero-vulnerability audit, and diff check.
 - `[x]` Browser review of the complex fixture passes at desktop and 582 px reflow-equivalent widths with no page overflow, no console errors, contained wide tables/code, 44 px mobile copy targets, safe raw-embed omission, and working per-block copy.
+- `[x]` Firefox full-document rich-copy regression with the complex fixture passes in Google Docs and Microsoft Word Online: complete content, heading navigation, deep lists/tasks, code, tables, links, multilingual text, and final section retained; preview-only code toolbars do not leak into pasted output.
 
 ## 11. In-progress work
 
@@ -868,6 +869,17 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 28. Code highlighting uses `lowlight` 3.3.0 with a curated declared-language registry (JavaScript/TypeScript, Python, shell, Lua, JSON, YAML, SQL, CSS, XML/HTML, Markdown, and plain text). Automatic detection is intentionally disabled; unsupported languages remain readable.
 29. Per-block code copy is preview-only and uses `navigator.clipboard.writeText` with a selection-copy fallback. The full-document serializers remove code toolbars so established Word/Docs/Notion/plain-text output does not gain UI labels or buttons.
 30. Horizontal code/table regions implement Arrow Left/Right and Home/End scrolling rather than relying on browser-specific native overflow-key behavior.
+
+### Complex-fixture destination regression - 2026-08-12
+
+- Firefox rich copy pasted the complete `requirements/complex_rendering_test.md` fixture into both Google Docs and Microsoft Word Online through **12. Completion record** and the final **End of complex rendering fixture** text.
+- Both destinations recognized the heading hierarchy and populated their document navigation/outline surfaces across the deeply nested section structure.
+- Ordered, unordered, mixed, deeply nested, and task lists remained structurally readable. Portable task states remained `[x]` / `[ ]` markers, as designed for cross-editor consistency.
+- Code blocks retained monospace content, exact line structure, and useful color distinctions where the destination preserved source colors. Plainmark's language labels and per-block Copy/Copied controls were correctly omitted from copied document content.
+- Compact and wide tables remained structured. Very wide operational and long-cell tables became tall and tightly wrapped on portrait pages; this is destination-controlled pagination/layout rather than content loss and does not justify editor-specific table markup.
+- Links and long URLs remained visible and wrapped; inline emphasis/code, blockquotes, horizontal rules, multilingual text, Unicode, and emoji remained readable.
+- The repeated outline/navigation fragments visible in the supplied long screenshots are fixed-sidebar screenshot stitching, not duplicated main document content.
+- No compatibility fix is required from this regression pass.
 
 ## 15. Next steps
 
