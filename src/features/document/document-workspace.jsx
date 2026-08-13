@@ -80,7 +80,7 @@ export function DocumentWorkspace({
         onStartOver={onStartOver}
       />
 
-      <section className="min-w-0 bg-workspace" aria-labelledby="document-name">
+      <section className="min-w-0 bg-surface" aria-labelledby="document-name">
         <DocumentToolbar
           documentName={document.metadata.name}
           documentNameRef={documentNameRef}
