@@ -10,6 +10,19 @@ afterEach(() => {
 })
 
 describe('App', () => {
+  it('offers the complex rendering fixture as a sample download', () => {
+    render(<App />)
+
+    expect(screen.getByRole('link', { name: 'Sample File.' })).toHaveAttribute(
+      'href',
+      '/sample-file.md',
+    )
+    expect(screen.getByRole('link', { name: 'Sample File.' })).toHaveAttribute(
+      'download',
+      'sample-file.md',
+    )
+  })
+
   it('opens a valid Markdown file and shows real metadata', async () => {
     const user = userEvent.setup()
     render(<App />)

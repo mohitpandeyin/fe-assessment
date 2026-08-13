@@ -67,7 +67,14 @@ export function UploadPanel({
                 : 'Open Markdown'}
           </p>
           <p className="upload-panel__description mt-2 text-ink-secondary">
-            Drag and drop one .md file here, or choose it from your computer.
+            Drag and drop one .md file here, or choose it from your computer.{' '}
+            <a
+              className="font-medium text-ink underline underline-offset-2"
+              download="sample-file.md"
+              href="/sample-file.md"
+            >
+              Sample File.
+            </a>
           </p>
           <FilePicker
             disabled={isReading}

@@ -1,13 +1,20 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
 import openTestCase from '../../../requirements/open_test_case.md?raw'
-import complexRenderingTest from '../../../requirements/complex_rendering_test.md?raw'
 import malformedElements from '../../test/fixtures/malformed-elements.md?raw'
 import requiredElements from '../../test/fixtures/required-elements.md?raw'
 import { MarkdownDocument } from './markdown-document.jsx'
 import { MarkdownErrorBoundary } from './markdown-error-boundary.jsx'
+
+const complexRenderingTest = readFileSync(
+  resolve(process.cwd(), 'public/sample-file.md'),
+  'utf8',
+)
 
 describe('MarkdownDocument', () => {
   it('renders every required Markdown element with semantic structure', () => {

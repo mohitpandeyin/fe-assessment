@@ -42,7 +42,7 @@ npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite. To exercise the complete rendering surface, upload [`requirements/complex_rendering_test.md`](./requirements/complex_rendering_test.md).
+Open the local URL printed by Vite. To exercise the complete rendering surface, download and upload [`public/sample-file.md`](./public/sample-file.md), which is also available from the home screen's **Sample File.** link.
 
 ### Scripts
 

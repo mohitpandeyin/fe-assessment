@@ -225,7 +225,7 @@ Serializer functions should be deterministic and independently testable. Clipboa
 
 Use a fixture containing every required element and the representative open test case.
 
-The deliberately complex regression fixture is `requirements/complex_rendering_test.md`. It covers every heading level, mixed/nested/task lists, ten code blocks, four table profiles, multilingual and Unicode content, remote/local/unsafe media cases, long URLs/tokens/code, optional syntax degradation, and parser-boundary inputs.
+The deliberately complex regression fixture is `public/sample-file.md`. It covers every heading level, mixed/nested/task lists, ten code blocks, four table profiles, multilingual and Unicode content, remote/local/unsafe media cases, long URLs/tokens/code, optional syntax degradation, and parser-boundary inputs. The home screen exposes this same fixture through the underlined **Sample File.** download link.
 
 For preview validation, verify:
 

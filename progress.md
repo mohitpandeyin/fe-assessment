@@ -799,7 +799,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Post-Phase-6 content audit confirmed existing semantic GFM, safe links/images, task states, focusable overflow, responsive tables, and portable serializers before enhancement.
 - `[x]` Added declared-language code labels, curated local syntax highlighting, accessible per-block copy with async/selection fallback, and preview-toolbar export isolation.
 - `[x]` Refined nested task layout, blockquote presentation, table density/sticky headers/row cues, long-token wrapping, and deterministic keyboard scrolling for table/code overflow.
-- `[x]` Added `requirements/complex_rendering_test.md`: a realistic 17 KB / ~1,981-word stress fixture with all heading levels, deep lists/tasks, 10 code blocks, 4 tables, multilingual/Unicode content, long URLs/tokens, media fallbacks, and parser boundaries.
+- `[x]` Added the fixture now published as `public/sample-file.md`: a realistic 17 KB / ~1,981-word stress fixture with all heading levels, deep lists/tasks, 10 code blocks, 4 tables, multilingual/Unicode content, long URLs/tokens, media fallbacks, and parser boundaries.
 - `[x]` Content enhancement automated gates pass: 12 test files / 49 tests, lint, production build, zero-vulnerability audit, and diff check.
 - `[x]` Browser review of the complex fixture passes at desktop and 582 px reflow-equivalent widths with no page overflow, no console errors, contained wide tables/code, 44 px mobile copy targets, safe raw-embed omission, and working per-block copy.
 - `[x]` Firefox full-document rich-copy regression with the complex fixture passes in Google Docs and Microsoft Word Online: complete content, heading navigation, deep lists/tasks, code, tables, links, multilingual text, and final section retained; preview-only code toolbars do not leak into pasted output.
@@ -1039,7 +1039,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ### Complex-fixture destination regression - 2026-08-12
 
-- Firefox rich copy pasted the complete `requirements/complex_rendering_test.md` fixture into both Google Docs and Microsoft Word Online through **12. Completion record** and the final **End of complex rendering fixture** text.
+- Firefox rich copy pasted the complete fixture, now published as `public/sample-file.md`, into both Google Docs and Microsoft Word Online through **12. Completion record** and the final **End of complex rendering fixture** text.
 - Both destinations recognized the heading hierarchy and populated their document navigation/outline surfaces across the deeply nested section structure.
 - Ordered, unordered, mixed, deeply nested, and task lists remained structurally readable. Portable task states remained `[x]` / `[ ]` markers, as designed for cross-editor consistency.
 - Code blocks retained monospace content, exact line structure, and useful color distinctions where the destination preserved source colors. Plainmark's language labels and per-block Copy/Copied controls were correctly omitted from copied document content.

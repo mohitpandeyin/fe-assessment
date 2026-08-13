@@ -31,7 +31,7 @@ Red spelling/grammar underlines in Word are proofing overlays. They are not expo
 - Rich HTML normalization and sanitization: `src/lib/clipboard/serialize-html.js`
 - Semantic plain text: `src/lib/clipboard/serialize-plain-text.js`
 - Preview components: `src/features/markdown/markdown-components.jsx`
-- Complete fixture: `requirements/complex_rendering_test.md`
+- Complete fixture: `public/sample-file.md`
 - Existing contract: `docs/CONTENT_RENDERING_AND_COPY.md`
 
 ### 2.3 Authoritative platform references
