@@ -1,7 +1,7 @@
 # Project Context and Decision Memory
 
 **Last updated:** 2026-08-13
-**Status:** Release candidate; implementation and compatibility validation complete, Phase 7 deployment in progress
+**Status:** Phase 7 complete; public release deployed and validated
 
 This document preserves the key context and decisions needed to keep future work consistent. Read it together with the [PRD](./PRD.md) before planning or changing the product.
 
@@ -15,7 +15,7 @@ This document preserves the key context and decisions needed to keep future work
 - The working product name is **Plainmark**.
 - The current release gate is 13 test files / 71 tests, ESLint, production build, lockfile install, vulnerability audit, and diff validation.
 - Rich output is manually approved in Microsoft Word Online, Google Docs, and Notion; semantic plain text is approved in VS Code.
-- The Sites project is configured for a static HTTPS deployment; final production publishing is tracked in Phase 7.
+- The public static deployment is available at `https://plainmark-viewer.mohitpandeyin.chatgpt.site`.
 
 ## Product interpretation
 

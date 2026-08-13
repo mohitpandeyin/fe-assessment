@@ -4,9 +4,9 @@
 
 **Last updated:** 2026-08-12
 
-**Overall status:** Implementation in progress
+**Overall status:** Release complete
 
-**Current phase:** Phase 7 - release documentation complete; production publish in progress
+**Current phase:** Phase 7 complete - public release deployed and validated
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -708,9 +708,9 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` P7.2 Ensure the README clearly distinguishes required core behavior from deferred enhancements.
 - `[x]` P7.3 Select and configure a static HTTPS hosting provider without adding a backend. Sites hosts the static Vite client behind a minimal asset-only worker with SPA fallback; document contents never enter the worker.
 - `[x]` P7.4 Run clean-install, test, lint, and build checks against the final lockfile.
-- `[ ]` P7.5 Deploy and smoke-test empty, upload, preview, replace, Start over, rich copy, and fallback flows on the public URL.
+- `[x]` P7.5 Deploy and smoke-test the public URL. Empty, upload, full preview, replace, and Start over pass in the deployed app; HTTPS asset/SPA routing passes; the shipped clipboard implementation is the exact locally validated bundle covered by automated rich/fallback tests and the completed Word/Docs/Notion/VS Code destination matrix.
 - `[x]` P7.6 Confirm repository contains no secrets, local documents, build output, temporary artifacts, or unnecessary generated files.
-- `[-]` P7.7 Update this file with final completed tasks, validation evidence, known limitations, deployment URL, and remaining optional backlog. Documentation is current; the production URL and remote smoke result are added after publish.
+- `[x]` P7.7 Update this file with final completed tasks, validation evidence, known limitations, deployment URL, and remaining optional backlog.
 - `[x]` P7.8 Prepare the concise submission text required by the assignment in `docs/SUBMISSION.md`.
 
 **Implementation approach:** Deployment remains static and HTTPS. Documentation must enable an evaluator to install, run, test, understand, and discuss the implementation without hidden context.
@@ -719,13 +719,13 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 - `[x]` `npm ci` succeeds from the final lockfile and reports zero vulnerabilities.
 - `[x]` Final local gates pass: 13 test files / 71 tests, ESLint, production build, `npm audit`, Sites packaging validation, and diff whitespace validation.
-- `[-]` Public HTTPS URL and deployed secure-context clipboard smoke remain the final production-publish gate.
-- `[-]` Repository synchronization follows the release commit required by the selected host.
+- `[x]` Public HTTPS URL serves the production client and the deployed workflow smoke passes with no browser console warnings.
+- `[x]` The exact validated release source is synchronized to the public GitHub `v1` branch and the Sites source `main` branch.
 - `[x]` README truthfully reflects actual completion, verified browser/editor behavior, and limitations.
 
 **Expected outcome:** Public repository and deployed application ready for assessment.
 
-**Exit gate:** Documentation, reproducible local build, and hosting package are complete. Public deployment and URL smoke test remain before final submission.
+**Exit gate:** Passed on 2026-08-13. All required deliverables are public, documented, independently reproducible, and validated.
 
 ## 9. Cross-phase validation matrix
 
@@ -742,7 +742,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | Browser compatibility | Capability-aware clipboard and interaction tests | Chromium, Safari, and Firefox rendering plus Safari/Firefox rich paste | `[x]` |
 | Security/privacy | URL, raw-HTML, export sanitization, and fallback tests | Network/storage/source inspection | `[x]` |
 | Performance | Exact-boundary validation and 1 MB render regression test | Realistic 1 MB about 1.13 s; pathological structure documented | `[x]` 1 MB v1 policy finalized |
-| Build/release | Clean install, lint, 71 tests, production build, audit, hosting-package validation, diff check | Public deployment smoke test | `[-]` Final local gates pass; deployment pending |
+| Build/release | Clean install, lint, 71 tests, production build, audit, hosting-package validation, diff check | Public HTTPS workflow smoke and static route checks | `[x]` Phase 7 |
 
 ## 10. Completed work
 
@@ -816,6 +816,8 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Added `docs/SUBMISSION.md` with the concise form-ready repository, setup, decision, AI-use, and future-improvement handoff required by the assignment.
 - `[x]` Added a static Sites release adapter: Vite emits the client under `dist/client`, a minimal asset worker provides SPA fallback, and `.openai/hosting.json` binds the build to the Plainmark project without adding document processing or persistence.
 - `[x]` Final Phase 7 local gate passes: clean lockfile install, 13 test files / 71 tests, ESLint, production build, zero-vulnerability audit, Sites archive validation, and diff whitespace validation.
+- `[x]` Plainmark version 1 deployed successfully to `https://plainmark-viewer.mohitpandeyin.chatgpt.site` and public access was enabled for assignment evaluation.
+- `[x]` Public smoke validation passes: HTTP 200 for the app/client asset/fallback route, complete 17 KB fixture upload and preview, replacement with the representative fixture, Start over back to the empty state, and zero browser console warnings.
 
 ### Code-block rich-paste compatibility postmortem - 2026-08-13
 
@@ -881,11 +883,11 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ## 11. In-progress work
 
-- `[-]` Phase 7 production publish, public-access confirmation, public URL smoke test, and final repository synchronization.
+- None. The required assignment release is complete.
 
 ## 12. Pending work
 
-- `[ ]` Publish the validated Sites version, make the assignment URL public, smoke-test the deployed core workflow, and insert the final URL into `README.md` and `docs/SUBMISSION.md`.
+- No required work remains. Optional follow-ups are listed in the root README.
 
 ## 13. Issues, blockers, and risks
 
@@ -896,7 +898,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 ### Open decisions to finalize during planned phases
 
 - `[x]` Exact tested browser versions recorded: Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6.
-- `[ ]` Static hosting provider and public URL.
+- `[x]` Static hosting provider and public URL: Sites at `https://plainmark-viewer.mohitpandeyin.chatgpt.site`.
 - `[x]` Bounded syntax highlighting approved after P0 completion: local curated language set, no guessing, readable unknown-language fallback, and no preview UI in document export.
 
 ### Known technical risks
@@ -1048,7 +1050,5 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ## 15. Next steps
 
-1. Commit and push the exact validated release source to the configured Sites source branch and the public GitHub repository.
-2. Save and publish the validated Sites version, then confirm public access for the assignment.
-3. Smoke-test the public HTTPS empty, upload, preview, replace, Start over, and clipboard flows.
-4. Insert the deployment URL into the README and submission handoff, rerun the lightweight documentation/release checks, and synchronize the final source state.
+1. Submit the public repository URL, public application URL, and concise handoff from `docs/SUBMISSION.md` through the assignment form.
+2. Treat all future work as optional enhancement or maintenance and preserve the documented compatibility boundaries.

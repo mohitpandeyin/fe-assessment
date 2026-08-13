@@ -1,6 +1,6 @@
 # Plainmark submission handoff
 
-Use the text below for the assignment form after the production URL is inserted.
+Use the text below for the assignment form.
 
 ## Repository
 
@@ -8,7 +8,7 @@ https://github.com/mohitpandeyin/fe-assessment
 
 ## Hosted application
 
-Added after the Phase 7 production publish.
+https://plainmark-viewer.mohitpandeyin.chatgpt.site
 
 ## Concise project explanation
 
