@@ -11,6 +11,10 @@ function parseHtml(html) {
   return template.content
 }
 
+function getCodeText(code) {
+  return code.textContent
+}
+
 describe('serializePortableHtml', () => {
   it('creates self-contained semantic HTML without preview-only markup', () => {
     render(<MarkdownDocument resetKey="html" source={requiredElements} />)
@@ -71,7 +75,9 @@ describe('serializePortableHtml', () => {
     render(
       <MarkdownDocument
         resetKey="language-metadata"
-        source={'```js\nconst exported = true\n```\n\n```csharp\nvar count = 1;\n```'}
+        source={
+          '```js\nconst exported = true\nconsole.log(exported)\n```\n\n```csharp\nvar count = 1;\n```'
+        }
       />,
     )
 
@@ -87,8 +93,17 @@ describe('serializePortableHtml', () => {
     expect(codeBlocks[0].parentElement.getAttribute('data-code-language')).toBe(
       'javascript',
     )
-    expect(codeBlocks[0].textContent).toBe('const exported = true\n')
-    expect(codeBlocks[0].querySelector('span')).toBeNull()
+    expect(getCodeText(codeBlocks[0])).toBe(
+      'const exported = true\nconsole.log(exported)',
+    )
+    expect(codeBlocks[0].querySelector('br')).toBeNull()
+    expect(codeBlocks[0].querySelectorAll('span')).toHaveLength(1)
+    expect(codeBlocks[0].querySelector('span').style.display).toBe('')
+    expect(codeBlocks[0].querySelector('span').style.margin).toBe('0px')
+    expect(codeBlocks[0].querySelector('span').style.whiteSpace).toBe(
+      'pre-wrap',
+    )
+    expect(codeBlocks[0].querySelector('span').textContent).toContain('\n')
     expect(codeBlocks[1].className).toBe('language-csharp')
     expect(codeBlocks[1].getAttribute('data-code-language')).toBe('c#')
     expect(exportedDocument.querySelector('select')).toBeNull()
@@ -106,15 +121,53 @@ describe('serializePortableHtml', () => {
     const html = serializePortableHtml(
       screen.getByRole('article', { name: 'Rendered Markdown document' }),
     )
-    const codeBlock = parseHtml(html).querySelector('pre')
+    const exportedDocument = parseHtml(html)
+    const codeContainer = exportedDocument.querySelector('table > tbody > tr > td')
+    const codeTable = codeContainer.closest('table')
+    const codeBlock = codeContainer.querySelector('pre')
 
-    expect(codeBlock.style.display).toBe('block')
-    expect(codeBlock.style.maxWidth).toBe('100%')
-    expect(codeBlock.style.backgroundColor).toBe('rgb(246, 248, 250)')
-    expect(codeBlock.style.borderStyle).toBe('solid')
-    expect(codeBlock.style.padding).toBe('16px 18px')
-    expect(codeBlock.style.whiteSpace).toBe('pre-wrap')
-    expect(codeBlock.style.overflowX).toBe('auto')
+    expect(codeTable.style.borderCollapse).toBe('collapse')
+    expect(codeTable.style.tableLayout).toBe('fixed')
+    expect(codeTable.style.width).toBe('100%')
+    expect(codeContainer.style.backgroundColor).toBe('rgb(246, 248, 250)')
+    expect(codeContainer.style.borderStyle).toBe('solid')
+    expect(codeContainer.style.padding).toBe('16px 18px')
+    expect(codeContainer.getAttribute('style')).toContain('mso-border-alt:')
+    expect(codeContainer.getAttribute('style')).toContain('mso-padding-alt:')
+    expect(codeBlock.style.margin).toBe('0px')
+    expect(codeBlock.style.padding).toBe('0px')
+    expect(codeBlock.style.borderStyle).toBe('none')
+    expect(codeBlock.style.backgroundColor).toBe('transparent')
+    expect(codeBlock.style.whiteSpace).toBe('normal')
     expect(codeBlock.style.overflowWrap).toBe('anywhere')
+    expect(codeBlock.querySelector('code').style.whiteSpace).toBe('normal')
+    expect(codeBlock.querySelector('br')).toBeNull()
+    expect(codeBlock.querySelectorAll('.portable-code-content')).toHaveLength(0)
+  })
+
+  it('keeps exact source newlines in one code run without changing other tables', () => {
+    render(
+      <MarkdownDocument
+        resetKey="line-spacing"
+        source={'```python\nfirst()\n  second()\n\nthird()\n```\n\n| A | B |\n| - | - |\n| 1 | 2 |'}
+      />,
+    )
+
+    const html = serializePortableHtml(
+      screen.getByRole('article', { name: 'Rendered Markdown document' }),
+    )
+    const exportedDocument = parseHtml(html)
+    const code = exportedDocument.querySelector('pre > code')
+    const codeContent = code.querySelector('span')
+
+    expect(code.children).toHaveLength(1)
+    expect(codeContent.style.display).toBe('')
+    expect(codeContent.style.lineHeight).toBe('1.45')
+    expect(codeContent.style.whiteSpace).toBe('pre-wrap')
+    expect(codeContent.textContent).toBe('first()\n  second()\n\nthird()')
+    expect(code.querySelector('br')).toBeNull()
+    expect(getCodeText(code)).toBe('first()\n  second()\n\nthird()')
+    expect(exportedDocument.querySelectorAll('table')).toHaveLength(2)
+    expect(exportedDocument.querySelectorAll('table')[1].querySelectorAll('td')).toHaveLength(2)
   })
 })

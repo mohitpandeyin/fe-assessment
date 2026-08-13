@@ -1,6 +1,9 @@
 import { getUrlPolicy } from '../../features/markdown/url-policy.js'
 import {
   DOCUMENT_EXPORT_STYLE,
+  PORTABLE_CODE_CELL_STYLE,
+  PORTABLE_CODE_CONTENT_STYLE,
+  PORTABLE_CODE_TABLE_STYLE,
   PORTABLE_ELEMENT_STYLES,
   PORTABLE_IMAGE_FALLBACK_STYLE,
   PORTABLE_INLINE_CODE_STYLE,
@@ -49,7 +52,9 @@ function normalizePreviewWrappers(root) {
   }
 
   for (const wrapper of root.querySelectorAll('div')) {
-    unwrap(wrapper)
+    if (!wrapper.classList.contains('code-block')) {
+      unwrap(wrapper)
+    }
   }
 }
 
@@ -75,7 +80,31 @@ function normalizeCodeBlocks(root) {
       element.setAttribute('data-language', language)
     }
     code.className = className
-    code.replaceChildren(root.ownerDocument.createTextNode(code.textContent))
+
+    // Keep the real newlines in one inline run: Google Docs adds paragraph gaps for
+    // per-line blocks, while CSS-only breaks flatten in Word and Notion without `\n`.
+    const codeContent = root.ownerDocument.createElement('span')
+    codeContent.className = 'portable-code-content'
+    codeContent.textContent = code.textContent.replace(/\n$/, '')
+    code.replaceChildren(codeContent)
+
+    const wrapper = pre.closest('.code-block')
+
+    if (wrapper) {
+      // The cell owns one continuous background so rich editors do not shade each line.
+      const table = root.ownerDocument.createElement('table')
+      const tableBody = root.ownerDocument.createElement('tbody')
+      const tableRow = root.ownerDocument.createElement('tr')
+      const tableCell = root.ownerDocument.createElement('td')
+
+      table.className = 'portable-code-table'
+      tableCell.className = 'portable-code-cell'
+      tableCell.append(pre)
+      tableRow.append(tableCell)
+      tableBody.append(tableRow)
+      table.append(tableBody)
+      wrapper.replaceWith(table)
+    }
   }
 }
 
@@ -103,6 +132,18 @@ function applyPortableStyle(element) {
 
   if (element.classList.contains('markdown-image-fallback')) {
     style = PORTABLE_IMAGE_FALLBACK_STYLE
+  }
+
+  if (element.classList.contains('portable-code-table')) {
+    style = PORTABLE_CODE_TABLE_STYLE
+  }
+
+  if (element.classList.contains('portable-code-cell')) {
+    style = PORTABLE_CODE_CELL_STYLE
+  }
+
+  if (element.classList.contains('portable-code-content')) {
+    style = PORTABLE_CODE_CONTENT_STYLE
   }
 
   if (['td', 'th'].includes(tagName)) {

@@ -807,6 +807,46 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Responsive fixed-layout validation passes at the 1024 px sidebar breakpoint and 582 CSS px narrow reflow: sidebar is removed below desktop, main content returns to full width, header uses the documented 48 px mobile height, toolbar remains directly below it, and page width stays contained.
 - `[x]` Added read-only Notion language metadata to fenced code blocks. Declared fence aliases normalize across the requested language set while the preview keeps a fixed label and existing curated syntax highlighting.
 - `[x]` Portable HTML now preserves semantic `<pre><code>` language metadata for Notion, strips preview controls/highlight spans, and renders Word/Docs code in a padded responsive rectangular container with wrapping and overflow safeguards.
+- `[x]` Cross-editor code styling now places the rectangle on a separate portable wrapper while leaving `<pre><code>` semantic. This prevents Google Docs from showing disconnected per-line shading and gives Word both standard and `mso-*` border/padding hints without weakening Notion metadata.
+- `[x]` Portable code serialization now uses a single presentation cell for continuous background/border/padding and one inline `pre-wrap` run containing the exact code text and literal newlines. This removes Google Docs per-line paragraph gaps while restoring source line breaks for Word and Notion.
+
+### Code-block rich-paste compatibility postmortem - 2026-08-13
+
+**Trigger and observed regressions**
+
+- Adding read-only Notion language metadata was safe. The regressions began in the later presentation work that changed how individual code lines were represented inside the portable HTML.
+- In Google Docs, `<br>` and per-line block runs were imported as paragraph-like boundaries. Docs applied its own paragraph spacing, producing large vertical gaps; line-level backgrounds also appeared fragmented instead of forming one rectangle.
+- In Microsoft Word, a later per-line representation looked separated in the browser through CSS layout but no longer contained literal newline characters in one text payload. Word therefore joined the source lines.
+- Notion showed the same joined-line symptom: the `<pre><code>` language/type metadata survived, but visual block boundaries could not substitute for missing newline characters in the code text.
+
+**Diagnosis and root cause**
+
+- The supplied Google Docs, Word, and Notion screenshots were compared against the generated `text/html` structure rather than treating this as a shared line-height problem.
+- The key distinction was between an actual source newline (`\n`) and a visual break produced by `<br>` or `display:block`. Rich-text importers normalize those structures differently even when a browser renders them similarly.
+- Exporting each line as its own block gave Google Docs multiple paragraph-like units, so its paragraph spacing and shading rules created the gaps and fragmented background.
+- Replacing the source newlines with CSS-separated line elements fixed neither text fidelity nor portability: Word and Notion received flattened text because the literal newline characters were gone.
+- The root cause was therefore the line-level clipboard DOM, not the declared code language, syntax highlighting, editor state, or normal document paragraph styles.
+
+**Rejected intermediate approaches**
+
+1. Styling the `<pre>` background directly did not produce a consistently connected rectangle after rich-editor normalization.
+2. A separate outer wrapper improved Word's box but did not resolve Google Docs' handling of the line children.
+3. Inserting `<br>` preserved visible breaks in some destinations but Google Docs interpreted them with excessive vertical spacing.
+4. One block-level span per line reduced one symptom but converted true text newlines into CSS layout, which flattened the code in Word and Notion.
+
+**Final targeted resolution**
+
+- A single presentation table cell owns the entire code block's background, border, and padding, including Word-compatible `mso-*` hints.
+- The semantic `<pre><code>` structure remains read-only and retains normalized Notion language metadata.
+- One inline, zero-margin `pre-wrap` content run contains the exact source text with its indentation, intentional blank lines, and literal newline characters.
+- No `<br>` elements or per-line block elements are generated, which removes the paragraph-like gaps. A controlled `1.45` line height gives each real code line a consistent rhythm, while safe wrapping and fixed-layout container rules handle long lines.
+- The change is isolated to portable code serialization and styles; normal paragraphs, headings, lists, tables, and other document output are unchanged.
+
+**Regression evidence**
+
+- Serializer coverage asserts one connected presentation cell, one inline content run, no `<br>` elements, and exact code `textContent`, including indentation and an intentional blank line.
+- Coverage also asserts that ordinary Markdown tables do not receive the code-container treatment.
+- The complete local gate after the fix passed: 63 tests, lint, production build, and diff validation. The user then confirmed the destination behavior works.
 
 ## 11. In-progress work
 
@@ -877,6 +917,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 30. Horizontal code/table regions implement Arrow Left/Right and Home/End scrolling rather than relying on browser-specific native overflow-key behavior.
 31. The application shell uses explicit header-height and sidebar-width custom properties so fixed header/sidebar offsets, viewport-height calculations, and responsive content padding share one measured source of truth.
 32. Code language is derived only from the Markdown fence and is not editable in the preview. Rich HTML retains normalized language metadata for Notion; Markdown/plain-text outputs and per-block copied code retain the exact source text.
+33. Portable code export separates presentation from text semantics: one cell owns the connected box, while one inline `pre-wrap` run owns the literal code payload. A visual CSS break is not accepted as a substitute for a source newline, and per-line blocks or `<br>` elements are avoided because destination editors normalize them incompatibly.
 
 ### Complex-fixture destination regression - 2026-08-12
 

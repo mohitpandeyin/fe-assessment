@@ -42,7 +42,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 | Lists | Preserve ordered/unordered semantics, nesting, markers, and task state; avoid excessive mobile indentation | Preserve `<ol>`, `<ul>`, and `<li>` nesting with portable indentation and margins | Use bullets, numbers, indentation, and `[ ]`/`[x]` for tasks |
 | Blockquotes | Use a restrained left border, inset spacing, and readable contrast | Preserve `<blockquote>` with a simple border, padding, and margins | Prefix lines with `>` |
 | Inline code | Distinct monospaced treatment; wrap long tokens without breaking the page | Preserve `<code>` with a portable monospace stack and restrained background/border | Preserve the exact code text inline |
-| Code blocks | Preserve all whitespace and line breaks; show the declared-language label as read-only metadata, restrained local syntax highlighting where supported, per-block copy, and contained keyboard/pointer overflow | Preserve `<pre><code>` and whitespace plus normalized Notion language metadata; remove preview toolbar/highlight markup and use a clean rectangular background, border, padding, and monospace styling | Preserve code exactly, including indentation and line breaks; omit preview toolbar labels/actions |
+| Code blocks | Preserve all whitespace and line breaks; show the declared-language label as read-only metadata, restrained local syntax highlighting where supported, per-block copy, and contained keyboard/pointer overflow | Preserve `<pre><code>` and whitespace plus normalized Notion language metadata; remove preview toolbar/highlight markup and place the semantic code inside a portable rectangular container whose background, border, and padding survive document-editor paste more reliably | Preserve code exactly, including indentation and line breaks; omit preview toolbar labels/actions |
 | Tables | Preserve header cells, alignment, row/column relationships, and captions when present; table wrapper scrolls horizontally | Use real `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, and `<td>` elements with collapsed borders and cell padding | Separate cells with tabs and rows with newlines so spreadsheet paste remains usable |
 | Links | Clearly identifiable, keyboard reachable, safe, and able to wrap | Preserve safe absolute `http`/`https` links and visible labels; do not depend on hover styling | Output `label (URL)` when the label differs from the URL |
 | Images | Responsive, never wider than their container, with useful alt text and a stable fallback | Include only a safe, durable source that the destination can resolve; preserve alt text | Output the alt text and source URL when useful |
@@ -78,6 +78,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 - Syntax highlighting is optional. Legible code, preserved whitespace, and adequate contrast are required.
 - Syntax highlighting uses the declared fence language only, a restrained accessible palette, and a curated local language set; no remote service, language selector, editing, or automatic guessing is permitted.
 - Supported fence aliases normalize to Notion's language values and remain attached to the semantic `<pre><code>` output through `language-*`, `data-language`, and `data-code-language` metadata.
+- Portable code HTML uses one presentation cell for the block background, border, and padding. Its semantic `<pre><code>` contains one inline, zero-margin `pre-wrap` run with the exact source text and literal newlines. Avoiding per-line block runs prevents Google Docs paragraph gaps while preserving line breaks in Word and Notion.
 - Missing or unsupported declared languages remain readable and use Notion's `plain text` fallback.
 
 ## 5. Clipboard output contract
@@ -102,6 +103,28 @@ Clipboard HTML must:
 - Prefer broadly supported CSS values and absolute safe URLs.
 
 Do not copy every computed browser style. A small explicit export style map is more predictable, smaller, and easier to test.
+
+#### Code-block compatibility postmortem
+
+The Notion language metadata was not the cause of the code-line regression. The regression was introduced while changing the internal code markup to make the visual container portable across rich-text destinations.
+
+The three destinations interpret clipboard HTML differently:
+
+- Google Docs may map block-level children and `<br>` elements inside preformatted content to paragraph-like boundaries. If every source line is exported as a block run, Docs can add paragraph spacing between lines and can apply the background to separate text fragments instead of one block.
+- Word preserves literal newline characters inside a preformatted text run, but CSS-only line breaks such as `display:block` on per-line spans are not reliable paste semantics. Removing the newline characters while relying on those spans caused Word to join the code.
+- Notion uses the semantic `<pre><code>` element and its language metadata, but it also needs the code payload to retain literal newline characters. Visual block boundaries do not replace those characters, so the same flattened payload caused Notion to join the code.
+
+We diagnosed this by comparing the destination screenshots with the serialized `text/html`, then separating two concepts that initially looked equivalent in the browser: a **visual line break** created by layout CSS and an **actual code newline** represented by `\n` in the text node. Intermediate versions used `<br>` elements or one block-level element per source line. Those structures looked correct in a browser but allowed Google Docs to introduce paragraph spacing, and the per-line version no longer gave Word or Notion one text payload containing the source newlines.
+
+The portable representation therefore follows these invariants:
+
+- One presentation cell owns the background, border, and padding for the complete block. Background is never applied per source line.
+- The semantic `<pre><code>` structure and normalized Notion language metadata remain intact.
+- The code element contains one inline, zero-margin run with `white-space: pre-wrap` and the exact source text, including every intentional newline and blank line.
+- The serializer does not create `<br>` elements or block-level elements for individual code lines.
+- The content run uses controlled line height and safe wrapping; the fixed-layout presentation table keeps the container within the document width.
+
+Regression tests must assert the structure as well as its appearance: one presentation cell, one code-content run, no `<br>` elements, exact `textContent` including indentation/newlines/intentional blank lines, and no change to ordinary Markdown tables or other document elements. This is the smallest representation that gives Google Docs one connected box without paragraph gaps while preserving the source line structure in Word and Notion.
 
 ### 5.2 Plain-text serialization
 

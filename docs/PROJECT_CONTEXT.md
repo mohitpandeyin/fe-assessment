@@ -63,6 +63,7 @@ These decisions clarify ambiguous areas without expanding the assignment:
 22. **Images and embeds are conservative.** Images remain responsive and retain alt text, but privacy-first v1 does not automatically fetch remote images, copy temporary object URLs, fetch/embed remote bytes for fidelity, execute embeds, or resolve ungranted local assets. Unsupported media degrades to readable alternative content and a safe link where available.
 23. **Code remains read-only.** Fenced code shows a fixed declared-language label, restrained highlighting for a curated common-language set, and a per-block copy action. Full-document clipboard serialization removes preview controls while retaining semantic `<pre><code>` structure and normalized Notion language metadata.
 24. **Overflow is keyboard-operable.** Focused code/table regions support horizontal Arrow Left/Right movement plus Home/End, in addition to pointer/trackpad scrolling.
+25. **Portable code separates visual containment from text semantics.** One presentation cell owns the complete background, border, and padding; one inline `pre-wrap` run inside semantic `<pre><code>` owns the exact code payload and its literal newlines. Per-line block elements and `<br>`-based serialization are prohibited because Google Docs can treat them as spaced paragraph boundaries, while CSS-only breaks do not preserve source newlines reliably in Word or Notion.
 
 ## Recommended technical direction, not yet implementation
 
