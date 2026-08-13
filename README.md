@@ -42,7 +42,7 @@ The repository includes [`render.yaml`](./render.yaml) for a Render Blueprint st
 - Publish directory: `dist`
 - Runtime: static
 
-The Blueprint targets the `codex/evaluation` branch. Render must publish `dist`, not the repository root. Publishing the root serves the development `index.html`, which imports `/src/main.jsx`; a static CDN may then return JSX as `binary/octet-stream`, causing the browser's strict module MIME error. The Vite build instead emits hashed `.js` assets under `dist/assets/`, which Render serves with the correct JavaScript MIME type.
+The Blueprint targets the `evaluation` branch. Render must publish `dist`, not the repository root. Publishing the root serves the development `index.html`, which imports `/src/main.jsx`; a static CDN may then return JSX as `binary/octet-stream`, causing the browser's strict module MIME error. The Vite build instead emits hashed `.js` assets under `dist/assets/`, which Render serves with the correct JavaScript MIME type.
 
 Plainmark uses a single page and no client-side URL router, so no catch-all rewrite is required.
 

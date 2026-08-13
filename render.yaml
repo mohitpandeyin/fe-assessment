@@ -2,7 +2,7 @@ services:
   - type: web
     runtime: static
     name: plainmark
-    branch: codex/evaluation
+    branch: evaluation
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     headers:
