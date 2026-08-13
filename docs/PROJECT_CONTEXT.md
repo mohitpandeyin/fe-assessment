@@ -1,19 +1,21 @@
 # Project Context and Decision Memory
 
-**Last updated:** 2026-08-12  
-**Status:** Requirements, UI direction, and content/copy contract approved; implementation not started
+**Last updated:** 2026-08-13
+**Status:** Release candidate; implementation and compatibility validation complete, Phase 7 deployment in progress
 
 This document preserves the key context and decisions needed to keep future work consistent. Read it together with the [PRD](./PRD.md) before planning or changing the product.
 
 ## Current workspace state
 
-- The workspace contains requirements and design documentation; no application scaffold or implementation exists yet.
-- The workspace is initialized as a Git repository on `main` with `origin` set to `https://github.com/mohitpandeyin/fe-assessment.git`.
+- The React/Vite application, automated tests, compatibility serializers, release documentation, and static-hosting adapter are implemented.
+- The workspace is a Git repository on `v1` with `origin` set to `https://github.com/mohitpandeyin/fe-assessment.git`.
 - The authoritative assignment is a two-page PDF at `requirements/Frontend_Developer_Assignment.pdf`.
 - `requirements/open_test_case.md` is a representative complex Markdown document used to understand likely edge cases.
 - The approved loaded-state visual reference is `docs/assets/direction-c-locked.png`; the dedicated first-visit desktop reference is `docs/assets/first-visit-desktop.png`; the earlier TOC-based exploration is retained separately for provenance.
 - The working product name is **Plainmark**.
-- Deployment configuration and automated tests have not been created.
+- The current release gate is 13 test files / 71 tests, ESLint, production build, lockfile install, vulnerability audit, and diff validation.
+- Rich output is manually approved in Microsoft Word Online, Google Docs, and Notion; semantic plain text is approved in VS Code.
+- The Sites project is configured for a static HTTPS deployment; final production publishing is tracked in Phase 7.
 
 ## Product interpretation
 
@@ -66,17 +68,17 @@ These decisions clarify ambiguous areas without expanding the assignment:
 25. **Portable code separates visual containment from text semantics.** One presentation cell owns the complete background, border, and padding; one inline `pre-wrap` run inside semantic `<pre><code>` owns the exact code payload and its literal newlines. Per-line block elements and `<br>`-based serialization are prohibited because Google Docs can treat them as spaced paragraph boundaries, while CSS-only breaks do not preserve source newlines reliably in Word or Notion.
 26. **Portable blockquotes remain semantic and use paragraph-level visual fallbacks.** The `<blockquote>` nesting remains available to Notion, while direct quote paragraphs, lists, and nested quotes receive matching left borders, indentation, controlled line height, and zero margins for Word and Google Docs. No table wrapper or background fill is used, and normal document blocks are outside this normalization.
 
-## Recommended technical direction, not yet implementation
+## Implemented technical direction
 
-- Use a lightweight React build such as Vite unless repository or hosting constraints later require another React framework.
-- Prefer `react-markdown` with `remark-gfm` because it maps parsed Markdown to React elements, supports component-level styling, and is safe by default when raw HTML execution is not enabled.
+- Vite is the implemented browser-only React build; the static hosting adapter serves only the built client and does not process documents.
+- `react-markdown` with `remark-gfm` maps parsed Markdown to React elements; raw HTML execution is not enabled.
 - VS Code's preview is a useful reference but should not be copied literally. VS Code uses `markdown-it`, `highlight.js`, generated HTML, CSS, and an isolated webview. This project can achieve the required behavior with a simpler React-native renderer.
 - Treat the onscreen preview and clipboard export as two presentations of the same document semantics. They may require different styling: Tailwind/component styles on screen and portable inline styles in clipboard HTML.
 - Follow `docs/CONTENT_RENDERING_AND_COPY.md` for the element matrix, fidelity boundary, serializer responsibilities, and cross-editor validation.
 - Keep file reading, Markdown parsing, clipboard serialization, and UI state separated so each can be tested independently.
 - Implement the approved React + Tailwind + authored CSS strategy in `docs/FRONTEND_ARCHITECTURE.md`; do not add shadcn, Radix, or another UI kit without first documenting a concrete accessibility or delivery need.
 
-These decisions form the approved implementation baseline. Optional dependencies still require a concrete need and should not displace core delivery.
+These decisions describe the implemented release baseline. Optional dependencies still require a concrete need and should not displace core delivery.
 
 ## Representative edge cases found in the sample
 
@@ -105,12 +107,12 @@ Required constructs must be verified directly. Optional constructs should degrad
 - Arbitrary HTML, links, and remote images can create security or privacy issues if enabled without policy.
 - Over-investing in editor features, diagrams, math, themes, or animation would dilute the heavily weighted UI/UX and required-rendering work.
 
-## Open decisions for planning
+## Resolved planning decisions
 
-- Exact maximum file size and whether to warn before processing unusually large files.
-- Whether v1 accepts only `.md`/`.markdown` names or also allows text files with Markdown contents.
+- The v1 maximum is 1 MB inclusive, based on complete-render performance evidence.
+- v1 accepts only `.md` and `.markdown` filenames.
 - Whether a later opt-in should load remote image bytes. The conservative v1 copy path does not fetch/embed them merely for fidelity.
-- Which optional enhancements fit after all must-have acceptance criteria pass.
-- Supported browser matrix and the exact behavior used for older clipboard implementations.
+- Bounded declared-language highlighting and per-block code copy were the approved post-P0 enhancements.
+- Supported desktop browsers are current Chrome, Firefox, and Safari; rich copy uses a capability-gated plain-text fallback where necessary.
 
-Until these are resolved, use the conservative defaults in the PRD and do not make irreversible assumptions in code.
+Future changes must preserve the conservative privacy, safety, and cross-editor compatibility boundaries documented here and in the PRD.

@@ -1,6 +1,6 @@
 # Project Documentation
 
-This folder is the source of truth for the Markdown rendering application before planning and implementation begin.
+This folder contains the product, design, implementation, compatibility, and release references for Plainmark.
 
 ## Documents
 
@@ -10,6 +10,8 @@ This folder is the source of truth for the Markdown rendering application before
 - [Design System](./DESIGN_SYSTEM.md) - approved visual foundations, tokens, typography, component patterns, and Markdown presentation rules.
 - [Frontend Architecture](./FRONTEND_ARCHITECTURE.md) - approved React/Tailwind/CSS boundaries, custom-component strategy, dependency budget, and code-quality guardrails.
 - [Content Rendering and Rich-Copy Contract](./CONTENT_RENDERING_AND_COPY.md) - semantic element behavior, portable clipboard formatting, cross-editor expectations, and validation criteria.
+- [Element Improvement Reference](./elements-improvement.md) - Word/Google Docs element-by-element research, observed gaps, selected fixes, and platform-specific constraints.
+- [Submission Handoff](./SUBMISSION.md) - concise setup, decision, AI-use, and future-improvement text for the assignment form.
 - [Locked Direction C reference](./assets/direction-c-locked.png) - approved visual reference with the file-details/Start-over sidebar.
 - [First-visit desktop reference](./assets/first-visit-desktop.png) - dedicated landing/empty state before a file is selected.
 - [Original Direction C exploration](./assets/direction-c-exploration.png) - retained for decision provenance; its TOC sidebar is not part of v1.

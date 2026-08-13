@@ -6,7 +6,7 @@
 
 **Overall status:** Implementation in progress
 
-**Current phase:** Phase 7 - release documentation and deployment; content-experience enhancement checkpoint in progress
+**Current phase:** Phase 7 - release documentation complete; production publish in progress
 
 **Repository:** `mohitpandeyin/fe-assessment`
 
@@ -704,28 +704,28 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 #### Tasks
 
-- `[ ]` P7.1 Create a concise root README with product summary, features, setup, scripts, architecture, design decisions, technical decisions, dependency rationale, privacy, accessibility, testing, AI-assistant use, limitations, incomplete items, and future improvements.
-- `[ ]` P7.2 Ensure the README clearly distinguishes required core behavior from deferred enhancements.
-- `[ ]` P7.3 Select and configure a static HTTPS hosting provider without adding a backend.
-- `[ ]` P7.4 Run clean-install, test, lint, and build checks against the final lockfile.
+- `[x]` P7.1 Create a concise root README with product summary, features, setup, scripts, architecture, design decisions, technical decisions, dependency rationale, privacy, accessibility, testing, AI-assistant use, limitations, incomplete items, and future improvements.
+- `[x]` P7.2 Ensure the README clearly distinguishes required core behavior from deferred enhancements.
+- `[x]` P7.3 Select and configure a static HTTPS hosting provider without adding a backend. Sites hosts the static Vite client behind a minimal asset-only worker with SPA fallback; document contents never enter the worker.
+- `[x]` P7.4 Run clean-install, test, lint, and build checks against the final lockfile.
 - `[ ]` P7.5 Deploy and smoke-test empty, upload, preview, replace, Start over, rich copy, and fallback flows on the public URL.
-- `[ ]` P7.6 Confirm repository contains no secrets, local documents, build output, temporary artifacts, or unnecessary generated files.
-- `[ ]` P7.7 Update this file with final completed tasks, validation evidence, known limitations, deployment URL, and remaining optional backlog.
-- `[ ]` P7.8 Prepare the concise submission text required by the assignment.
+- `[x]` P7.6 Confirm repository contains no secrets, local documents, build output, temporary artifacts, or unnecessary generated files.
+- `[-]` P7.7 Update this file with final completed tasks, validation evidence, known limitations, deployment URL, and remaining optional backlog. Documentation is current; the production URL and remote smoke result are added after publish.
+- `[x]` P7.8 Prepare the concise submission text required by the assignment in `docs/SUBMISSION.md`.
 
 **Implementation approach:** Deployment remains static and HTTPS. Documentation must enable an evaluator to install, run, test, understand, and discuss the implementation without hidden context.
 
 **Validation/testing:**
 
-- Fresh clone/install succeeds using documented commands.
-- Public HTTPS URL loads and supports the core workflow.
-- Clipboard behavior is retested in the deployed secure context.
-- Repository is clean and synchronized before submission.
-- README truthfully reflects actual completion and limitations.
+- `[x]` `npm ci` succeeds from the final lockfile and reports zero vulnerabilities.
+- `[x]` Final local gates pass: 13 test files / 71 tests, ESLint, production build, `npm audit`, Sites packaging validation, and diff whitespace validation.
+- `[-]` Public HTTPS URL and deployed secure-context clipboard smoke remain the final production-publish gate.
+- `[-]` Repository synchronization follows the release commit required by the selected host.
+- `[x]` README truthfully reflects actual completion, verified browser/editor behavior, and limitations.
 
 **Expected outcome:** Public repository and deployed application ready for assessment.
 
-**Exit gate:** All final deliverables are present and independently reproducible.
+**Exit gate:** Documentation, reproducible local build, and hosting package are complete. Public deployment and URL smoke test remain before final submission.
 
 ## 9. Cross-phase validation matrix
 
@@ -742,7 +742,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 | Browser compatibility | Capability-aware clipboard and interaction tests | Chromium, Safari, and Firefox rendering plus Safari/Firefox rich paste | `[x]` |
 | Security/privacy | URL, raw-HTML, export sanitization, and fallback tests | Network/storage/source inspection | `[x]` |
 | Performance | Exact-boundary validation and 1 MB render regression test | Realistic 1 MB about 1.13 s; pathological structure documented | `[x]` 1 MB v1 policy finalized |
-| Build/release | Lint, 45 tests, production build, audit, diff check | Public deployment smoke test | `[-]` Local gates pass; deployment pending |
+| Build/release | Clean install, lint, 71 tests, production build, audit, hosting-package validation, diff check | Public deployment smoke test | `[-]` Final local gates pass; deployment pending |
 
 ## 10. Completed work
 
@@ -794,7 +794,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Firefox complete-fixture preview and Google Docs rich paste approved with semantic hierarchy, tables, code, lists, links, and full content retained.
 - `[x]` Phase 6 contrast, mobile target size, loading announcement, native dialog-cancel, and viewport-change dialog issues corrected.
 - `[x]` Exact 1 MB realistic render boundary validated; the v1 maximum was revised from 5 MB to 1 MB based on complete-render evidence.
-- `[x]` Phase 6 local automated gates currently pass: 12 files / 45 tests, lint, build, zero-vulnerability audit, and diff check.
+- `[x]` Phase 6 local automated gates passed at its exit checkpoint; the final Phase 7 release gate supersedes those earlier test/build counts.
 - `[x]` Phase 6 completed with Chrome 151.0.7922.137, Firefox 153.0.4, and Safari 26.6 compatibility evidence.
 - `[x]` Post-Phase-6 content audit confirmed existing semantic GFM, safe links/images, task states, focusable overflow, responsive tables, and portable serializers before enhancement.
 - `[x]` Added declared-language code labels, curated local syntax highlighting, accessible per-block copy with async/selection fallback, and preview-toolbar export isolation.
@@ -812,6 +812,10 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Cross-editor code styling now places the rectangle on a separate portable wrapper while leaving `<pre><code>` semantic. This prevents Google Docs from showing disconnected per-line shading and gives Word both standard and `mso-*` border/padding hints without weakening Notion metadata.
 - `[x]` Portable code serialization now uses a single presentation cell for continuous background/border/padding and one inline `pre-wrap` run containing the exact code text and literal newlines. This removes Google Docs per-line paragraph gaps while restoring source line breaks for Word and Notion.
 - `[x]` Portable blockquotes now retain semantic nesting while applying their left rule, indentation, controlled line height, and zero internal margins to direct paragraph/list units. This targets the paragraph models imported by Word and Google Docs without changing Notion semantics or ordinary document elements.
+- `[x]` Phase 7 root README now covers required versus enhanced scope, setup/scripts, architecture and dependency rationale, privacy/safety, accessibility, verified browser/editor behavior, AI-assistant use, limitations, and future improvements.
+- `[x]` Added `docs/SUBMISSION.md` with the concise form-ready repository, setup, decision, AI-use, and future-improvement handoff required by the assignment.
+- `[x]` Added a static Sites release adapter: Vite emits the client under `dist/client`, a minimal asset worker provides SPA fallback, and `.openai/hosting.json` binds the build to the Plainmark project without adding document processing or persistence.
+- `[x]` Final Phase 7 local gate passes: clean lockfile install, 13 test files / 71 tests, ESLint, production build, zero-vulnerability audit, Sites archive validation, and diff whitespace validation.
 
 ### Code-block rich-paste compatibility postmortem - 2026-08-13
 
@@ -877,11 +881,11 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ## 11. In-progress work
 
-- `[-]` Phase 7 release documentation and static deployment remain; the requested content-experience enhancement is implemented and validated locally.
+- `[-]` Phase 7 production publish, public-access confirmation, public URL smoke test, and final repository synchronization.
 
 ## 12. Pending work
 
-- `[ ]` Phase 7 - release documentation and deployment.
+- `[ ]` Publish the validated Sites version, make the assignment URL public, smoke-test the deployed core workflow, and insert the final URL into `README.md` and `docs/SUBMISSION.md`.
 
 ## 13. Issues, blockers, and risks
 
@@ -1044,7 +1048,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 
 ## 15. Next steps
 
-1. Review and, when approved, commit/push the validated content-experience enhancement checkpoint.
-2. Create the Phase 7 root README, including the verified browser/editor matrix, code/highlighting behavior, complex fixture, and documented limitations.
-3. Configure static HTTPS deployment, run final clean-state gates, and smoke-test the public URL.
-4. Record the deployment URL and prepare the final submission handoff.
+1. Commit and push the exact validated release source to the configured Sites source branch and the public GitHub repository.
+2. Save and publish the validated Sites version, then confirm public access for the assignment.
+3. Smoke-test the public HTTPS empty, upload, preview, replace, Start over, and clipboard flows.
+4. Insert the deployment URL into the README and submission handoff, rerun the lightweight documentation/release checks, and synchronize the final source state.
