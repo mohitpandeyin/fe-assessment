@@ -5,7 +5,7 @@ export const PORTABLE_ELEMENT_STYLES = {
   a: 'color:#0c765f;text-decoration:underline;',
   blockquote:
     'border-left:4px solid #c9ced2;color:#4f5865;margin:20px 0;padding:4px 0 4px 16px;',
-  code: 'font-family:Consolas,Menlo,monospace;font-size:0.9em;',
+  code: 'display:block;max-width:100%;font-family:Consolas,Menlo,Monaco,"Courier New",monospace;font-size:14px;line-height:1.6;white-space:inherit;',
   del: 'color:#7a838e;text-decoration:line-through;',
   h1: 'color:#171b22;font-size:30px;font-weight:700;line-height:1.25;margin:0 0 20px;',
   h2: 'color:#171b22;font-size:24px;font-weight:700;line-height:1.3;margin:32px 0 12px;',
@@ -17,7 +17,7 @@ export const PORTABLE_ELEMENT_STYLES = {
   li: 'margin:4px 0;',
   ol: 'margin:0 0 18px;padding-left:28px;',
   p: 'margin:0 0 16px;',
-  pre: 'background:#f4f5f3;border:1px solid #dde0e2;border-radius:6px;font-family:Consolas,Menlo,monospace;font-size:14px;line-height:1.6;margin:20px 0;overflow-x:auto;padding:14px;white-space:pre-wrap;',
+  pre: 'box-sizing:border-box;display:block;max-width:100%;background:#f6f8fa;border:1px solid #d8dee4;border-radius:8px;color:#24292f;font-family:Consolas,Menlo,Monaco,"Courier New",monospace;font-size:14px;line-height:1.6;margin:20px 0;overflow-x:auto;overflow-wrap:anywhere;padding:16px 18px;tab-size:2;white-space:pre-wrap;word-break:break-word;',
   strong: 'font-weight:700;',
   table:
     'border:1px solid #c9ced2;border-collapse:collapse;font-size:14px;margin:20px 0;width:100%;',

@@ -58,9 +58,20 @@ describe('MarkdownDocument', () => {
       screen.getByRole('button', { name: 'Copy JavaScript code' }),
     ).toBeInTheDocument()
     expect(codeRegions[1].querySelector('code')).toHaveClass(
-      'language-unknown-language',
+      'language-plaintext',
     )
-    expect(codeRegions[2].querySelector('code')).not.toHaveAttribute('class')
+    expect(codeRegions[2].querySelector('code')).toHaveClass(
+      'language-plaintext',
+    )
+    expect(codeRegions[0].querySelector('pre')).toHaveAttribute(
+      'data-code-language',
+      'javascript',
+    )
+    expect(codeRegions[0].querySelector('code')).toHaveAttribute(
+      'data-language',
+      'javascript',
+    )
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
 
     expect(screen.getByLabelText('Completed task')).toBeChecked()
     expect(screen.getByLabelText('Completed task')).toBeDisabled()
@@ -195,6 +206,41 @@ describe('MarkdownDocument', () => {
     ).toHaveTextContent('Copied')
   })
 
+  it('maps fence aliases to fixed Notion language metadata', () => {
+    render(
+      <MarkdownDocument
+        resetKey="notion-languages"
+        source={
+          '```csharp\nvar active = true;\n```\n\n```notion-formula\nprop("Status")\n```'
+        }
+      />,
+    )
+
+    const csharpBlock = screen.getByRole('region', {
+      name: 'Scrollable C# code block',
+    })
+    const formulaBlock = screen.getByRole('region', {
+      name: 'Scrollable Notion Formula code block',
+    })
+
+    expect(csharpBlock.querySelector('code')).toHaveClass('language-csharp')
+    expect(csharpBlock.querySelector('code')).toHaveAttribute(
+      'data-code-language',
+      'c#',
+    )
+    expect(csharpBlock.querySelector('code')).toHaveTextContent(
+      'var active = true;',
+    )
+    expect(formulaBlock.querySelector('code')).toHaveClass(
+      'language-notion-formula',
+    )
+    expect(formulaBlock.querySelector('pre')).toHaveAttribute(
+      'data-language',
+      'notion formula',
+    )
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
+  })
+
   it('falls back to selection copy when async text copy is unavailable', async () => {
     const user = userEvent.setup()
     const originalClipboard = navigator.clipboard
@@ -212,11 +258,11 @@ describe('MarkdownDocument', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Copy Plain text code' }))
+    await user.click(screen.getByRole('button', { name: 'Copy Plain Text code' }))
 
     expect(execCommand).toHaveBeenCalledWith('copy')
     expect(
-      screen.getByRole('button', { name: 'Plain text code copied' }),
+      screen.getByRole('button', { name: 'Plain Text code copied' }),
     ).toHaveTextContent('Copied')
 
     Object.defineProperty(navigator, 'clipboard', {

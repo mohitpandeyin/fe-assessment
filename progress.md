@@ -805,6 +805,8 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Loaded-state shell now uses a fixed global header and fixed 224 px desktop sidebar; the sidebar begins at the real header boundary and uses `height: calc(100dvh - 52px)`, while main content is offset by the same 52 px header and 224 px sidebar dimensions.
 - `[x]` Fixed-layout browser validation passes with the 17 KB complex fixture: header, sidebar, and document toolbar remain anchored during long-page scrolling; no overlap, horizontal page overflow, duplicate document scrollbar, or desktop layout shift was found.
 - `[x]` Responsive fixed-layout validation passes at the 1024 px sidebar breakpoint and 582 CSS px narrow reflow: sidebar is removed below desktop, main content returns to full width, header uses the documented 48 px mobile height, toolbar remains directly below it, and page width stays contained.
+- `[x]` Added read-only Notion language metadata to fenced code blocks. Declared fence aliases normalize across the requested language set while the preview keeps a fixed label and existing curated syntax highlighting.
+- `[x]` Portable HTML now preserves semantic `<pre><code>` language metadata for Notion, strips preview controls/highlight spans, and renders Word/Docs code in a padded responsive rectangular container with wrapping and overflow safeguards.
 
 ## 11. In-progress work
 
@@ -874,6 +876,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 29. Per-block code copy is preview-only and uses `navigator.clipboard.writeText` with a selection-copy fallback. The full-document serializers remove code toolbars so established Word/Docs/Notion/plain-text output does not gain UI labels or buttons.
 30. Horizontal code/table regions implement Arrow Left/Right and Home/End scrolling rather than relying on browser-specific native overflow-key behavior.
 31. The application shell uses explicit header-height and sidebar-width custom properties so fixed header/sidebar offsets, viewport-height calculations, and responsive content padding share one measured source of truth.
+32. Code language is derived only from the Markdown fence and is not editable in the preview. Rich HTML retains normalized language metadata for Notion; Markdown/plain-text outputs and per-block copied code retain the exact source text.
 
 ### Complex-fixture destination regression - 2026-08-12
 

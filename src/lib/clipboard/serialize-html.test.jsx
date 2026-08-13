@@ -32,13 +32,18 @@ describe('serializePortableHtml', () => {
     expect(exportedDocument.textContent).toContain('[x] Completed task')
     expect(exportedDocument.textContent).toContain('[ ] Incomplete task')
 
-    expect(html).not.toContain('class=')
+    expect(exportedDocument.querySelector('[class]:not(code)')).toBeNull()
+    expect(
+      exportedDocument.querySelector('code.language-javascript'),
+    ).not.toBeNull()
     expect(html).not.toContain('aria-')
     expect(html).not.toContain('tabindex')
     expect(html).not.toContain('var(--')
     expect(exportedDocument.querySelector('input')).toBeNull()
     expect(exportedDocument.querySelector('button')).toBeNull()
+    expect(exportedDocument.querySelector('select')).toBeNull()
     expect(exportedDocument.textContent).not.toContain('JavaScriptCopy')
+    expect(exportedDocument.textContent).not.toContain('Plain textCSSHTML')
     expect(exportedDocument.querySelector('script')).toBeNull()
   })
 
@@ -60,5 +65,56 @@ describe('serializePortableHtml', () => {
         'a[href="https://images.example.com/diagram.png"]',
       ).textContent,
     ).toBe('View image source')
+  })
+
+  it('preserves read-only Notion language metadata in portable HTML', () => {
+    render(
+      <MarkdownDocument
+        resetKey="language-metadata"
+        source={'```js\nconst exported = true\n```\n\n```csharp\nvar count = 1;\n```'}
+      />,
+    )
+
+    const html = serializePortableHtml(
+      screen.getByRole('article', { name: 'Rendered Markdown document' }),
+    )
+    const exportedDocument = parseHtml(html)
+    const codeBlocks = exportedDocument.querySelectorAll('pre > code')
+
+    expect(codeBlocks).toHaveLength(2)
+    expect(codeBlocks[0].className).toBe('language-javascript')
+    expect(codeBlocks[0].getAttribute('data-language')).toBe('javascript')
+    expect(codeBlocks[0].parentElement.getAttribute('data-code-language')).toBe(
+      'javascript',
+    )
+    expect(codeBlocks[0].textContent).toBe('const exported = true\n')
+    expect(codeBlocks[0].querySelector('span')).toBeNull()
+    expect(codeBlocks[1].className).toBe('language-csharp')
+    expect(codeBlocks[1].getAttribute('data-code-language')).toBe('c#')
+    expect(exportedDocument.querySelector('select')).toBeNull()
+    expect(exportedDocument.textContent).not.toContain('JavaScriptCopy')
+  })
+
+  it('uses a responsive rectangular treatment for document editors', () => {
+    render(
+      <MarkdownDocument
+        resetKey="code-style"
+        source={'```typescript\nconst veryLongIdentifier = "value"\n```'}
+      />,
+    )
+
+    const html = serializePortableHtml(
+      screen.getByRole('article', { name: 'Rendered Markdown document' }),
+    )
+    const codeBlock = parseHtml(html).querySelector('pre')
+
+    expect(codeBlock.style.display).toBe('block')
+    expect(codeBlock.style.maxWidth).toBe('100%')
+    expect(codeBlock.style.backgroundColor).toBe('rgb(246, 248, 250)')
+    expect(codeBlock.style.borderStyle).toBe('solid')
+    expect(codeBlock.style.padding).toBe('16px 18px')
+    expect(codeBlock.style.whiteSpace).toBe('pre-wrap')
+    expect(codeBlock.style.overflowX).toBe('auto')
+    expect(codeBlock.style.overflowWrap).toBe('anywhere')
   })
 })

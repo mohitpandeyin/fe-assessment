@@ -239,7 +239,6 @@
   letter-spacing: 0.015em;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-transform: capitalize;
   white-space: nowrap;
 }
 

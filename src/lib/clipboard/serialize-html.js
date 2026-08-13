@@ -5,6 +5,11 @@ import {
   PORTABLE_IMAGE_FALLBACK_STYLE,
   PORTABLE_INLINE_CODE_STYLE,
 } from './export-styles.js'
+import {
+  getCodeLanguageFromClassName,
+  getNotionCodeLanguageClassToken,
+  normalizeNotionCodeLanguage,
+} from '../../features/markdown/code-languages.js'
 
 const UNSAFE_ELEMENTS = new Set([
   'audio',
@@ -45,6 +50,32 @@ function normalizePreviewWrappers(root) {
 
   for (const wrapper of root.querySelectorAll('div')) {
     unwrap(wrapper)
+  }
+}
+
+function normalizeCodeBlocks(root) {
+  for (const pre of root.querySelectorAll('pre')) {
+    const code = pre.querySelector(':scope > code')
+
+    if (!code) {
+      continue
+    }
+
+    const language = normalizeNotionCodeLanguage(
+      code.getAttribute('data-code-language') ||
+        code.getAttribute('data-language') ||
+        pre.getAttribute('data-code-language') ||
+        pre.getAttribute('data-language') ||
+        getCodeLanguageFromClassName(code.className),
+    )
+    const className = `language-${getNotionCodeLanguageClassToken(language)}`
+
+    for (const element of [pre, code]) {
+      element.setAttribute('data-code-language', language)
+      element.setAttribute('data-language', language)
+    }
+    code.className = className
+    code.replaceChildren(root.ownerDocument.createTextNode(code.textContent))
   }
 }
 
@@ -102,7 +133,15 @@ function sanitizeElement(element) {
 
   for (const attribute of Array.from(element.attributes)) {
     const name = attribute.name.toLowerCase()
-    const keep = name === 'href' || name === 'style'
+    const isCodeMetadata =
+      ['code', 'pre'].includes(tagName) &&
+      ['data-code-language', 'data-language'].includes(name)
+    const isCodeClass =
+      tagName === 'code' &&
+      name === 'class' &&
+      /^language-[^\s]+$/.test(attribute.value)
+    const keep =
+      name === 'href' || name === 'style' || isCodeMetadata || isCodeClass
 
     if (!keep || name.startsWith('on')) {
       element.removeAttribute(attribute.name)
@@ -118,6 +157,7 @@ export function serializePortableHtml(root) {
   const clone = root.cloneNode(true)
   replaceTaskCheckboxes(clone)
   normalizePreviewWrappers(clone)
+  normalizeCodeBlocks(clone)
 
   for (const element of Array.from(clone.querySelectorAll('*'))) {
     sanitizeElement(element)

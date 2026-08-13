@@ -61,7 +61,7 @@ These decisions clarify ambiguous areas without expanding the assignment:
 20. **Cross-editor promise is intentionally bounded.** Word, Google Docs, and Notion should receive clean editable common elements, but each may normalize fonts, spacing, table details, code styling, and layout. No pixel-perfect or editor-specific guarantee is made.
 21. **Plain text is semantic.** It preserves list markers, quote prefixes, code whitespace, readable links, and tab/newline table structure rather than relying on raw DOM text extraction.
 22. **Images and embeds are conservative.** Images remain responsive and retain alt text, but privacy-first v1 does not automatically fetch remote images, copy temporary object URLs, fetch/embed remote bytes for fidelity, execute embeds, or resolve ungranted local assets. Unsupported media degrades to readable alternative content and a safe link where available.
-23. **Code tools remain preview-only.** Fenced code shows a language label, restrained highlighting for a curated common-language set, and a per-block copy action. These controls are removed from full-document clipboard serialization so paste output remains semantic and portable.
+23. **Code remains read-only.** Fenced code shows a fixed declared-language label, restrained highlighting for a curated common-language set, and a per-block copy action. Full-document clipboard serialization removes preview controls while retaining semantic `<pre><code>` structure and normalized Notion language metadata.
 24. **Overflow is keyboard-operable.** Focused code/table regions support horizontal Arrow Left/Right movement plus Home/End, in addition to pointer/trackpad scrolling.
 
 ## Recommended technical direction, not yet implementation

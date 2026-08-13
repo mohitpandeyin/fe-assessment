@@ -1,46 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 
+import {
+  getCodeLanguageFromClassName,
+  getNotionCodeLanguageLabel,
+} from './code-languages.js'
 import { getUrlPolicy } from './url-policy.js'
-
-const LANGUAGE_LABELS = {
-  bash: 'Shell',
-  csharp: 'C#',
-  css: 'CSS',
-  html: 'HTML',
-  javascript: 'JavaScript',
-  js: 'JavaScript',
-  json: 'JSON',
-  jsx: 'JSX',
-  lua: 'Lua',
-  markdown: 'Markdown',
-  md: 'Markdown',
-  plaintext: 'Plain text',
-  python: 'Python',
-  shell: 'Shell',
-  sql: 'SQL',
-  text: 'Plain text',
-  ts: 'TypeScript',
-  tsx: 'TSX',
-  typescript: 'TypeScript',
-  xml: 'XML',
-  yaml: 'YAML',
-  yml: 'YAML',
-}
 
 function getCodeLanguage(children) {
   const code = Array.isArray(children) ? children[0] : children
   const className = code?.props?.className ?? ''
-  const match = String(className).match(/(?:lang|language)-([^\s]+)/)
-  return match?.[1]?.toLowerCase() ?? ''
-}
-
-function getLanguageLabel(language) {
-  if (!language) {
-    return 'Code'
-  }
-
-  return LANGUAGE_LABELS[language] ?? language.replace(/[-_]+/g, ' ')
+  return getCodeLanguageFromClassName(className)
 }
 
 function getReactText(value) {
@@ -197,7 +167,7 @@ export function ScrollableCodeBlock({ node, ...props }) {
   const [copyState, setCopyState] = useState('idle')
   const resetTimerRef = useRef(null)
   const language = getCodeLanguage(props.children)
-  const label = getLanguageLabel(language)
+  const label = getNotionCodeLanguageLabel(language)
   const code = Array.isArray(props.children) ? props.children[0] : props.children
   const codeText = getReactText(code?.props?.children).replace(/\n$/, '')
 

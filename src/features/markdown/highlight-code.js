@@ -12,6 +12,11 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 
+import {
+  getNotionCodeLanguageClassToken,
+  normalizeNotionCodeLanguage,
+} from './code-languages.js'
+
 const languages = {
   bash,
   css,
@@ -32,6 +37,7 @@ const highlighter = createLowlight(languages)
 highlighter.registerAlias({
   bash: ['shell', 'sh'],
   javascript: ['js', 'jsx'],
+  markdown: ['md'],
   plaintext: ['text', 'txt'],
   typescript: ['ts', 'tsx'],
   xml: ['html'],
@@ -72,18 +78,42 @@ function visit(node) {
   for (const child of node.children) {
     if (child.type === 'element' && child.tagName === 'pre') {
       const code = child.children?.[0]
-      const language = code?.type === 'element' ? getLanguage(code) : ''
+      const sourceLanguage = code?.type === 'element' ? getLanguage(code) : ''
+      const language = normalizeNotionCodeLanguage(sourceLanguage)
+      const classToken = getNotionCodeLanguageClassToken(language)
 
-      if (language && highlighter.registered(language)) {
-        const result = highlighter.highlight(language, getText(code))
+      child.properties = {
+        ...child.properties,
+        dataCodeLanguage: language,
+        dataLanguage: language,
+      }
+
+      if (code?.type === 'element') {
         const classNames = Array.isArray(code.properties?.className)
           ? code.properties.className
           : []
         code.properties = {
           ...code.properties,
-          className: ['hljs', ...classNames.filter((name) => name !== 'hljs')],
+          className: [
+            `language-${classToken}`,
+            ...classNames.filter(
+              (name) =>
+                name !== 'hljs' && !/^(?:lang|language)-/.test(name),
+            ),
+          ],
+          dataCodeLanguage: language,
+          dataLanguage: language,
         }
-        code.children = result.children
+
+        const highlightLanguage = sourceLanguage || classToken
+
+        if (highlighter.registered(highlightLanguage)) {
+          code.properties.className.unshift('hljs')
+          code.children = highlighter.highlight(
+            highlightLanguage,
+            getText(code),
+          ).children
+        }
       }
     }
 
