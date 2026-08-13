@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/clean-build.mjs && vite build && node scripts/prepare-sites-build.mjs",
-    "preview": "vite preview --outDir dist/client",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest",
     "test:run": "vitest run"

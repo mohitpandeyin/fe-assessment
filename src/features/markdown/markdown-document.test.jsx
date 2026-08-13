@@ -5,7 +5,6 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
-import openTestCase from '../../../requirements/open_test_case.md?raw'
 import malformedElements from '../../test/fixtures/malformed-elements.md?raw'
 import requiredElements from '../../test/fixtures/required-elements.md?raw'
 import { MarkdownDocument } from './markdown-document.jsx'
@@ -150,17 +149,19 @@ describe('MarkdownDocument', () => {
   })
 
   it('renders the complete representative fixture without a localized error', () => {
-    render(<MarkdownDocument resetKey="complete" source={openTestCase} />)
+    render(
+      <MarkdownDocument resetKey="complete" source={complexRenderingTest} />,
+    )
 
     expect(
       screen.getByRole('heading', {
-        name: 'Distributed Rate Limiting: A Technical Design Review',
+        name: 'Atlas Operations Handbook: Global Incident Readiness',
       }),
     ).toBeInTheDocument()
-    expect(screen.getAllByRole('table')).toHaveLength(2)
+    expect(screen.getAllByRole('table')).toHaveLength(4)
     expect(
       screen.getAllByRole('region', { name: /Scrollable .*code block/ }),
-    ).toHaveLength(4)
+    ).toHaveLength(10)
     expect(screen.queryByText('Preview unavailable')).not.toBeInTheDocument()
   })
 
