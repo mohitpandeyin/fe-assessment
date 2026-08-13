@@ -20,11 +20,6 @@ export function FileDetailsContent({ isBusy, metadata, onStartOver }) {
         <Detail label="Size" value={metadata.formattedSize} />
         <Detail label="Words" value={metadata.wordCount.toLocaleString()} />
       </dl>
-      <p className="file-details__assurance">
-        <ShieldCheck aria-hidden="true" size={16} strokeWidth={1.8} />
-        <span>Processed locally. Your file never leaves this browser.</span>
-      </p>
-
       <Button
         className="w-full"
         disabled={isBusy}
@@ -35,6 +30,10 @@ export function FileDetailsContent({ isBusy, metadata, onStartOver }) {
       >
         Start over
       </Button>
+      <p className="file-details__assurance">
+        <ShieldCheck aria-hidden="true" size={16} strokeWidth={1.8} />
+        <span>Processed locally. Your file never leaves this browser.</span>
+      </p>
     </div>
   )
 }
