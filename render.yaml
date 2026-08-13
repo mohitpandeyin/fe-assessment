@@ -1,0 +1,16 @@
+services:
+  - type: web
+    runtime: static
+    name: plainmark
+    buildCommand: npm ci && npm run test:run && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
