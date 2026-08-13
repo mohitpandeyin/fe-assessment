@@ -2,7 +2,7 @@
 
 Plainmark is a private-by-design Markdown viewer and clipboard exporter. Open one local Markdown file, review a polished read-only GFM preview, then copy the complete document in rich HTML and semantic plain text. Where the browser permits it, Plainmark also includes the exact source as `text/markdown`.
 
-- **Live application:** [plainmark-viewer.mohitpandeyin.chatgpt.site](https://plainmark-viewer.mohitpandeyin.chatgpt.site)
+- **Live application:** [fe-assessment-zinf.onrender.com](https://fe-assessment-zinf.onrender.com/)
 - **Source:** [github.com/mohitpandeyin/fe-assessment](https://github.com/mohitpandeyin/fe-assessment)
 - **Assignment:** [Frontend Developer Assignment](./requirements/Frontend_Developer_Assignment.pdf)
 
