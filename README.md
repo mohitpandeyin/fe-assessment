@@ -2,6 +2,8 @@
 
 Plainmark is a private-by-design Markdown viewer and clipboard exporter. Open one local Markdown file, review a polished read-only GFM preview, then copy the complete document as rich HTML and semantic plain text. Files stay in browser memory and are never uploaded.
 
+**Live application:** [plainmark.mohitpandey.in](https://plainmark.mohitpandey.in/)
+
 ## Features
 
 - Opens one `.md` or `.markdown` file up to 1 MB by picker or drag and drop.
@@ -36,15 +38,13 @@ The production build is generated in `dist/`.
 
 ## Render deployment
 
-The repository includes [`render.yaml`](./render.yaml) for a Render Blueprint static site:
+The repository includes [`render.yaml`](./render.yaml) for deployment as a Render static site:
 
 - Build command: `npm ci && npm run test:run && npm run build`
 - Publish directory: `dist`
 - Runtime: static
 
-The Blueprint targets the `evaluation` branch. Create or connect the deployment as a **Render Blueprint/static site**; a manually created service does not automatically adopt `render.yaml` settings. Render must publish `dist`, not `.` or the repository root. Publishing the root serves the development `index.html`, which imports `/src/main.jsx`; a static CDN then returns JSX as `binary/octet-stream`, causing the browser's strict module MIME error. The Vite build instead emits hashed `.js` assets under `dist/assets/`, which Render serves with the correct JavaScript MIME type.
-
-Plainmark uses a single page and no client-side URL router, so no catch-all rewrite is required.
+Render must publish `dist`, not the repository root. Plainmark is a single-page static application without client-side routes, so no rewrite rule is required.
 
 ## Scripts
 
