@@ -40,10 +40,7 @@ export function UploadPanel({
   return (
     <main className="upload-page px-5 py-10 text-ink sm:px-8">
       <section className="upload-content mx-auto">
-        <p className="text-xs font-semibold tracking-widest text-ink-muted">
-          MARKDOWN VIEWER
-        </p>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Open, preview, and copy Markdown
         </h1>
         <p className="mx-auto mt-4 max-w-xl leading-7 text-ink-secondary">
