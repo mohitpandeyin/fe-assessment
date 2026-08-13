@@ -3,7 +3,7 @@ services:
     runtime: static
     name: plainmark
     branch: evaluation
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci && npm run test:run && npm run build
     staticPublishPath: dist
     headers:
       - path: /assets/*
