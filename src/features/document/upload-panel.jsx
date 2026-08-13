@@ -69,7 +69,7 @@ export function UploadPanel({
           <p className="upload-panel__description mt-2 text-ink-secondary">
             Drag and drop one .md file here, or choose it from your computer.{' '}
             <a
-              className="font-medium text-ink underline underline-offset-2"
+              className="font-medium text-inherit underline underline-offset-2"
               download="sample-file.md"
               href="/sample-file.md"
             >
