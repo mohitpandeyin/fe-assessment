@@ -801,6 +801,10 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Content enhancement automated gates pass: 12 test files / 49 tests, lint, production build, zero-vulnerability audit, and diff check.
 - `[x]` Browser review of the complex fixture passes at desktop and 582 px reflow-equivalent widths with no page overflow, no console errors, contained wide tables/code, 44 px mobile copy targets, safe raw-embed omission, and working per-block copy.
 - `[x]` Firefox full-document rich-copy regression with the complex fixture passes in Google Docs and Microsoft Word Online: complete content, heading navigation, deep lists/tasks, code, tables, links, multilingual text, and final section retained; preview-only code toolbars do not leak into pasted output.
+- `[x]` First-visit UI was revalidated against the authoritative 1536 × 1024 reference and aligned to its 52 px header, 928 px centered content region, 464 px nested-border upload panel, type scale, spacing rhythm, and simplified icon/button treatment.
+- `[x]` Loaded-state shell now uses a fixed global header and fixed 224 px desktop sidebar; the sidebar begins at the real header boundary and uses `height: calc(100dvh - 52px)`, while main content is offset by the same 52 px header and 224 px sidebar dimensions.
+- `[x]` Fixed-layout browser validation passes with the 17 KB complex fixture: header, sidebar, and document toolbar remain anchored during long-page scrolling; no overlap, horizontal page overflow, duplicate document scrollbar, or desktop layout shift was found.
+- `[x]` Responsive fixed-layout validation passes at the 1024 px sidebar breakpoint and 582 CSS px narrow reflow: sidebar is removed below desktop, main content returns to full width, header uses the documented 48 px mobile height, toolbar remains directly below it, and page width stays contained.
 
 ## 11. In-progress work
 
@@ -869,6 +873,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 28. Code highlighting uses `lowlight` 3.3.0 with a curated declared-language registry (JavaScript/TypeScript, Python, shell, Lua, JSON, YAML, SQL, CSS, XML/HTML, Markdown, and plain text). Automatic detection is intentionally disabled; unsupported languages remain readable.
 29. Per-block code copy is preview-only and uses `navigator.clipboard.writeText` with a selection-copy fallback. The full-document serializers remove code toolbars so established Word/Docs/Notion/plain-text output does not gain UI labels or buttons.
 30. Horizontal code/table regions implement Arrow Left/Right and Home/End scrolling rather than relying on browser-specific native overflow-key behavior.
+31. The application shell uses explicit header-height and sidebar-width custom properties so fixed header/sidebar offsets, viewport-height calculations, and responsive content padding share one measured source of truth.
 
 ### Complex-fixture destination regression - 2026-08-12
 

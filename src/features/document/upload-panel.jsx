@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { FileText, Laptop, ShieldCheck, Upload } from 'lucide-react'
+import { AppWindow, Copy, FileDown, ShieldCheck, Upload } from 'lucide-react'
 
 import { InlineAlert } from '../../components/inline-alert/inline-alert.jsx'
 import { FilePicker } from './file-picker.jsx'
 
 const benefits = [
   { icon: ShieldCheck, label: 'Stays on your device' },
-  { icon: Laptop, label: 'Rendered in your browser' },
-  { icon: FileText, label: 'Rich-text copy' },
+  { icon: AppWindow, label: 'Rendered in your browser' },
+  { icon: Copy, label: 'Rich-text copy' },
 ]
 
 export function UploadPanel({
@@ -39,7 +39,7 @@ export function UploadPanel({
 
   return (
     <main className="upload-page px-5 py-10 text-ink sm:px-8">
-      <section className="mx-auto w-full max-w-3xl text-center">
+      <section className="upload-content mx-auto">
         <p className="text-xs font-semibold tracking-widest text-ink-muted">
           MARKDOWN VIEWER
         </p>
@@ -60,16 +60,16 @@ export function UploadPanel({
           onDrop={handleDrop}
         >
           <span className="upload-panel__icon" aria-hidden="true">
-            <FileText size={30} strokeWidth={1.6} />
+            <FileDown size={48} strokeWidth={1.6} />
           </span>
-          <p aria-live="polite" className="text-xl font-semibold">
+          <p aria-live="polite" className="upload-panel__title font-semibold">
             {isReading
               ? 'Preparing preview…'
               : isDragging
                 ? 'Drop to preview'
                 : 'Open Markdown'}
           </p>
-          <p className="mt-2 text-sm leading-6 text-ink-secondary">
+          <p className="upload-panel__description mt-2 text-ink-secondary">
             Drag and drop one .md file here, or choose it from your computer.
           </p>
           <FilePicker

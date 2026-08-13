@@ -1,11 +1,18 @@
 .app-shell {
+  --global-header-height: 52px;
+  --file-details-width: 224px;
   min-height: 100dvh;
   background: var(--canvas);
 }
 
 .global-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 30;
   display: flex;
-  min-height: 3.25rem;
+  height: var(--global-header-height);
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -51,31 +58,80 @@
 
 .upload-page {
   display: grid;
-  min-height: calc(100dvh - 3.25rem);
+  min-height: 100dvh;
   align-items: center;
+  padding-top: var(--global-header-height);
   background: var(--workspace);
 }
 
 .upload-panel {
-  border: 1px dashed var(--border-strong);
-  border-radius: 0.75rem;
-  padding: 3rem 1.5rem;
+  position: relative;
+  display: flex;
+  min-height: 29rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
   background: var(--surface);
   transition:
     border-color 150ms ease,
     background-color 150ms ease;
 }
 
+.upload-panel::before {
+  position: absolute;
+  inset: 1.5rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 0.5rem;
+  content: "";
+  pointer-events: none;
+}
+
 .upload-panel__icon {
   display: grid;
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 4rem;
+  height: 4rem;
   place-items: center;
   margin: 0 auto 1.25rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  background: var(--surface-subtle);
-  color: var(--ink-secondary);
+  color: #9198a1;
+}
+
+.upload-content {
+  width: 100%;
+  max-width: 58rem;
+  text-align: center;
+}
+
+.upload-content > h1 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.upload-panel__title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.upload-panel__description {
+  max-width: 20rem;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.upload-panel .file-picker {
+  min-height: 3rem;
+  margin-top: 1.25rem;
+  padding-inline: 1.75rem;
+  font-size: 1rem;
+}
+
+.upload-panel .file-picker + p {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .upload-panel[data-dragging] {
@@ -83,9 +139,11 @@
   background: var(--accent-soft);
 }
 
-.upload-panel[data-dragging] .upload-panel__icon {
+.upload-panel[data-dragging]::before {
   border-color: color-mix(in srgb, var(--accent) 45%, white);
-  background: var(--surface);
+}
+
+.upload-panel[data-dragging] .upload-panel__icon {
   color: var(--accent);
 }
 
@@ -94,10 +152,10 @@
   max-width: 40rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
-  margin: 1.5rem auto 0;
+  margin: 2.25rem auto 0;
   padding: 0;
   color: var(--ink-secondary);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   list-style: none;
 }
 
@@ -129,16 +187,20 @@
 }
 
 .document-layout {
-  display: grid;
-  min-height: calc(100dvh - 3.25rem);
-  grid-template-columns: 14rem minmax(0, 1fr);
+  min-height: 100dvh;
+  padding-top: var(--global-header-height);
+  padding-left: var(--file-details-width);
 }
 
 .file-details {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: var(--global-header-height);
+  bottom: 0;
+  left: 0;
+  z-index: 20;
   display: flex;
-  height: calc(100dvh - 3.25rem);
+  width: var(--file-details-width);
+  height: calc(100dvh - var(--global-header-height));
   min-height: 0;
   flex-direction: column;
   justify-content: space-between;
@@ -146,6 +208,7 @@
   border-right: 1px solid var(--border);
   padding: 1.5rem 1.25rem;
   background: var(--surface);
+  overflow-y: auto;
 }
 
 .file-details__content {
@@ -175,7 +238,7 @@
 
 .document-toolbar {
   position: sticky;
-  top: 0;
+  top: var(--global-header-height);
   z-index: 10;
   display: flex;
   min-height: 4rem;
@@ -229,7 +292,7 @@
   }
 
   .document-layout {
-    grid-template-columns: minmax(0, 1fr);
+    padding-left: 0;
   }
 
   .file-details {
@@ -242,13 +305,31 @@
 }
 
 @media (max-width: 40rem) {
+  .app-shell {
+    --global-header-height: 48px;
+  }
+
   .global-header,
   .document-toolbar {
     padding-inline: 1rem;
   }
 
   .upload-panel {
-    padding: 2rem 1rem;
+    min-height: 24rem;
+    padding: 1rem;
+  }
+
+  .upload-panel::before {
+    inset: 1rem;
+  }
+
+  .upload-content > h1 {
+    font-size: 1.875rem;
+    line-height: 2.375rem;
+  }
+
+  .upload-panel__description {
+    max-width: 17rem;
   }
 
   .upload-benefits {
