@@ -2,7 +2,18 @@ import { getUrlPolicy } from '../../features/markdown/url-policy.js'
 
 function serializeInline(node) {
   if (node.nodeType === Node.TEXT_NODE) {
-    return node.nodeValue?.replace(/[\t\r\n]+/g, ' ') ?? ''
+    let value = node.nodeValue ?? ''
+
+    // react-markdown may retain the source newline in the text node after a
+    // hard-break <br>. The break already supplies the newline, so converting
+    // that formatting newline to a space produces `>  text` in blockquotes.
+    // Remove only that synthetic leading newline; preserve real spaces used by
+    // nested lists and code indentation.
+    if (node.previousSibling?.nodeName === 'BR') {
+      value = value.replace(/^[\t\r\n]+/, '')
+    }
+
+    return value.replace(/[\t\r\n]+/g, ' ')
   }
 
   if (node.nodeType !== Node.ELEMENT_NODE) {

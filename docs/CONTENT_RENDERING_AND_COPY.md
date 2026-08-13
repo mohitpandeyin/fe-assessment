@@ -40,7 +40,7 @@ The destination owns final paste behavior. Word can keep or merge source formatt
 | Paragraphs | Comfortable line height and measure; consistent vertical rhythm; long tokens wrap safely | Use `<p>` with a safe font stack, line height, text color, and margins | Paragraph text separated by blank lines |
 | Strong/emphasis/deletion | Visually distinct without changing document flow | Preserve `<strong>`, `<em>`, and `<del>` | Preserve the words; deletion may use readable strike markers only if needed |
 | Lists | Preserve ordered/unordered semantics, nesting, markers, and task state; avoid excessive mobile indentation | Preserve `<ol>`, `<ul>`, and `<li>` nesting with portable indentation and margins | Use bullets, numbers, indentation, and `[ ]`/`[x]` for tasks |
-| Blockquotes | Use a restrained left border, inset spacing, and readable contrast | Preserve `<blockquote>` with a simple border, padding, and margins | Prefix lines with `>` |
+| Blockquotes | Use a restrained left border, inset spacing, and readable contrast | Preserve semantic `<blockquote>` nesting; repeat the portable left border, inset, line height, and zero paragraph margins on its direct paragraph/list blocks so Word and Docs retain the treatment | Prefix lines with `>` |
 | Inline code | Distinct monospaced treatment; wrap long tokens without breaking the page | Preserve `<code>` with a portable monospace stack and restrained background/border | Preserve the exact code text inline |
 | Code blocks | Preserve all whitespace and line breaks; show the declared-language label as read-only metadata, restrained local syntax highlighting where supported, per-block copy, and contained keyboard/pointer overflow | Preserve `<pre><code>` and whitespace plus normalized Notion language metadata; remove preview toolbar/highlight markup and place the semantic code inside a portable rectangular container whose background, border, and padding survive document-editor paste more reliably | Preserve code exactly, including indentation and line breaks; omit preview toolbar labels/actions |
 | Tables | Preserve header cells, alignment, row/column relationships, and captions when present; table wrapper scrolls horizontally | Use real `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, and `<td>` elements with collapsed borders and cell padding | Separate cells with tabs and rows with newlines so spreadsheet paste remains usable |
@@ -103,6 +103,33 @@ Clipboard HTML must:
 - Prefer broadly supported CSS values and absolute safe URLs.
 
 Do not copy every computed browser style. A small explicit export style map is more predictable, smaller, and easier to test.
+
+#### Blockquote portability decision
+
+The destination screenshots showed that content and emphasis survived, but Word and Google Docs discarded the border and inset attached only to `<blockquote>`. Both destinations then treated the child paragraphs as ordinary document paragraphs, so the global paragraph after-spacing made the quote look loose and disconnected. Notion, by contrast, recognized the semantic outer and nested blockquotes correctly.
+
+Word and Google Docs both model indentation, before/after spacing, line spacing, borders, and shading as paragraph properties. The portable export therefore keeps the semantic `<blockquote>` tree but applies the visual fallback to the units those editors actually import: each direct paragraph, list, and nested blockquote receives the same left border, controlled inset, `1.5` line height, and zero margin. Lists receive a larger left inset so their bullets remain inside the quote. Adjacent segments share the same border position, producing one continuous visual rule without converting the quote to a table.
+
+No blockquote background is exported. A fill is not required for recognition and is more likely to become fragmented paragraph shading or character highlighting during paste. The muted text color, left rule, indentation, and compact internal rhythm provide sufficient hierarchy. Nested quotes retain both semantic levels: the nested blockquote participates in the outer rule and its own child paragraphs receive a second inset rule.
+
+This normalization is intentionally scoped to elements whose direct parent is a blockquote. Ordinary paragraphs, lists, tables, headings, code blocks, and preview styles are unchanged. Regression coverage must assert preserved `<blockquote>` nesting, paragraph/list border and spacing properties, readable list indentation, and untouched normal paragraph/list styles.
+
+Hard-break and trailing-space handling follows the same paragraph-model rule. A Markdown hard break already becomes `<br>`; any parser formatting newline immediately after it is removed from the rich HTML clone so Word and Docs do not render an extra leading space on the next visual line. Because those editors may discard the outer blockquote margin, the final direct segment of an outer quote owns one normal `16px` bottom margin. Nested quote segments do not receive this external gap, and the following ordinary paragraph keeps its existing style.
+
+#### Element portability refinements
+
+The complete-document screenshots also exposed several smaller importer-specific gaps that can be addressed without changing Markdown semantics:
+
+- Headings keep their original `h1`–`h6` elements and explicitly reset inherited italic and underline decoration. Conservative page-break hints are included as best-effort metadata; they never replace headings with manual page breaks.
+- Task checkboxes are converted to readable `[x]` / `[ ]` text. Only the corresponding task list items suppress their native list marker, preventing a duplicate bullet while leaving ordinary and nested non-task lists unchanged.
+- A standalone unavailable-image fallback is represented by one styled paragraph rather than a styled inline span inside an ordinary paragraph. The paragraph owns one background, border, padding region, and line height; its label, alt text, and validated source link remain readable and separated. No remote image is fetched.
+- Nested blockquotes keep their semantic tree. Their directly imported paragraph/list segments use a slightly darker rule so the second level remains distinguishable when Word or Google Docs drops container-only styling.
+- Real table sections are preserved. `<thead>` receives only conservative header-group and pagination hints; the exporter does not flatten tables, force column widths, prevent all row splitting, or attempt to make a very wide matrix fit a portrait page.
+- Inline code remains a semantic inline `<code>` run. It uses explicit character `background-color` rather than the broader background shorthand so Word has a better chance of importing the shading, while inherited line height and safe wrapping prevent the run from disturbing its surrounding paragraph. Fenced code continues to use its separate block normalization.
+
+The follow-up destination paste confirmed that Word Online still discards the inline-code background, border, radius, and padding while preserving the monospace font, exact text, inline position, and wrapping. Google Docs retains the light background. Word's monospace-only result is accepted: presentation tables, block wrappers, or proprietary highlight markup would be disproportionate for character-level code and could regress Docs or Notion.
+
+These refinements are local to the rich HTML clone. They do not modify preview styling, plain-text output, exact Markdown, ordinary document elements, or the already-validated code-block representation. Automated tests verify the generated structure; Word/Google Docs/Notion paste behavior remains a separate manual acceptance gate.
 
 #### Code-block compatibility postmortem
 
@@ -231,5 +258,9 @@ The following do not block v1:
 - [Clipboard API specification](https://www.w3.org/TR/clipboard-apis/) — one clipboard item can expose multiple representations.
 - [MDN `ClipboardItem`](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardItem) — browser API, capability, and secure-context behavior.
 - [Microsoft Word paste formatting](https://support.microsoft.com/en-us/word/control-the-formatting-when-you-paste-text) — Keep Source Formatting, Merge Formatting, and Keep Text Only.
+- [Microsoft Word paragraph indentation and spacing](https://support.microsoft.com/en-us/word/adjust-indents-and-spacing-in-word) — indentation plus before/after spacing are paragraph properties.
+- [Microsoft Word paragraph borders](https://support.microsoft.com/en-us/word/add-a-border-to-some-text-in-word) — borders and shading can be applied to complete paragraphs.
 - [Google Docs Markdown behavior](https://support.google.com/docs/answer/12014036) — Markdown paste/import support and conversion behavior.
+- [Google Docs paragraph formatting](https://support.google.com/docs/answer/1663349) — line/paragraph spacing, borders, shading, and paragraph padding behavior.
+- [Google Docs document structure](https://developers.google.com/workspace/docs/api/concepts/structure) — paragraph formatting owns borders and indentation in the Docs model.
 - [Notion import behavior](https://www.notion.com/help/import-data-into-notion) — supported HTML/Markdown structures and formatting limitations.

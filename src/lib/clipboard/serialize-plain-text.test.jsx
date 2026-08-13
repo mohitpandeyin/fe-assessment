@@ -28,4 +28,25 @@ describe('serializePlainText', () => {
     expect(plainText).not.toContain('<h1>')
     expect(plainText).not.toContain('JavaScriptCopy')
   })
+
+  it('does not add a second quote space after a Markdown hard break', () => {
+    render(
+      <MarkdownDocument
+        resetKey="plain-quote-break"
+        source={
+          '> **Status:** Review candidate  \n> **Audience:** Incident commanders\n>\n> - Parent item\n>   - Nested item'
+        }
+      />,
+    )
+
+    const plainText = serializePlainText(
+      screen.getByRole('article', { name: 'Rendered Markdown document' }),
+    )
+
+    expect(plainText).toContain(
+      '> Status: Review candidate\n> Audience: Incident commanders',
+    )
+    expect(plainText).not.toContain('\n>  Audience:')
+    expect(plainText).toContain('> - Parent item\n>   - Nested item')
+  })
 })

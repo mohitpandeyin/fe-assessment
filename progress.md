@@ -780,6 +780,8 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Project-owned Button, Dialog, InlineAlert, and accessible Toast components implemented.
 - `[x]` Replace, Start over, dialog close, and document-name focus restoration behavior implemented and tested.
 - `[x]` Portable inline-styled HTML, semantic plain text, and capability-gated exact Markdown clipboard representations implemented.
+- `[x]` Phase B1 element portability refinements implemented: upright semantic headings with conservative pagination hints, task-only bullet suppression, paragraph-level media fallback styling, nested quote distinction, and semantic table-header hints.
+- `[x]` Inline-code rich HTML now uses explicit character background color, inline flow, inherited line height, and safe wrapping so Word can retain a readable code treatment without affecting fenced code or surrounding prose.
 - `[x]` Rich clipboard retry, plain-text fallback, success/fallback/failure feedback, and unsafe-export stripping implemented.
 - `[x]` Phase 4-5 automated checks completed: 11 test files / 43 tests, lint, production build, and diff validation all pass.
 - `[x]` Real-browser desktop rendering, rich copy success, 390 x 844 responsive layout, mobile details sheet, and focus restoration validated.
@@ -809,6 +811,7 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - `[x]` Portable HTML now preserves semantic `<pre><code>` language metadata for Notion, strips preview controls/highlight spans, and renders Word/Docs code in a padded responsive rectangular container with wrapping and overflow safeguards.
 - `[x]` Cross-editor code styling now places the rectangle on a separate portable wrapper while leaving `<pre><code>` semantic. This prevents Google Docs from showing disconnected per-line shading and gives Word both standard and `mso-*` border/padding hints without weakening Notion metadata.
 - `[x]` Portable code serialization now uses a single presentation cell for continuous background/border/padding and one inline `pre-wrap` run containing the exact code text and literal newlines. This removes Google Docs per-line paragraph gaps while restoring source line breaks for Word and Notion.
+- `[x]` Portable blockquotes now retain semantic nesting while applying their left rule, indentation, controlled line height, and zero internal margins to direct paragraph/list units. This targets the paragraph models imported by Word and Google Docs without changing Notion semantics or ordinary document elements.
 
 ### Code-block rich-paste compatibility postmortem - 2026-08-13
 
@@ -847,6 +850,30 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 - Serializer coverage asserts one connected presentation cell, one inline content run, no `<br>` elements, and exact code `textContent`, including indentation and an intentional blank line.
 - Coverage also asserts that ordinary Markdown tables do not receive the code-container treatment.
 - The complete local gate after the fix passed: 63 tests, lint, production build, and diff validation. The user then confirmed the destination behavior works.
+
+### Blockquote rich-paste compatibility decision - 2026-08-13
+
+**Screenshot findings and root cause**
+
+- Microsoft Word and Google Docs retained the quote text, bold/italic content, nested list, and source order, but discarded the left border and indentation attached only to the semantic `<blockquote>` container.
+- Once the container treatment was dropped, its child paragraphs inherited ordinary document paragraph spacing. Google Docs made that especially visible as large gaps between the incident principle, explanatory paragraph, nested note, and list; Word produced a flatter but still weak hierarchy.
+- The supplied Notion reference showed the opposite behavior: Notion recognized the outer and nested semantic blockquotes and rendered native quote rules correctly.
+- The root cause was therefore a destination mapping mismatch. The exporter styled the semantic container, while Word and Docs imported the quote's children as paragraph/list units whose paragraph properties drive spacing, indentation, borders, and shading.
+
+**Research-backed approach**
+
+- Microsoft documents indentation, before/after spacing, line spacing, borders, and shading as paragraph properties; Word paste may also adjust paragraph spacing depending on the selected paste mode.
+- Google Docs exposes the same concepts at paragraph level, including left borders, indentation, paragraph spacing, border padding, and shading.
+- A one-cell presentation table was rejected because it would be visually robust but could turn a semantic quote into a table and regress Notion's already-correct native blockquote conversion.
+- Background fill was omitted because it was unnecessary for recognition and could be normalized into fragmented paragraph shading or text highlighting.
+
+**Targeted resolution and validation**
+
+- Semantic `<blockquote>` elements and nesting remain unchanged.
+- Only direct quote paragraphs, lists, and nested blockquotes receive a matching `3px` left border, compact `1.5` line height, zero margin, and controlled left padding. Quote lists use extra inset for bullet readability, and Word receives equivalent `mso-*` border/padding hints.
+- The preview renderer, plain-text serializer, and all elements outside blockquotes remain unchanged.
+- The new regression test verifies two semantic quote levels, continuous paragraph/list border properties, list indentation, zero internal margins, and unchanged spacing for an ordinary paragraph and list.
+- Local validation passes: 13 test files / 64 tests, lint, production build, and diff validation.
 
 ## 11. In-progress work
 
@@ -918,6 +945,91 @@ These are not blockers to planning. Approval of this plan authorizes the recomme
 31. The application shell uses explicit header-height and sidebar-width custom properties so fixed header/sidebar offsets, viewport-height calculations, and responsive content padding share one measured source of truth.
 32. Code language is derived only from the Markdown fence and is not editable in the preview. Rich HTML retains normalized language metadata for Notion; Markdown/plain-text outputs and per-block copied code retain the exact source text.
 33. Portable code export separates presentation from text semantics: one cell owns the connected box, while one inline `pre-wrap` run owns the literal code payload. A visual CSS break is not accepted as a substitute for a source newline, and per-line blocks or `<br>` elements are avoided because destination editors normalize them incompatibly.
+34. Portable blockquote export keeps semantic nesting but mirrors visual treatment onto direct paragraph/list units because Word and Google Docs import paragraph properties more reliably than container styling. The fallback uses borders, indentation, and controlled spacing without a table wrapper or background fill, and its selector scope excludes ordinary document elements.
+35. Element improvement Phase B1 is deliberately scoped to the rich HTML clone. Heading resets and pagination hints preserve semantic heading tags; task-marker cleanup targets only list items that contained checkbox inputs; unavailable-image presentation moves to one standalone paragraph; nested quotes retain both blockquote levels; and table work stops at semantic header hints. Dense-table reflow, forced column sizing, row-splitting rules, and bidi experiments remain deferred until isolated destination evidence justifies them.
+36. Inline code remains character-level semantic `<code>` rather than using the fenced-code presentation table. Word Online preserved its monospace font but dropped the previous `background` shorthand, so the portable style now uses explicit `background-color`, inline display, inherited line height, and safe wrapping. Borders, radius, and exact padding remain best-effort destination formatting.
+37. Rich blockquote hard breaks use `<br>` as the sole visual line boundary; adjacent parser formatting newlines are removed from the cloned HTML to prevent a synthetic leading space. The final segment of each outer quote owns the post-quote margin because Word and Docs import paragraph spacing more reliably than container margins.
+
+### Element-improvement Phase B1 - 2026-08-13
+
+**Diagnosis and scope**
+
+- The full Word, Google Docs, and Notion screenshots showed a structurally sound baseline with a few isolated importer differences: lower Word heading styles could inherit italic/underline decoration, task items could show both a bullet and `[x]`/`[ ]`, media fallback styling could remain attached to an inline fragment, nested quote levels needed clearer distinction outside Notion, and table headings could become separated during pagination.
+- These issues did not share one global typography cause. They occur because destination editors map semantic elements and inline CSS into different native paragraph/list/table models. A root font, paragraph, list, or table rewrite would therefore risk already-working content.
+- The implementation follows `docs/elements-improvement.md` and changes only the affected cloned nodes during rich HTML serialization.
+
+**Implemented resolution**
+
+- All heading levels explicitly reset font style and text decoration while retaining their semantic tags; best-effort pagination hints were added without manual breaks.
+- Checkbox inputs still become readable state markers, and only their owning task items suppress redundant native bullets.
+- Standalone image fallbacks now become one padded, bordered paragraph with readable separators and the safe source link intact.
+- Nested quote segments use a darker rule while preserving the outer and inner blockquote structure.
+- Real table headers retain `<thead>` and receive conservative header-group/pagination hints; data rows and dense/wide table layout remain untouched.
+
+**Validation**
+
+- Focused serializer validation passes: 1 file / 10 tests, including new isolation assertions for headings, task versus ordinary list items, standalone media fallbacks, nested quotes, and table headers.
+- Complete local gates pass: 13 test files / 68 tests, lint, production build, and diff whitespace validation.
+- Full automated gates and manual Word/Google Docs/Notion destination validation are recorded separately; no destination result is claimed from DOM assertions alone.
+
+### Inline-code Word refinement - 2026-08-13
+
+**Screenshot finding and diagnosis**
+
+- Google Docs retained the intended light background on inline code, including normal fragmenting when a long inline run wrapped.
+- Word Online retained the semantic text, monospace font, source order, and wrapping but dropped the light background, border, radius, and padding.
+- Fenced code remained correct in both destinations, so reusing the code-block table or changing generic `<code>` styling would have expanded the fix beyond the defect.
+- The portable inline style used the `background` shorthand. Word exposes character/range shading in its document model, but its HTML importer did not map this shorthand in the supplied paste result.
+
+**Targeted resolution**
+
+- Inline semantic `<code>` now uses explicit `background-color`, `display:inline`, inherited line height, and safe wrap properties. The monospace stack, restrained border, radius, and padding remain, but those box details are treated as best effort.
+- No wrapper, presentation table, line break, or block-level element was introduced. Surrounding prose and fenced code follow their existing serializers unchanged.
+
+**Validation**
+
+- The focused serializer suite passes: 1 file / 11 tests. The new assertion verifies explicit character background, inline flow, unmodified surrounding paragraph text, safe wrapping, and the unchanged fenced-code path.
+- Complete local gates pass: 13 test files / 69 tests, lint, production build, and diff whitespace validation.
+- The fresh Google Docs paste retains the light inline-code background and wraps long expressions correctly.
+- The fresh Word Online paste retains monospace text, exact inline placement, and safe wrapping but still discards background/border/padding. This is now an accepted destination limitation; no proprietary Word-only wrapper or highlight treatment will be added.
+
+### Plain-text blockquote hard-break correction - 2026-08-13
+
+**Root cause and diagnosis**
+
+- The VS Code paste was complete and structurally readable: all sections, code indentation, tab-separated tables, task markers, Unicode, safe link targets, and final content were present.
+- Only the opening metadata quote showed `>  Audience` and `>  Last reviewed` with two spaces after the quote marker.
+- A Markdown hard break renders as `<br>` followed by a formatting newline text node. The plain serializer already converted `<br>` to a real newline, then converted the adjacent formatting newline to a space. The blockquote prefix added its own required space, producing the duplicate.
+
+**Targeted resolution**
+
+- Text nodes immediately following `<br>` now discard only leading tab/newline characters before ordinary inline whitespace normalization.
+- Meaningful spaces remain untouched, including the two-space indentation used by nested list items and all whitespace inside `<pre>` code blocks.
+
+**Validation**
+
+- Regression coverage asserts one space after the blockquote marker across a hard break and unchanged nested-list indentation inside the same quote.
+- The existing full plain-text structure/code-whitespace test remains active.
+- Complete local gates pass: 13 test files / 70 tests, lint, production build, and diff whitespace validation.
+
+### Rich blockquote alignment and trailing rhythm - 2026-08-13
+
+**Root cause and diagnosis**
+
+- The refreshed plain-text paste confirmed the prior correction: opening metadata lines now use exactly one space after `>`.
+- In Word rich paste, the same source hard breaks still showed a visual leading space on the second and third lines because the cloned HTML retained a formatting newline immediately after each `<br>`.
+- Word also placed the following paragraph directly against the quote. The exporter put external spacing on `<blockquote>`, but Word discarded that container margin while honoring the zero-margin child paragraph.
+
+**Targeted resolution**
+
+- Rich HTML normalization now removes only leading tab/newline characters from a text node immediately following `<br>`. It does not remove real spaces or alter code payloads.
+- The final direct paragraph/list segment of each outer quote receives a standard `16px` bottom margin. Nested quote segments keep zero external margin, and ordinary paragraphs remain unchanged.
+
+**Validation boundary**
+
+- Regression coverage verifies two hard breaks without leading formatting whitespace, one post-quote margin, unchanged following-paragraph styling, and unchanged nested quote/list behavior.
+- Complete local gates pass: 13 test files / 71 tests, lint, production build, and diff whitespace validation.
+- Word, Google Docs, and Notion require one fresh paste to confirm destination rendering.
 
 ### Complex-fixture destination regression - 2026-08-12
 

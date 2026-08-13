@@ -64,6 +64,7 @@ These decisions clarify ambiguous areas without expanding the assignment:
 23. **Code remains read-only.** Fenced code shows a fixed declared-language label, restrained highlighting for a curated common-language set, and a per-block copy action. Full-document clipboard serialization removes preview controls while retaining semantic `<pre><code>` structure and normalized Notion language metadata.
 24. **Overflow is keyboard-operable.** Focused code/table regions support horizontal Arrow Left/Right movement plus Home/End, in addition to pointer/trackpad scrolling.
 25. **Portable code separates visual containment from text semantics.** One presentation cell owns the complete background, border, and padding; one inline `pre-wrap` run inside semantic `<pre><code>` owns the exact code payload and its literal newlines. Per-line block elements and `<br>`-based serialization are prohibited because Google Docs can treat them as spaced paragraph boundaries, while CSS-only breaks do not preserve source newlines reliably in Word or Notion.
+26. **Portable blockquotes remain semantic and use paragraph-level visual fallbacks.** The `<blockquote>` nesting remains available to Notion, while direct quote paragraphs, lists, and nested quotes receive matching left borders, indentation, controlled line height, and zero margins for Word and Google Docs. No table wrapper or background fill is used, and normal document blocks are outside this normalization.
 
 ## Recommended technical direction, not yet implementation
 

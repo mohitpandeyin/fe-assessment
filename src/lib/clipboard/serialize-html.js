@@ -1,12 +1,17 @@
 import { getUrlPolicy } from '../../features/markdown/url-policy.js'
 import {
   DOCUMENT_EXPORT_STYLE,
+  PORTABLE_BLOCKQUOTE_LAST_SEGMENT_STYLE,
+  PORTABLE_BLOCKQUOTE_LIST_SEGMENT_STYLE,
+  PORTABLE_BLOCKQUOTE_SEGMENT_STYLE,
   PORTABLE_CODE_CELL_STYLE,
   PORTABLE_CODE_CONTENT_STYLE,
   PORTABLE_CODE_TABLE_STYLE,
   PORTABLE_ELEMENT_STYLES,
   PORTABLE_IMAGE_FALLBACK_STYLE,
   PORTABLE_INLINE_CODE_STYLE,
+  PORTABLE_NESTED_BLOCKQUOTE_SEGMENT_STYLE,
+  PORTABLE_TASK_ITEM_STYLE,
 } from './export-styles.js'
 import {
   getCodeLanguageFromClassName,
@@ -35,10 +40,45 @@ function unwrap(element) {
 
 function replaceTaskCheckboxes(root) {
   for (const input of root.querySelectorAll('input[type="checkbox"]')) {
+    input.closest('li')?.classList.add('portable-task-item')
     const marker = root.ownerDocument.createTextNode(
       input.checked ? '[x]' : '[ ]',
     )
     input.replaceWith(marker)
+  }
+}
+
+function normalizeHardBreakWhitespace(root) {
+  for (const br of root.querySelectorAll('br')) {
+    const nextSibling = br.nextSibling
+
+    if (nextSibling?.nodeName === '#text') {
+      // The <br> already represents the source hard break. Remove only the
+      // adjacent formatting newline so Word/Docs do not render a leading space.
+      nextSibling.nodeValue =
+        nextSibling.nodeValue?.replace(/^[\t\r\n]+/, '') ?? ''
+    }
+  }
+}
+
+function normalizeImageFallbacks(root) {
+  for (const fallback of root.querySelectorAll('.markdown-image-fallback')) {
+    const children = Array.from(fallback.childNodes)
+
+    children.slice(1).forEach((child) => {
+      fallback.insertBefore(root.ownerDocument.createTextNode(' — '), child)
+    })
+
+    const paragraph = fallback.parentElement
+    const isStandalone =
+      paragraph?.tagName === 'P' &&
+      paragraph.children.length === 1 &&
+      paragraph.firstElementChild === fallback
+
+    if (isStandalone) {
+      paragraph.classList.add('portable-image-fallback')
+      unwrap(fallback)
+    }
   }
 }
 
@@ -108,6 +148,29 @@ function normalizeCodeBlocks(root) {
   }
 }
 
+function normalizeBlockquotes(root) {
+  for (const blockquote of root.querySelectorAll('blockquote')) {
+    const isNested = Boolean(blockquote.parentElement?.closest('blockquote'))
+    const segments = Array.from(blockquote.children).filter((child) =>
+      ['BLOCKQUOTE', 'OL', 'P', 'UL'].includes(child.tagName),
+    )
+
+    for (const child of segments) {
+      // Word and Docs import these children as paragraph/list units and may drop
+      // the container border; style those units while keeping Notion semantics.
+      child.classList.add('portable-blockquote-segment')
+
+      if (isNested) {
+        child.classList.add('portable-nested-blockquote-segment')
+      }
+    }
+
+    if (!isNested) {
+      segments.at(-1)?.classList.add('portable-blockquote-last-segment')
+    }
+  }
+}
+
 function sanitizeLink(element) {
   const policy = getUrlPolicy(element.getAttribute('href'))
 
@@ -134,6 +197,10 @@ function applyPortableStyle(element) {
     style = PORTABLE_IMAGE_FALLBACK_STYLE
   }
 
+  if (element.classList.contains('portable-image-fallback')) {
+    style = PORTABLE_IMAGE_FALLBACK_STYLE
+  }
+
   if (element.classList.contains('portable-code-table')) {
     style = PORTABLE_CODE_TABLE_STYLE
   }
@@ -144,6 +211,24 @@ function applyPortableStyle(element) {
 
   if (element.classList.contains('portable-code-content')) {
     style = PORTABLE_CODE_CONTENT_STYLE
+  }
+
+  if (element.classList.contains('portable-blockquote-segment')) {
+    style += ['OL', 'UL'].includes(element.tagName)
+      ? PORTABLE_BLOCKQUOTE_LIST_SEGMENT_STYLE
+      : PORTABLE_BLOCKQUOTE_SEGMENT_STYLE
+  }
+
+  if (element.classList.contains('portable-nested-blockquote-segment')) {
+    style += PORTABLE_NESTED_BLOCKQUOTE_SEGMENT_STYLE
+  }
+
+  if (element.classList.contains('portable-blockquote-last-segment')) {
+    style += PORTABLE_BLOCKQUOTE_LAST_SEGMENT_STYLE
+  }
+
+  if (element.classList.contains('portable-task-item')) {
+    style = PORTABLE_TASK_ITEM_STYLE
   }
 
   if (['td', 'th'].includes(tagName)) {
@@ -196,9 +281,12 @@ export function serializePortableHtml(root) {
   }
 
   const clone = root.cloneNode(true)
+  normalizeHardBreakWhitespace(clone)
   replaceTaskCheckboxes(clone)
+  normalizeImageFallbacks(clone)
   normalizePreviewWrappers(clone)
   normalizeCodeBlocks(clone)
+  normalizeBlockquotes(clone)
 
   for (const element of Array.from(clone.querySelectorAll('*'))) {
     sanitizeElement(element)
